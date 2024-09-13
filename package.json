@@ -15,6 +15,7 @@
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/node": "^22.5.4",
+    "axios": "^1.7.7",
     "svelte": "^4.2.7",
     "svelte-check": "^4.0.0",
     "typescript": "^5.0.0",

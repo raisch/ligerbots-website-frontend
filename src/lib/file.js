@@ -11,7 +11,7 @@ async function getFileUrlBySlug (slug, ext = 'jpg') {
 
   const query = {
     filter: {
-      filename_download: { _eq: filename   }
+      filename_download: { _eq: filename }
     },
     fields: ['id']
   }
@@ -19,9 +19,12 @@ async function getFileUrlBySlug (slug, ext = 'jpg') {
   const resp = await directus.request(readFiles(query))
 
   const fileId = resp[0]?.id
-  const url = fileId ? `${API_URL}/assets/${fileId}/${filename}` : null
+  const url = fileId ? `${API_URL}/assets/${fileId}` : null
+  const properName = slug
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, l => l.toUpperCase())
 
-  return { slug, fileId, filename, url }
+  return { slug, fileId, filename, properName, url }
 }
 
 export default getFileUrlBySlug

@@ -14,10 +14,7 @@ export default defineConfig({
   server: {
     host: true,
     port: SERVER_PORT,
-    origin: `http://${SERVER_HOST}:${SERVER_PORT}`,
-    watch: {
-      usePolling: true
-   }
+    origin: `http://${SERVER_HOST}:${SERVER_PORT}`
   },
   plugins: [
     redirect({

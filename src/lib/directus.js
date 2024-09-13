@@ -12,7 +12,7 @@ async function getDirectusInstance () {
 
   const result = await directus.login(USERNAME, PASSWORD)
 
-  console.log('LOGIN RESULT', result)
+  // console.log('LOGIN RESULT', result)
 
   return directus
 }
