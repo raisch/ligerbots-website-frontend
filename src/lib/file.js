@@ -3,6 +3,8 @@ import { readFiles, readFile } from '@directus/sdk'
 
 const API_URL = 'http://ligerbots.4msg.net:8055'
 
+// TODO - change this to just return the URL and add a separate function to download the file
+
 // @ts-ignore
 async function getFileUrlBySlug (slug, ext = 'jpg') {
   const directus = await getDirectusInstance()
