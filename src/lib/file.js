@@ -19,7 +19,7 @@ async function getFileUrlBySlug (slug, ext = 'jpg') {
   const resp = await directus.request(readFiles(query))
 
   const fileId = resp[0]?.id
-  const url = fileId ? `${API_URL}/assets/${fileId}` : null
+  const url = fileId ? `${API_URL}/assets/${fileId}/image.jpg` : null
   const properName = slug
     .replace(/-/g, ' ')
     .replace(/\b\w/g, l => l.toUpperCase())
