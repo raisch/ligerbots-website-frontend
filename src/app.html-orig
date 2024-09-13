@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="@assets/2611e18f-2ca4-4c9f-94c3-7f6cf5e56196" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:700">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700">
+  <link rel="stylesheet" href="%sveltekit.assets%/css/ligerbots.css">
+  <meta property="og:title" content="Welcome to the LigerBots">
+  %sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover">
+  <div id="header-ghost"></div>
+  <div class="container-fluid no-side-padding" id="myMain">
+    <div class="col-xs-12 no-side-padding">
+      <div class="row header" id="myMainRowHeader">
+        <div class="masthead">
+          <a href="/">
+            <img id="liger-text" src="@assets/c632dcdf-27dd-448c-950d-21ec6e97e7ce/masthead_text.svg">
+            <img id="liger_head" src="@assets/5579e4ad-0648-4819-b917-2ee06be2aad8/liger_head.svg">
+          </a>
+        </div>
+        <ul>
+          <li>
+            <a class="header-link" target="_blank" href="http://www.firstinspires.org/robotics/frc">
+              <img src="/images/first.svg">
+            </a>
+          </li>
+          <li>
+            <a class="header-link" target="_blank" href="https://www.youtube.com/c/ligerbots">
+              <img src="/images/youtube.png">
+            </a>
+          </li>
+          <li>
+            <a class="header-link" target="_blank" href="https://twitter.com/ligerbots">
+              <img src="/images/twitter.png">
+            </a>
+          </li>
+          <li>
+            <a class="header-link" target="_blank" href="https://www.facebook.com/The-LigerBots-162121450506644/">
+              <img src="/images/facebook.png">
+            </a>
+          </li>
+          <li>
+            <a class="header-link" target="_blank" href="https://www.instagram.com/ligerbots_frc2877/">
+              <img src="/images/instagram.png">
+            </a>
+          </li>
+          <li>
+            <a class="header-link" target="_blank" href="https://www.flickr.com/photos/ligerbots/">
+              <img src="/images/flickr.png">
+            </a>
+          </li>
+          <li>
+            <a class="header-link" href="/sponsor-us">
+              <img style="width:10%" src="/images/donate.png">
+            </a>
+          </li>
+        </ul>
+      </div><!-- row header -->
+
+      <nav class="navbar navbar-ligerbots">
+        <div class="container-fluid" id="navbarContainer">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle navbar-toggle-ligerbots" data-toggle="collapse"
+              data-target="#myNavbar">
+              <span class="icon-bar icon-bar-ligerbots"></span>
+              <span class="icon-bar icon-bar-ligerbots"></span>
+              <span class="icon-bar icon-bar-ligerbots"></span>
+            </button>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav nav-stacked">
+              <li class="active"><a href="/">Home</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">About<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/join">Join the LigerBots</a></li>
+                  <li><a href="/about">About Us</a></li>
+                  <li><a href="/contact">Contact Us</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Support<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/sponsor-us">Become a Sponsor</a></li>
+                  <li><a href="/current-sponsors">Current Sponsors</a></li>
+                </ul>
+              </li>
+              <li><a href="/calendar.php">Calendar</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Outreach<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/outreach">Outreach</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="/fll">FLL</a></li>
+                  <li><a href="/educational-resources">Educational Resources</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Media<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/gallery.php">Photos</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Resources<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/carpools.php">Carpools</a></li>
+                  <li><a href="/links">Team Links</a></li>
+                  <li><a href="/directory.php">Directory</a></li>
+                  <li><a href="/facebook.php">Facebook</a></li>
+                  <li><a href="/preseason-resources/">Preseason Resources</a></li>
+                  <li><a href="http://team.ligerbots.com">Team Internal Site</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">My Account<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/wp-backend/wp-admin/edit.php">Edit Posts</a></li>
+                  <li><a href="/wp-backend/wp-admin/profile.php">My Profile</a></li>
+                  <li><a href="/login.php?logout">Logout</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!-- #myNavbar -->
+        </div><!-- #navbarContainer -->
+      </nav>
+
+      <div class="row page-body" id="myContent">
+        <div class="col-md-12 col-md-offset-0 col-sm-10 col-sm-offset-1 col-xs-12">
+          <div class="row top-spacer"> </div>
+          <div class="row bottom-margin text-background">
+            <div class="col-md-10 col-md-offset-1 col-sm-12">
+              <div style="display: contents">%sveltekit.body%</div>
+            </div>
+          </div>
+
+          <div class="row row-margins">
+            <div class="col-xs-12">
+              <div class="panel panel-sprs">
+                <div class="big-sprs">
+                  <!-- RR / This was an embed to support clickable areas. -->
+
+                  <img class="sprs-image" usemap="#sprs-map" width="1110" height="190"
+                    src="@assets/07afc2bc-cd08-48a6-93d7-852ff435cb7c/sponsor_bar_full_2024a.svg">
+
+                  <map name="sprs-map">
+                    <area shape="rect" coords="0,0,100,51" href="/foo" alt="Foo">
+                    <area shape="rect" coords="100,0,200,51" href="/bar" alt="Sponsor Bar">
+                  </map>
+
+                </div>
+                <div class="small-sprs">
+                  <!-- RR / This was an embed to support clickable areas. -->
+                  <img class="sprs-image"
+                    src="@assets/e3cc554d-9b43-4123-ba86-3c83c4ddf0b2/sponsor_bar_narrow_2024a.svg">
+                </div>
+              </div>
+              <div style="text-align: center;">
+                <p class="label-blue"><a href="/current-sponsors">Thank you to ALL our Sponsors (click here)!</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- #myContent -->
+
+    </div><!-- #myMainRowHeader -->
+
+  </div><!-- #myMain -->
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
