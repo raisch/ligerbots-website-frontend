@@ -8,9 +8,7 @@ const API_URL = 'http://ligerbots.4msg.net:8055'
 // @ts-ignore
 async function getFileUrlBySlug (slug, ext = 'jpg') {
   const directus = await getDirectusInstance()
-
   const filename = `${slug}.${ext}`
-
   const query = {
     filter: {
       filename_download: { _eq: filename }
@@ -18,7 +16,14 @@ async function getFileUrlBySlug (slug, ext = 'jpg') {
     fields: ['id']
   }
 
-  const resp = await directus.request(readFiles(query))
+  let resp
+
+  try {
+    resp = await directus.request(readFiles(query))
+  } catch (err) {
+    console.error(err)
+    return null
+  }
 
   const fileId = resp[0]?.id
   const url = fileId ? `${API_URL}/assets/${fileId}/image.jpg` : null

@@ -3,6 +3,11 @@
   export let data;
 </script>
 
+<svelte:head>
+  <title>{data.global.title}</title>
+  <meta property="og:title" content="{data.global.title}" />
+</svelte:head>
+
 <h1>{data.global.title}</h1>
 
 <p>{@html data.global.description}</p>

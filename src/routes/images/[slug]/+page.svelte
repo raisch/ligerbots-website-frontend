@@ -3,4 +3,4 @@
   export let data;
 </script>
 <pre>{JSON.stringify(data, null, 2)}</pre>
-<img src="{data.url}" id="{data.fileId}">
+<img alt="image for {data.fileId}" src="{data.url}" id="{data.fileId}">
