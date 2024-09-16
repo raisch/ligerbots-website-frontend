@@ -1,5 +1,7 @@
-import adapter from '@sveltejs/adapter-node';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import adapter from '@sveltejs/adapter-node'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+
+console.log('svelte.config API_URL', process.env.API_URL)
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -13,6 +15,6 @@ const config = {
       checkOrigin: false
     }
   }
-};
+}
 
-export default config;
+export default config

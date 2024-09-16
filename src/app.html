@@ -10,7 +10,11 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:700">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700">
   <link rel="stylesheet" href="%sveltekit.assets%/css/ligerbots.css">
-  <meta property="og:title" content="Welcome to the LigerBots">
+  <meta http-equiv="Content-Security-Policy" content="frame-src ws://localhost:* *.google.com *.youtube.com" />
+  <meta http-equiv="Content-Security-Policy"
+    content="script-src 'self' 'unsafe-inline' localhost:* *.google.com *.cloudflare.com" />
+  <meta http-equiv="Content-Security-Policy"
+    content="script-src-elem 'self' 'unsafe-inline' localhost:* *.google.com *.cloudflare.com" />
   %sveltekit.head%
 </head>
 
