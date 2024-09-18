@@ -1,0 +1,91 @@
+[
+  {
+    "title": "Home",
+    "url": "/"
+  },
+  {
+    "title": "About",
+    "children": [
+      {
+        "title": "Join the Ligerbots",
+        "url": "/join"
+      },
+      {
+        "title": "About Us",
+        "url": "/about"
+      },
+      {
+        "title": "Contact Us",
+        "url": "/contact"
+      }
+    ]
+  },
+  {
+    "title": "Calendar",
+    "url": "/calendar"
+  },
+  {
+    "title": "Outreach",
+    "children": [
+      {
+        "title": "Outreach",
+        "url": "/outreach",
+        "divider_after": true
+      },
+      {
+        "title": "FLL",
+        "url": "/fll"
+      },
+      {
+        "title": "Educational Resources",
+        "url": "/educational-resources"
+      }
+    ]
+  },
+  {
+    "title": "Media",
+    "children": [
+      {
+        "title": "Photos",
+        "url": "/gallery"
+      }
+    ]
+  },
+  {
+    "title": "Resources",
+    "children": [
+      {
+        "title": "Carpools",
+        "url": "/team"
+      },
+      {
+        "title": "Team Links",
+        "url": "/links"
+      },
+      {
+        "title": "Directory",
+        "url": "/directory",
+        "requires_login": true
+      },
+      {
+        "title": "Facebook",
+        "url": "/facebook",
+        "requires_login": true
+      },
+      {
+        "title": "Preseason Resources",
+        "url": "/preseason-resources",
+        "requires_login": true
+      },
+      {
+        "title": "Team Internal Site",
+        "url": "team.ligerbots.org",
+        "requires_login": true
+      }
+    ]
+  },
+  {
+    "title": "<span class=\"glyphicon glyphicon-log-in\"></span> Login",
+    "url": "/sponsors"
+  }
+]

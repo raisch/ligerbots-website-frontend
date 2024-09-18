@@ -12,7 +12,44 @@ const config = {
   kit: {
     adapter: adapter(),
     csrf: {
-      checkOrigin: false
+      checkOrigin: true
+    },
+    csp: {
+      directives: {
+        'default-src': [
+          "'self'",
+          "'unsafe-inline'",
+          'http://localhost:*',
+          'ws://localhost:*',
+          'http://ligerbots.4msg.net:*',
+          'ws://ligerbots.4msg.net:*',
+          'docs.google.com',
+          'calendar.google.com',
+          'syndication.twitter.com',
+          '*.googleapis.com',
+          '*.gstatic.com',
+          '*.youtube.com',
+          '*.cloudflare.com',
+          'www.facebook.com',
+          'static.xx.fbcdn.net',
+          'platform.twitter.com',
+          'www.paypalobjects.com',
+          'live.staticflickr.com'
+        ],
+        'script-src': [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          'http://localhost:*',
+          'ws://localhost:*',
+          'http://ligerbots.4msg.net:*',
+          'ws://ligerbots.4msg.net:*',
+          'https://cdnjs.cloudflare.com/ajax/libs',
+          'www.facebook.com',
+          'platform.twitter.com',
+          'www.paypal.com'
+        ]
+      }
     }
   }
 }
