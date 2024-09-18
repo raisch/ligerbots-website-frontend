@@ -156,5 +156,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Protected Images
-/data
+/data/*
 /static/images/protected/*
