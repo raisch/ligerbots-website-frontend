@@ -34,7 +34,7 @@ const config = {
           'static.xx.fbcdn.net',
           'platform.twitter.com',
           'www.paypalobjects.com',
-          'live.staticflickr.com'
+          '*.staticflickr.com'
         ],
         'script-src': [
           "'self'",
