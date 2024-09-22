@@ -1,4 +1,5 @@
-import getDirectusInstance from '$lib/server/directus'
+// import getDirectusInstance from '$lib/server/directus'
+import { getBackendClient } from '$lib/../../lib/backend'
 import { readFiles, readFile } from '@directus/sdk'
 
 const API_URL = 'http://ligerbots.4msg.net:8055'
@@ -17,7 +18,7 @@ const slugToProperName = (/** @type {string} */ slug) => {
 
 // @ts-ignore
 async function getFileUrlBySlug (slug, ext = 'jpg') {
-  const directus = await getDirectusInstance()
+  const directus = await getBackendClient() // getDirectusInstance()
   const filename = `${slug}.${ext}`
   const query = {
     filter: {
