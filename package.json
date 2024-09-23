@@ -1,13 +1,16 @@
 {
-  "name": "frontend",
+  "name": "ligerbots-website-frontend",
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "env": "env",
     "dev": "npx vite dev",
     "build": "npx vite build",
     "preview": "npx vite preview",
     "check": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --watch"
+    "check:watch": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --watch",
+    "doc:build": "npx jsdoc -c jsdoc.json --package ./package.json --readme ./README.md lib/* -r -d docs",
+    "doc:open": "open docs/${npm_package_name}/${npm_package_version}/index.html"
   },
   "comment": "https://kit.svelte.dev/docs/adapter-auto",
   "devDependencies": {

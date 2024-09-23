@@ -155,6 +155,9 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+# docs
+/docs
+
 # Protected Images
 /data/*
 /static/images/protected/*
