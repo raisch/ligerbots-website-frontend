@@ -7,12 +7,10 @@ export async function GET (event) {
 
   let res
   try {
-    res = await client.request(
-      readItems('global', { fields: ['navbar_definition'] })
-    )
-    return json(res.navbar_definition)
+    res = await client.request(readItems('global'))
+    return json(res)
   } catch (e) {
-    console.error('GET /api/navbar', e)
+    console.error('GET /api/global', e)
     return json({ error: 'Failed to fetch global configuration' })
   }
 }

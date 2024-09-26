@@ -1,28 +1,35 @@
-// @ts-nocheck
-/** @type {import('./$types').PageLoad} */
 import { error } from '@sveltejs/kit'
-import getDirectusInstance from '$lib/server/directus'
-import { readItem } from '@directus/sdk'
 
-export async function load ({ fetch, params }) {
-  const client = await getDirectusInstance()
+import getSiteConfig from '$lib/server/site'
+import getPage from '$lib/server/page'
 
-  let page
+/** @type {import('./$types').PageServerLoad} */
+export async function load ({ params }) {
+  const slug = params.slug || 'unknown_page'
 
+  let site
   try {
-    page = await client.request(readItem('page', params.slug))
+    site = await getSiteConfig()
+  } catch (error) {
+    console.error('failed to retrieve site config:', error)
+  }
+
+  /** @type {import('$lib/server/page').PageRecord} */
+  let page
+  try {
+    page = await getPage(slug)
   } catch (err) {
+    console.error(`Error fetching page: ${err}`)
     throw error(404, 'Page not found')
   }
 
-  // Replace sandbox attribute in iframes
+  // console.log(`in [slug]/+page.server.js/load, page: ${JSON.stringify(page)}`)
 
+  // Replace sandbox attribute in iframes
   page.content = page.content.replace(
     /(<iframe.*?)sandbox(?:="")?>/g,
     '$1 sandbox="allow-same-origin allow-scripts allow-popups allow-forms">'
   )
 
-  return {
-    page
-  }
+  return { site, page }
 }

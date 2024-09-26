@@ -1,17 +1,33 @@
-// @ts-nocheck
-/** @type {import('./$types').PageLoad} */
-import { existsSync } from 'node:fs'
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const users = require('../../../data/users.json')
-
-// import getDirectusInstance from '$lib/server/directus'
-// import { readItems } from '@directus/sdk'
+import getDirectusInstance from '$lib/server/directus'
+import getSiteConfig from '$lib/server/site'
+import getUsers from '$lib/server/users.js'
+import getFiles from '$lib/server/files.js'
 
 export async function load ({ fetch }) {
-  // const client = await getDirectusInstance(fetch)
-  return {
-    // global: await client.request(readItems('global'))
-    users
+  let site
+  try {
+    site = await getSiteConfig()
+  } catch (error) {
+    console.error('failed to retrieve site config:', error)
   }
+
+  /** @type {Array<import('$lib/server/users.js').UserRecord>} */
+  let users = []
+  try {
+    users = await getUsers()
+    // console.log(`facebook users count: ${users.length}`)
+  } catch (err) {
+    console.error(`failed to retrieve users: ${err}`)
+  }
+
+  /** @type {Array<import('$lib/server/files.js').FileRecord>} */
+  let photos = []
+  try {
+    photos = await getFiles()
+    // console.log(`facebook photos count: ${photos.length}`)
+  } catch (err) {
+    console.error(`failed to retrieve photos: ${err}`)
+  }
+
+  return { site, users, photos }
 }

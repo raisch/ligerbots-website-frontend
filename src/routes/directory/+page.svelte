@@ -1,15 +1,19 @@
 <script>
-  import App from "../../App.svelte"
+  import App from '../../App.svelte'
   export let data
+
+  import { page } from '$app/stores'
+
+  // console.log(`in directory/+page.js, page is ${JSON.stringify($page)}`)
 
   /**
    * @param {{ has_photo: boolean, slug: string }} user
    */
   function imageForStudent(user) {
     if (user.has_photo) {
-      return "/images/protected/students/" + user.slug + ".jpg"
+      return '/images/protected/students/' + user.slug + '.jpg'
     }
-    return "/images/default_user2.jpg"
+    return '/images/default_user2.jpg'
   }
 </script>
 
@@ -56,7 +60,8 @@
         </tbody>
       </table>
 
-      <form class="form-inline" action="/directory.php" method="post">
+      <form class="form-inline" action="/" method="post">
+        <!-- TODO make this work! -->
         <button type="submit" name="download_users" class="btn btn-default">Download Userlist</button>
       </form>
     </div>

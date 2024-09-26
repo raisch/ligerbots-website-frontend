@@ -1,11 +1,11 @@
-// @ts-nocheck
-/** @type {import('./$types').PageLoad} */
-import getDirectusInstance from '$lib/server/directus'
-import { readItems } from '@directus/sdk'
+/** @type {import('./$types').PageServerLoad} */
+import getSiteConfig from '$lib/server/site'
+// import getNavbarConfig from '$lib/server/navbar'
 
 export async function load ({ fetch }) {
-  const client = await getDirectusInstance(fetch)
-  return {
-    global: await client.request(readItems('global'))
-  }
+  const site = await getSiteConfig()
+  console.log(
+    `\nin +page.server.js/getSiteConfig, config: ${JSON.stringify(site)}\n`
+  )
+  return { site }
 }

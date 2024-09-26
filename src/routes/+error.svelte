@@ -1,6 +1,6 @@
 <script>
-  import App from "../App.svelte"
-  const title = "WHOOPS! Page Not Found"
+  import App from '../App.svelte'
+  const title = 'WHOOPS! Page Not Found'
   const status = 404
 </script>
 

@@ -1,17 +1,31 @@
 // @ts-nocheck
+
+import getDirectusInstance from '$lib/server/directus'
+import getSiteConfig from '$lib/server/site'
+import getUsers from '$lib/server/users'
+
 /** @type {import('./$types').PageLoad} */
-import { existsSync } from 'node:fs'
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const users = require('../../../data/users.json')
+export async function load (opts) {
+  const client = await getDirectusInstance()
 
-// import getDirectusInstance from '$lib/server/directus'
-// import { readItems } from '@directus/sdk'
-
-export async function load ({ fetch }) {
-  // const client = await getDirectusInstance(fetch)
-  return {
-    // global: await client.request(readItems('global'))
-    users
+  let site = {}
+  try {
+    site = await getSiteConfig()
+  } catch (error) {
+    console.error(`failed to retrieve site config: ${error}`)
   }
+
+  let users
+  try {
+    users = await getUsers()
+  } catch (error) {
+    console.error(error)
+  }
+
+  // sort by lastname (case-insensitive) ascending.
+  users = users.sort((a, b) =>
+    a.lastname.toUpperCase() < b.lastname.toUpperCase() ? -1 : 1
+  )
+
+  return { site, users }
 }
