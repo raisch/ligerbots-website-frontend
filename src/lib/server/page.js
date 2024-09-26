@@ -1,10 +1,10 @@
 import getDirectusInstance from '$lib/server/directus'
 
 const PAGE_QUERY = `{
-  page(filter: {slug: "{{slug}}"}) {
-    id
-    title
-    content
+  page(filter: { slug: { _eq: "{{slug}}" } }) {
+      slug
+      title
+      content
   }
 }`
 
@@ -14,7 +14,7 @@ const PAGE_QUERY = `{
  * @param {string} slug - The slug of the page to retrieve.
  * @param {*} [query=PAGE_QUERY]
  *
- * @returns {Promise<Array<PageRecord>>}
+ * @returns {Promise<PageRecord>}
  *
  * @throws {Error} if failed to retrieve files.
  */
@@ -26,10 +26,12 @@ export default async function getPage (slug, query = PAGE_QUERY) {
   let result
   try {
     const resp = await client.query(query)
-    result = resp.page
-  } catch (error) {
-    throw new Error(`failed to retrieve page: ${error}`)
+    // console.log(`getPage(slug=${slug}) resp: ${JSON.stringify(resp)}`)
+    result = resp.page.shift()
+  } catch (/** @type {any} */ err) {
+    throw new Error(`failed to retrieve page: ${JSON.stringify(err)}`)
   }
+  // console.log(`getPage(slug=${slug}) result: ${JSON.stringify(result)}`)
   return result
 }
 
