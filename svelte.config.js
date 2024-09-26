@@ -20,17 +20,41 @@ const config = {
     },
     csp: {
       directives: {
-        'default-src': [
+        'font-src': [
           "'self'",
           `http://${frontendHost}`,
-          `http://${backendHost}`
+          'https://fonts.googleapis.com',
+          'https://fonts.gstatic.com',
+          'https://cdnjs.cloudflare.com'
         ],
+        'frame-src': [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          `http://${frontendHost}`,
+          `http://${backendHost}`,
+          'https://calendar.google.com',
+          'http://docs.google.com',
+          'https://www.youtube.com',
+          'https://syndication.twitter.com'
+        ],
+        'frame-ancestors': ["'self'"],
         'img-src': [
           "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          'data:',
           `http://${frontendHost}`,
           `http://${backendHost}`,
           `https://live.staticflickr.com`,
           `https://farm5.staticflickr.com`
+        ],
+        'object-src': [
+          "'self'",
+          'data:',
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          `http://${backendHost}`
         ],
         'script-src': [
           "'self'",
@@ -43,22 +67,12 @@ const config = {
           'https://fonts.googleapis.com',
           'https://cdnjs.cloudflare.com'
         ],
-        'font-src': [
+        'default-src': [
           "'self'",
+          'data:',
           `http://${frontendHost}`,
-          'https://fonts.googleapis.com',
-          'https://fonts.gstatic.com',
-          'https://cdnjs.cloudflare.com'
-        ],
-        'frame-src': [
-          "'self'",
-          `http://${frontendHost}`,
-          'https://calendar.google.com',
-          'http://docs.google.com',
-          'https://www.youtube.com',
-          'https://syndication.twitter.com'
-        ],
-        'frame-ancestors': ["'self'"]
+          `http://${backendHost}`
+        ]
       }
     }
   }
