@@ -4,8 +4,6 @@ dotenv.config({
   path: `.env.${process.env.NODE_ENV}`
 })
 
-console.log('vite.config API_URL', process.env.API_URL)
-
 import { sveltekit } from '@sveltejs/kit/vite';
 // import { redirect } from 'vite-plugin-url-redirect';
 import { defineConfig } from 'vite';
