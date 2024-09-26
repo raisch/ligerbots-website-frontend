@@ -1,8 +1,16 @@
 <div class="row header" id="masthead">
   <div class="masthead">
     <a href="/">
-      <img id="liger-text" src="/images/masthead_text.svg" alt="masthead text" />
-      <img id="liger_head" src="/images/liger_head.svg" alt="logo" />
+      <img
+        id="liger-text"
+        src="http://ligerbots.4msg.net:8055/assets/c632dcdf-27dd-448c-950d-21ec6e97e7ce"
+        alt="masthead text"
+      />
+      <img
+        id="liger_head"
+        src="http://ligerbots.4msg.net:8055/assets/5579e4ad-0648-4819-b917-2ee06be2aad8"
+        alt="logo"
+      />
     </a>
   </div>
   <ul>
@@ -38,7 +46,11 @@
     </li>
     <li>
       <a class="header-link" href="/sponsor-us">
-        <img style="width:10%" src="/images/donate.png" alt="donate" />
+        <img
+          style="width:10%"
+          src="http://ligerbots.4msg.net:8055/assets//5bb9e371-74d4-4462-ae03-de76107749e7"
+          alt="donate"
+        />
       </a>
     </li>
   </ul>
