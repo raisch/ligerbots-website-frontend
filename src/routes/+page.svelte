@@ -6,17 +6,11 @@
   import AnnouncementsBlock from '$lib/components/AnnouncementsBlock.svelte'
   import TwitterBlock from '$lib/components/TwitterBlock.svelte'
 
-  // const DEFAULT_MAINTENANCE_PAGE_TITLE = 'Site Maintenance'
-  // const DEFAULT_MAINTENANCE_PAGE_BODY = 'The site is currently undergoing maintenance. Please check back later.'
-
   /** @type {import('./$types').PageData} */
   export let data
 
   // @ts-ignore
   const { title } = data.site || { title: 'UNKNOWN TITLE' }
-
-  // const maintenance_page_title = data?.site?.maintenance_page_title || DEFAULT_MAINTENANCE_PAGE_TITLE
-  // const maintenance_page_body = data?.site?.maintenance_page_body || DEFAULT_MAINTENANCE_PAGE_BODY
 </script>
 
 <svelte:head>
@@ -27,18 +21,6 @@
 <App>
   {#if data.site.service_mode === 'maintenance'}
     <MaintenancePane />
-    <!-- <div class="row row-margins">
-      <div class="col-xs-12">
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h1>{maintenance_page_title}</h1>
-          </div>
-          <div class="panel-body">
-            {@html maintenance_page_body}
-          </div>
-        </div>
-      </div>
-    </div> -->
   {:else}
     <div class="row bottom-margin row-margins">
       <BlogBlock />
