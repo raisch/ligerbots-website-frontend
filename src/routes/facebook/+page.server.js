@@ -1,4 +1,3 @@
-import getDirectusInstance from '$lib/server/directus'
 import getSiteConfig from '$lib/server/site'
 import getUsers from '$lib/server/users.js'
 import getFiles from '$lib/server/files.js'
@@ -19,6 +18,8 @@ export async function load ({ fetch }) {
   } catch (err) {
     console.error(`failed to retrieve users: ${err}`)
   }
+
+  // console.log(`users: ${JSON.stringify(users, null, 2)}`)
 
   /** @type {Array<import('$lib/server/files.js').FileRecord>} */
   let photos = []
