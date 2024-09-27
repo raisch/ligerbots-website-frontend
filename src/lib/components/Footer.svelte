@@ -5,6 +5,10 @@
         <div class="panel panel-sprs">
           <div class="big-sprs">
             <embed class="sprs-image" src="/images/sponsor_bar_full_2024a.svg" />
+            <!-- <embed
+              class="sprs-image"
+              src="http://ligerbots.4msg.net:8055/assets/07afc2bc-cd08-48a6-93d7-852ff435cb7c"
+            /> -->
           </div>
           <div class="small-sprs">
             <embed class="sprs-image" src="/images/sponsor_bar_narrow_2024a.svg" />

@@ -23,6 +23,7 @@ const config = {
         'font-src': [
           "'self'",
           `http://${frontendHost}`,
+          `http://${backendHost}`,
           'https://fonts.googleapis.com',
           'https://fonts.gstatic.com',
           'https://cdnjs.cloudflare.com'
@@ -31,12 +32,14 @@ const config = {
           "'self'",
           "'unsafe-inline'",
           "'unsafe-eval'",
+          'data:',
           `http://${frontendHost}`,
           `http://${backendHost}`,
           'https://calendar.google.com',
           'http://docs.google.com',
           'https://www.youtube.com',
-          'https://syndication.twitter.com'
+          'https://syndication.twitter.com',
+          'https://giphy.com'
         ],
         'frame-ancestors': ["'self'"],
         'img-src': [
@@ -44,26 +47,32 @@ const config = {
           "'unsafe-inline'",
           "'unsafe-eval'",
           'data:',
+          //'http:',
           `http://${frontendHost}`,
           `http://${backendHost}`,
+          // TODO: there has to be a way to make this more general
           `https://live.staticflickr.com`,
-          `https://farm5.staticflickr.com`
+          `https://farm5.staticflickr.com`,
+          `https://farm66.staticflickr.com`
         ],
         'object-src': [
           "'self'",
           'data:',
           "'unsafe-inline'",
           "'unsafe-eval'",
+          `http://${frontendHost}`,
           `http://${backendHost}`
         ],
         'script-src': [
           "'self'",
           `http://${frontendHost}`,
+          `http://${backendHost}`,
           'https://cdnjs.cloudflare.com'
         ],
         'style-src': [
           "'self'",
           `http://${frontendHost}`,
+          `http://${backendHost}`,
           'https://fonts.googleapis.com',
           'https://cdnjs.cloudflare.com'
         ],
