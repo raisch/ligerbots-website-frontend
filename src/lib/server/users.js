@@ -12,6 +12,7 @@ const USERS_QUERY = `{
     school
     groups
     slug
+    fullname
     last_login
     {{SUB_QUERY}}
   }
