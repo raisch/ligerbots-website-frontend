@@ -1,0 +1,227 @@
+/* Define some variables which are used throughout */
+/* These should be the same as in ligerbots.css */
+:root {
+  --box-radius: 4px;
+  --team-blue: rgb(147,149,152);
+}
+
+/* For the ligerbots flickr and youtube links. */
+.gallery-link {
+  font-weight: inherit; /* semibold */
+  font-style: italic;
+  font-size: 11.5pt;
+  line-height: 24pt;
+  margin: 0;
+}
+
+/* Styling that will apply to the entire page's content */
+.gallery-year-container {
+  margin: 0;
+  margin-bottom: 3em;
+  text-align: center;
+}
+
+/* the thumbnail box for an album */
+.gallery-thumbnail {
+  padding: 0;
+  border-radius: var(--box-radius);
+  margin: 7.71pt;
+  border: thin;
+  border-color: var(--team-blue);
+  border-style: solid;
+  display: inline-block;
+  width: 189.75pt;
+  height: 189.75pt;
+  position: relative;
+  transition: 0.3s;
+  background-size: cover;
+  background-position: center;
+}
+
+.gallery-thumbnail:hover {
+  opacity: 0.7;
+}
+
+/* the caption for an album's thumbnail */
+.gallery-caption {
+  z-index: 1;
+  background: rgb(0,102,179);
+  border-radius: 0 0 var(--box-radius) var(--box-radius);
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  padding: 3pt 1em;
+  color: white !important;
+}
+
+/* contains the L/R nav buttons and the dropdown */
+.gallery-buttons-bar-container-top {
+  margin: auto;
+  margin-bottom: 14pt;
+  text-align: center;
+}
+
+/* equivalant for the buttons at the bottom of the page */
+.gallery-buttons-bar-container-bottom {
+  /* display: inline-block; /* fix for floating above page content */
+  margin: 0;
+  /* margin-top: 14.5pt; */
+  margin-bottom: 14.5pt;
+}
+
+/* the next/prev buttons */
+.gallery-nav-button {
+  position: relative;
+  margin-top: 3pt; /* align bottom with dropdown menu */
+  text-decoration: none;
+  color: rgb(208,78,29);
+  transition: 0.1s;
+}
+
+.gallery-nav-button-disabled, .gallery-nav-button-disabled:hover {
+  position: relative;
+  margin-top: 3pt;
+  text-decoration: none;
+  color: rgba(208,78,29,0.5);
+  cursor: not-allowed;
+}
+
+.gallery-nav-button:hover {
+  color: black;
+  text-decoration: none; /* override default from <a> tags */
+}
+
+/* contains a photo and its caption */
+.gallery-photo-container {
+  padding: 0;
+  border-radius: var(--box-radius);
+  margin: auto;
+  display: table;
+  transition: 0.1s;
+}
+
+.gallery-photo-container > img {
+  border-radius: var(--box-radius);
+}
+
+/* image that hasn't yet triggered the JavaScript resizing */
+.gallery-photo-loading {
+  display: none; /* prevents broken looking page while images are loading */
+}
+
+/* constraints specific to landscape photos */
+/* note: put the border on the image, not on its container; this seems to fix
+  small gaps between image and border */
+.gallery-photo-wide {
+  max-width: 100%;
+  max-height: 23em;
+  border: thin;
+  border-color: var(--team-blue);
+  border-style: solid;
+}
+
+/* constraints specific to portrait photos */
+.gallery-photo-tall {
+  max-width: 100%;
+  max-height: 34.5em;
+  border: thin;
+  border-color: var(--team-blue);
+  border-style: solid;
+}
+
+/* the caption for a single photo */
+.gallery-photo-desc {
+  display: table-caption;
+  caption-side: bottom;
+  text-align: center;
+  font-style: italic;
+  color: black;
+  margin-top: 6pt;
+  margin-bottom: 22pt;
+  text-decoration: none;
+}
+
+/* the two vertical columns photos are divided into */
+.gallery-photo-column {
+  padding: 0 8.625pt;
+}
+
+/* a div around an added year */
+.gallery-content {
+  display: inline-block;
+  text-align: center; /* aligns items L/R, not just text */
+}
+
+/* the dropdown menu button */
+.gallery-dropdown-button, .gallery-dropdown-button:focus {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  top: -5pt; /* fix text spacing; button is taller than text */
+  color: rgb(0,102,179);
+  font-weight: bold;
+  font-size: 18pt;
+  letter-spacing: 0.04em;
+  white-space: normal; /* enable word wrapping for mobile */
+  transition: 0.1s;
+}
+
+/* tweaks to the dropdown menu button under other actions */
+.gallery-dropdown-button:hover, .gallery-dropdown-button:active {
+  background-color: transparent !important;
+  color: black !important; /* important needed to override preset button specs */
+}
+
+/* a container for the dropdown menu and its items */
+.gallery-dropdown {
+  display: inline-block; /* fix positioning of the menu relative to the button */
+}
+
+/* the box that appears when the dropdown is opened */
+.gallery-dropdown-content {
+  width: 100%;
+  border-radius: var(--box-radius);
+  animation: fade-in 0.2s ease-in-out 0s forwards;
+}
+
+/* an item in the dropdown list */
+.gallery-dropdown-item {
+  color: black !important; /* needed to override bootstrap dropdown properties */
+}
+
+/* active item in the dropdown menu */
+.gallery-dropdown-itme-active {
+  color: white !important;
+  background-color: rgb(0,102,179) !important;
+}
+
+/* Description text for an album that shows when viewing it's photos */
+.gallery-album-description {
+  max-width: 64em;
+  margin-bottom: 15pt;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+/* the triangle for the dropdown menu */
+.glyphicon-triangle-bottom {
+  color: rgb(208,78,29);
+  font-size: 14pt;
+  top: 1pt; /* align to the top of a small s */
+}
+
+/* specs for chevrons */
+.glyphicon-chevron-left, .glyphicon-chevron-right {
+  top: 0;
+  font-size: 8pt;
+  letter-spacing: -0.3em;
+}
+
+/* contains the top and bottom buttons and the dynamic content in between them */
+.gallery-container {
+  padding: 0 26.79pt;
+}
