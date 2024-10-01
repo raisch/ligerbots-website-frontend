@@ -1,7 +1,9 @@
 <div class="col-md-6 col-sm-12">
   <div class="panel panel-blue">
     <div class="panel-heading index-heading">
-      <a style="color:white;" href="/calendar.php">UPCOMING EVENTS</a>
+      <a style="color:white;" href="/calendar.php"
+        >UPCOMING EVENTS&nbsp;<i class="fa-solid fa-up-right-from-square fa-2xs"></i></a
+      >
     </div>
     <div id="cal-panel-div" class="panel-body">
       <iframe

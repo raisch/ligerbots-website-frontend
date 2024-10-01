@@ -1,8 +1,11 @@
-import { getBackendClient } from '../../../lib/backend.js'
+import { isDirectusClient, getBackendClient } from '../../../lib/backend.js'
+
+/** @type {ExportedFunctions} */
+export { isDirectusClient, getBackendClient }
 
 /**
- * Get a backend client.
+ * @typedef {Object} ExportedFunctions
  *
- * @returns {Promise<import('directus-sdk-javascript').Directus>}
+ * @property {boolean} isDirectusClient
+ * @property {Promise<import('../../../lib/backend.js').DirectusClient>} getBackendClient
  */
-export default getBackendClient

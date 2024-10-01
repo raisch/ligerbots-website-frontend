@@ -1,6 +1,8 @@
 <div class="col-md-6 col-sm-12">
   <div class="panel panel-blue">
-    <div class="panel-heading index-heading"><a href="/" style="color: white;">ANNOUNCEMENTS</a></div>
+    <div class="panel-heading index-heading">
+      <a href="/" style="color: white;">ANNOUNCEMENTS&nbsp;<i class="fa-solid fa-up-right-from-square fa-2xs"></i></a>
+    </div>
     <div id="ann-panel" class="panel-body">
       <div class="announce text-margins">
         <div class="announce-title">

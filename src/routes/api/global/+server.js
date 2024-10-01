@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit'
-import getDirectusInstance from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/directus'
 import { readItems } from '@directus/sdk'
 
 export async function GET (event) {
-  const client = await getDirectusInstance()
+  const client = await getBackendClient()
 
   let res
   try {

@@ -1,8 +1,8 @@
 <script>
-  import Footer from '$lib/components/Footer.svelte'
-  import MainPane from '$lib/components/MainPane.svelte'
   import Masthead from '$lib/components/Masthead.svelte'
   import Navbar from '$lib/components/Navbar.svelte'
+  import MainPane from '$lib/components/MainPane.svelte'
+  import Footer from '$lib/components/Footer.svelte'
 </script>
 
 <div id="header-ghost"></div>

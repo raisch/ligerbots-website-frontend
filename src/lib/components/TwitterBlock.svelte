@@ -1,3 +1,32 @@
+<script>
+  /**
+   * Function from Twitter to set up the Twitter widget.
+   *
+   * @param {Document} d - document object
+   * @param {String} s - element type: 'script'
+   * @param {String} id - element id: 'twitter-wjs'
+   */
+  function twitterSetup(d, s, id) {
+    var js,
+      fjs = /** @type {HTMLScriptElement} */ (d.getElementsByTagName(s)[0]),
+      p = /^http:/.test(d.location.href) ? 'http' : 'https'
+
+    // TODO assure this works as expected.
+    if (!d.getElementById(id)) {
+      js = /** @type {HTMLScriptElement} */ (d.createElement(s))
+      js.id = id
+      js.src = p + '://platform.twitter.com/widgets.js'
+      js.nonce = '%sveltekit.nonce%'
+      console.log(js.toString())
+      if (fjs.parentNode) {
+        fjs.parentNode.insertBefore(js, fjs)
+      } else {
+        document.head.appendChild(js)
+      }
+    }
+  }
+</script>
+
 <div class="col-md-6 col-sm-12">
   <div class="panel panel-blue">
     <div class="panel-heading index-heading">
@@ -5,7 +34,7 @@
         style="color:white;"
         target="_blank"
         href="https://twitter.com/search?q=ligerbots&amp;src=typd"
-        data-svelte-h="svelte-kc9igs">TWITTER</a
+        data-svelte-h="svelte-kc9igs">TWITTER&nbsp;<i class="fa-solid fa-up-right-from-square fa-2xs"></i></a
       >
     </div>
     <div class="panel-body">
@@ -25,7 +54,11 @@
           allowfullscreen
         ></iframe>
       </div>
-      <script nonce="%sveltekit.nonce%" data-svelte-h="svelte-6rjdw6">
+      <script id="twitter-wjs" src="https://platform.twitter.com/widgets.js" nonce="%sveltekit.nonce%"></script>
+      <!-- <script>
+        twitterSetup(document, 'script', 'twitter-wjs')
+      </script> -->
+      <!--script data-svelte-h="svelte-6rjdw6">
         !(function (d, s, id) {
           var js,
             fjs = d.getElementsByTagName(s)[0],
@@ -34,10 +67,11 @@
             js = d.createElement(s)
             js.id = id
             js.src = p + '://platform.twitter.com/widgets.js'
+            js.nonce = %sveltekit.nonce%
             fjs.parentNode.insertBefore(js, fjs)
           }
         })(document, 'script', 'twitter-wjs')
-      </script>
+      </script-->
     </div>
   </div>
 </div>

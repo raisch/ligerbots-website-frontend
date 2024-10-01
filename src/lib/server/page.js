@@ -1,10 +1,12 @@
-import getDirectusInstance from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/directus'
 
 const PAGE_QUERY = `{
   page(filter: { slug: { _eq: "{{slug}}" } }) {
       slug
       title
+      script
       content
+      style
   }
 }`
 
@@ -19,7 +21,7 @@ const PAGE_QUERY = `{
  * @throws {Error} if failed to retrieve files.
  */
 export default async function getPage (slug, query = PAGE_QUERY) {
-  const client = await getDirectusInstance()
+  const client = await getBackendClient()
 
   query = query.replace('{{slug}}', slug)
 
@@ -39,6 +41,9 @@ export default async function getPage (slug, query = PAGE_QUERY) {
  * @typedef {Object} PageRecord
  *
  * @property {string} id
+ * @property {string} slug
  * @property {string} title
+ * @property {string} [script]
  * @property {string} content
+ * @property {string} [style]
  */

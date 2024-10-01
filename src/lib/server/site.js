@@ -1,4 +1,4 @@
-import getDirectusInstance from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/directus'
 
 /** @typedef {String} GraphqlQuery */
 
@@ -38,7 +38,7 @@ const MAINTENANCE_MODE_QUERY = `{
  * @throws {Error} If the global or maintenance objects cannot be retrieved.
  */
 export default async function getSiteConfig () {
-  const client = await getDirectusInstance()
+  const client = await getBackendClient()
 
   let resp
   try {

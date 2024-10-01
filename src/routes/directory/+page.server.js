@@ -1,12 +1,12 @@
 // @ts-nocheck
 
-import getDirectusInstance from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/directus'
 import getSiteConfig from '$lib/server/site'
 import getUsers from '$lib/server/users'
 
 /** @type {import('./$types').PageLoad} */
 export async function load (opts) {
-  const client = await getDirectusInstance()
+  const client = await getBackendClient()
 
   let site = {}
   try {

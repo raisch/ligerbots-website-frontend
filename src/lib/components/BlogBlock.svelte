@@ -1,7 +1,9 @@
 <div class="col-md-6 col-sm-12">
   <div class="panel panel-blue">
     <div class="panel-heading index-heading">
-      <a style="color:white;" href="/" data-svelte-h="svelte-i5en1z">LIGERBOTS BLOG</a>
+      <a style="color:white;" href="/" data-svelte-h="svelte-i5en1z"
+        >LIGERBOTS BLOG&nbsp;<i class="fa-solid fa-up-right-from-square fa-2xs"></i>
+      </a>
     </div>
     <div id="blog-panel" class="panel-body">
       <div class="blog-image-box">

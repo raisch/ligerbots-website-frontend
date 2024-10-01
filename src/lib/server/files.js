@@ -1,4 +1,4 @@
-import getDirectusInstance from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/directus'
 
 const FILES_QUERY = `{
   files(limit: -1) {
@@ -18,7 +18,7 @@ const FILES_QUERY = `{
  * @throws {Error} if failed to retrieve files.
  */
 export default async function getFiles (query = FILES_QUERY) {
-  const client = await getDirectusInstance()
+  const client = await getBackendClient()
   let result
   try {
     const resp = await client.query(query, null, 'system')

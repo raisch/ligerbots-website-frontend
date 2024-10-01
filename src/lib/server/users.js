@@ -1,4 +1,14 @@
-import getDirectusInstance from '$lib/server/directus'
+/*
+  Get users from Directus.
+
+  Special purpose function to retrieve users from Directus for use in /directory.
+
+  TODO: Add pagination support.
+  TODO: Fold into $lib/server/user.js
+
+*/
+
+import { getBackendClient } from '$lib/server/directus'
 
 const USERS_QUERY = `{
   users(limit: -1) {
@@ -41,7 +51,7 @@ export default async function getUsers (
   query = USERS_QUERY,
   withPhotos = false
 ) {
-  const client = await getDirectusInstance()
+  const client = await getBackendClient()
 
   query = query.replace('{{SUB_QUERY}}', withPhotos ? PHOTOS_SUB_QUERY : '')
 
@@ -69,7 +79,7 @@ export default async function getUsers (
  * @property {string} groups
  * @property {string} slug
  * @property {string} last_login
- * @property {PhotoRecord} photo
+ * @property {PhotoRecord} [photo]
  */
 
 /**

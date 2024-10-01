@@ -1,20 +1,11 @@
 <script>
   import App from '../../App.svelte'
-  export let data
 
   import { page } from '$app/stores'
 
   // console.log(`in directory/+page.js, page is ${JSON.stringify($page)}`)
 
-  /**
-   * @param {{ has_photo: boolean, slug: string }} user
-   */
-  function imageForStudent(user) {
-    if (user.has_photo) {
-      return '/images/protected/students/' + user.slug + '.jpg'
-    }
-    return '/images/default_user2.jpg'
-  }
+  export let data
 </script>
 
 <svelte:head>

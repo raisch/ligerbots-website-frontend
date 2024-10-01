@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { isDirectusClient, getBackendClient } from './backend.js'
+import { isDirectusClient, getBackendClient } from './directus.js'
 
 import { readItems, updateItem, verifyHash } from '@directus/sdk'
 
@@ -27,7 +27,7 @@ import { readItems, updateItem, verifyHash } from '@directus/sdk'
  * @default false
  * @constant
  */
-const SHOW_QUERIES = process.env.SHOW_QUERIES || false
+const SHOW_QUERIES = !!process.env.SHOW_QUERIES || false
 
 /**
  *
@@ -89,28 +89,22 @@ class User {
   /**
    * Build a User object.
    *
-   * @param {object} options - The options to use to build the User object.
-   *
-   * @property {DirectusClient} options.client - The Directus client to use.
-   * @property {string} options.emailAddress - The email address of the user.
-   * @property {string} options.password - The password of the user.
+   * @param {UserOptions} options - The options to use to build the User object.
    *
    * @returns {Promise<User>}
    *
    * @throws {Error} If the Directus client is not valid.
    */
-  static async build ({ emailAddress, password }) {
+  static async build (/** @type {UserOptions} */ { email, password }) {
     const client = await getBackendClient()
     if (!isDirectusClient(client)) {
       throw new Error('Failed to create backend client')
     }
-    return new User(client, emailAddress, password)
+    return new User(client, email, password)
   }
 
   /**
    * Read a user from the Directus backend.
-   *
-   * @param {string} emailAddress - The email address of the user to read.
    *
    * @returns {Promise<UserRecord>}
    *
@@ -119,35 +113,47 @@ class User {
   async read () {
     const emailAddress = this._emailAddress
 
-    const USER_READ_QUERY = `
-      {
-        users(filter: {email_address: {_eq: "${emailAddress}"}}) {
-          id
-          status
-          groups
-          slug
-          last_login
-          photo {
-            filename_download
-          }
-        }
-      }
-    `
+    // const USER_READ_QUERY = `
+    //   {
+    //     users(filter: {email_address: {_eq: "${emailAddress}"}}) {
+    //       id
+    //       status
+    //       email_address
+    //       password
+    //       groups
+    //       slug
+    //       last_login
+    //       photo {
+    //         filename_download
+    //       }
+    //     }
+    //   }
+    // `
 
-    const result = await this._client.query(USER_READ_QUERY)
+    // const result = await this._client.query(USER_READ_QUERY)
 
-    const user = await this._client.request(
-      readItems('users', {
-        filter: {
-          email_address: {
-            _eq: emailAddress
+    // console.log('User.read result:', JSON.stringify(result, null, 2))
+
+    let user
+    try {
+      user = await this._client.request(
+        readItems('users', {
+          filter: {
+            email_address: {
+              _eq: emailAddress
+            }
           }
-        }
-      })
-    )
+        })
+      )
+    } catch (error) {
+      console.error('Failed to read user:', error)
+      throw error
+    }
 
     if (!Array.isArray(user) || user.length !== 1) {
-      throw new Error(`Failed to read user with email address: ${emailAddress}`)
+      throw new Error(
+        `Failed to locate unique user with email address: ${emailAddress}`
+      )
     }
 
     return user.shift()
@@ -158,30 +164,33 @@ class User {
    *
    * @param {boolean} [updateLastLogin=false] - Whether to update the user's last login time.
    *
-   * @returns Promise<Boolean> - True if the user is authenticated, false otherwise.
+   * @returns Promise<AuthResult>
    */
   async auth (updateLastLogin = false) {
-    const user = await this.read(this._emailAddress)
+    const userRecord = await this.read()
 
-    const userPassword = user.password
-    if (!userPassword) {
-      throw new Error(
-        `User with email address "${emailAddress}" has no password!`
-      )
+    // @ts-ignore
+    const userRecordPassword = userRecord.password
+    if (!userRecordPassword) {
+      return { error: 'User has no password' }
     }
 
     const result = this._client.request(
-      verifyHash(this._password, userPassword)
+      verifyHash(this._password, userRecordPassword)
     )
+
     if (result && updateLastLogin) {
       const currentDateTime = new Date().toLocaleString()
       console.log('Updating last login time to:', currentDateTime)
-      this._client.request(
-        updateItem('users', user.id, { last_login: currentDateTime })
-      )
+      try {
+        await this.update({ last_login: currentDateTime })
+        userRecord.last_login = currentDateTime
+      } catch (error) {
+        console.error('Failed to update last login time:', error)
+      }
     }
 
-    return result
+    return result ? { user: userRecord } : { error: 'Incorrect credentials' }
   }
 
   /**
@@ -225,7 +234,9 @@ class User {
 
     const query = `{
       users(limit: -1) {
-        ${fields.map(field => field.field).join('\n\t')}
+        ${fields
+          .map((/** @type {{ field: any; }} */ field) => field.field)
+          .join('\n\t')}
       }
     }`
 
@@ -253,7 +264,7 @@ class User {
    *
    * @param {string} groups - The groups to filter by, separated by commas.
    *
-   * @returns {Promise<Array<UserRecord>>
+   * @returns {Promise<Array<UserRecord>>}
    */
   static async listByGroup (groups = '') {
     if (typeof groups !== 'string') {
@@ -262,10 +273,10 @@ class User {
 
     const users = await User.listAll()
 
-    groups = groups.split(/\W+/)
+    const groupsList = groups.split(/\W+/)
 
     return users.filter(user =>
-      user.groups.some(group => groups.includes(group))
+      user.groups.some(group => groupsList.includes(group))
     )
   }
 
@@ -287,6 +298,18 @@ class User {
 
     const result = await client.query(query, null, 'system')
 
+    /**
+     * @typedef {Object} DirectusFieldDefinition - A field in a Directus collection.
+     * @property {string} field - The field name.
+     * @property {string} type - The field type.
+     */
+
+    /**
+     * Process a field for use in a query.
+     *
+     * @param {DirectusFieldDefinition} field
+     * @returns {DirectusFieldDefinition}
+     */
     function processField (field) {
       if (field.field === 'photo') {
         field.field = `${field.field} {
@@ -304,17 +327,27 @@ class User {
     }
 
     return result.fields_in_collection
-      .filter(field => field.type !== 'alias')
+      .filter(
+        (/** @type {DirectusFieldDefinition} */ field) => field.type !== 'alias'
+      )
       .map(processField)
   }
 
+  /**
+   * Get a user by their slug.
+   *
+   * @param {String} slug
+   * @returns {Promise<UserRecord>}
+   */
   static async getUserBySlug (slug) {
     const client = await getBackendClient()
     const fields = await User.getUsefulFields()
 
     const query = `{
       users(filter: {slug: {_eq: "${slug}"}}) {
-        ${fields.map(field => field.field).join('\n\t')}
+        ${fields
+          .map((/** @type {{ field: any; }} */ field) => field.field)
+          .join('\n\t')}
       }
     }`
 
@@ -340,9 +373,44 @@ class User {
 
 export default User
 
+/** @typedef {import('../../../lib/backend.js').DirectusClient} DirectusClient */
+
 /**
  * @typedef {Object} UserRecord
+ *
+ * @property {string} id
+ * @property {string} status
+ * @property {Array<string>} groups
+ * @property {string} slug
+ * @property {string} last_login
+ * @property {Object} photo
+ * @property {String} photo.filename_download
+ * @property {String} photo.filename_disk
  */
+
+/**
+ * @typedef {Object} UserOptions
+ *
+ * @property {DirectusClient} [client] - The Directus client to use.
+ * @property {string} email - The email address of the user.
+ * @property {string} password - The password of the user.
+ */
+
+/**
+ * @typedef {Object} DirectusField - A field in a Directus collection.
+ */
+
+/**
+ * @typedef {Object} UserAuthResult
+ * @property {UserRecord} user - The user record from the Directus backend.
+ */
+
+/**
+ * @typedef {Object} UserAuthError
+ * @property {string} error - The error message.
+ */
+
+/** @typedef {UserAuthResult|UserAuthError} AuthResult */
 
 // TESTING
 
@@ -350,20 +418,21 @@ const TESTING = process.env.TESTING_USER || false
 
 if (TESTING) {
   const user = await User.build({
-    emailAddress: 'raisch@gmail.com',
+    email: 'raisch@gmail.com',
     password: 'Osc4rB00'
   })
 
-  console.log(await user.auth(true))
+  // console.log(await user.auth(true))
+  await user.read()
+  console.log(JSON.stringify(user))
 
-  // console.log(await user.read())
-
+  let result
   // result = await User.getUsefulFields()
   // console.log('Fields:', JSON.stringify(result, null, 2))
   // result = await User.listAll()
   // console.log('Users:', JSON.stringify(result, null, 2))
   // result = await User.listByGroup('Coach,Mentor')
-
+  // console.log('Users:', JSON.stringify(result, null, 2))
   // result = await User.getUserBySlug('milo_badman')
   // console.log('User:', JSON.stringify(result, null, 2))
 

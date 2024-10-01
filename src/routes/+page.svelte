@@ -1,11 +1,11 @@
 <script>
   import App from '../App.svelte'
   import MaintenancePane from '$lib/components/MaintenancePane.svelte'
+
   import UpcomingEventsBlock from '$lib/components/UpcomingEventsBlock.svelte'
   import BlogBlock from '$lib/components/BlogBlock.svelte'
   import AnnouncementsBlock from '$lib/components/AnnouncementsBlock.svelte'
   import TwitterBlock from '$lib/components/TwitterBlock.svelte'
-  import BottomRow from '$lib/components/BottomRowBlock.svelte'
   import BottomRowBlock from '$lib/components/BottomRowBlock.svelte'
 
   /** @type {import('./$types').PageData} */

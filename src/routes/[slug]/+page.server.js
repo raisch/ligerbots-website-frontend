@@ -23,8 +23,6 @@ export async function load ({ params }) {
     throw error(404, 'Page not found')
   }
 
-  // console.log(`in [slug]/+page.server.js/load, page: ${JSON.stringify(page)}`)
-
   // Replace sandbox attribute in iframes
   page.content = page.content.replace(
     /(<iframe.*?)sandbox(?:="")?>/g,

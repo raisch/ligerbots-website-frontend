@@ -2,9 +2,7 @@
   import App from '../../App.svelte'
 
   /** @type {import('./$types').PageData} */
-  export let data // = { site: {}, page: { title: 'Page Title', content: '<p>Page Content</p>' } }
-
-  // console.log(`\nin [slug]/+page.svelte, data is:${JSON.stringify(data, null, 2)}\n`)
+  export let data
 </script>
 
 <svelte:head>
@@ -15,5 +13,11 @@
 <App>
   <center><div class="notindex-title">{data?.page?.title}</div></center>
   <div class="level4-heading"></div>
+  {#if data?.page?.script}
+    {@html data.page.script}
+  {/if}
+  {#if data?.page?.style}
+    {@html data.page.style}
+  {/if}
   {@html data?.page?.content}
 </App>
