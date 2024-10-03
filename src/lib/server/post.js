@@ -1,4 +1,4 @@
-import { getBackendClient } from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/client'
 
 const POST_QUERY = `{
   post(filter: { slug: { _eq: "{{slug}}" } }) {

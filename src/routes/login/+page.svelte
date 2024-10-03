@@ -1,5 +1,12 @@
 <script>
+  import { setContext } from 'svelte'
+  import { writable } from 'svelte/store'
   import { goto } from '$app/navigation'
+  import { redirect } from '@sveltejs/kit'
+  import { browser } from '$app/environment'
+
+  $: user = writable()
+  setContext('user', user)
 
   /** @type {String}*/
   let email
@@ -21,10 +28,7 @@
 
     const result = await res.json()
 
-    // alert('handleSubmit: ' + JSON.stringify(result))
-
     if (result.error) {
-      // alert('Error: ' + result.error)
       const elt = document.getElementById('error-msg')
       if (elt) {
         elt.innerHTML = result.error
@@ -38,7 +42,10 @@
     // save user
     sessionStorage.setItem('user', JSON.stringify(result.user))
 
-    return goto('/')
+    user.set(result.user)
+    if (browser) {
+      window.location.href = '/'
+    }
   }
 
   const navigateToSignup = () => {

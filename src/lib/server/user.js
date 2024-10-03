@@ -1,4 +1,4 @@
-import { isDirectusClient, getBackendClient } from './directus.js'
+import { getBackendClient } from './client.js'
 
 export default class User {
   /**

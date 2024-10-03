@@ -1,4 +1,4 @@
-import { getBackendClient } from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/client'
 
 const FILES_QUERY = `{
   files(limit: -1) {

@@ -1,7 +1,9 @@
 <script>
   import LoginIcon from './icons/LoginIcon.svelte'
+  import LogoutIcon from './icons/LogoutIcon.svelte'
   import DropDownIcon from './icons/DropDownIcon.svelte'
   import { onMount } from 'svelte'
+  import { getContext } from 'svelte'
 
   /**
    * @typedef {Object} NavbarConfig
@@ -10,16 +12,30 @@
    * @property {string} url
    * @property {NavbarConfig[]} children
    * @property {boolean} divider_after
+   * @property {boolean} requires_login
    */
 
+  /**
+   * @typedef {Object} PageData
+   *
+   * @property {NavbarConfig[]} config
+   * @property {import('$lib/server/user').UserRecord} [user]
+   */
+
+  /**
+   * @type {PageData}
+   */
   let data = {
-    /** @type {Array.<NavbarConfig>} */ config: []
+    config: []
   }
 
   onMount(async () => {
     const res = await fetch('/api/site')
     const site = await res.json()
     data.config = site.navbar_config
+
+    const user = sessionStorage.getItem('user')
+    data.user = user ? JSON.parse(user) : null
   })
 </script>
 
@@ -42,22 +58,27 @@
               </a>
               <ul class="dropdown-menu">
                 {#each elt.children as child}
-                  <li><a href={child.url}>{@html child.title}</a></li>
-                  {#if child.divider_after}
-                    <li role="separator" class="divider"></li>
+                  {#if child.requires_login && !data.user}
+                    <!-- Skip this item -->
+                  {:else}
+                    <li><a href={child.url}>{@html child.title}</a></li>
+                    {#if child.divider_after}
+                      <li role="separator" class="divider"></li>
+                    {/if}
                   {/if}
                 {/each}
               </ul>
             </li>
+          {:else if elt.requires_login && !data.user}
+            <!-- Skip this item -->
           {:else}
             <li class="active"><a href={elt.url}>{@html elt.title}</a></li>
           {/if}
         {/each}
-        {#if false}
-          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        {#if data.user}
+          <li><a href="/logout" data-sveltekit-reload><LogoutIcon /> Logout</a></li>
         {:else}
-          <!-- <li class="active"><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> -->
-          <li class="active"><a href="/login"><LoginIcon /> Login</a></li>
+          <li class="active"><a href="/login" data-sveltekit-reload><LoginIcon /> Login</a></li>
         {/if}
       </ul>
     </div>

@@ -1,28 +1,26 @@
 <script>
+  import { getContext, onMount } from 'svelte'
   import Masthead from '$lib/components/Masthead.svelte'
   import Navbar from '$lib/components/Navbar.svelte'
   import MainPane from '$lib/components/MainPane.svelte'
   import Footer from '$lib/components/Footer.svelte'
 
-  /** @type {import('./$types').PageServerLoad} */
-  // import getSiteConfig from '$lib/server/site'
-  // // import getNavbarConfig from '$lib/server/navbar'
+  /** @type {Object|null} */
+  $: user = {}
 
-  // export async function load({ fetch }) {
-  //   const site = await getSiteConfig()
-  //   // console.log(
-  //   //   `\nin +page.server.js/getSiteConfig, config: ${JSON.stringify(site)}\n`
-  //   // )
-
-  //   return { site }
-  // }
+  onMount(async () => {
+    user = sessionStorage.getItem('user')
+    // console.log(`layout user:`, user)
+  })
 </script>
 
 <div id="header-ghost"></div>
 <div class="container-fluid no-side-padding" id="page-container">
   <div class="col-xs-12 no-side-padding" id="main-column">
     <Masthead />
-    <Navbar />
+    {#key user}
+      <Navbar />
+    {/key}
     <MainPane>
       <slot />
     </MainPane>

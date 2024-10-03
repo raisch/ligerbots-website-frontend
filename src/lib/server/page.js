@@ -1,4 +1,4 @@
-import { getBackendClient } from '$lib/server/directus'
+import { getBackendClient } from '$lib/server/client'
 
 const PAGE_QUERY = `{
   page(filter: { slug: { _eq: "{{slug}}" } }) {

@@ -4,24 +4,24 @@
 
   /**
    * @typedef {Object} PageData
-   * @property {import('../lib/server/site').SiteConfig} site
+   * @property {import('../lib/server/site').SiteConfig} [site]
    */
 
   /** @type {PageData} */
-  export let data
-
-  // console.log(`\nin +error.svelte, page: ${JSON.stringify($page, null, 2)}\n`)
+  export let data = {}
 
   const title = $page?.error?.message || 'An error has occurred.'
   const status = $page.status
 
   beforeUpdate(async () => {
     if (!data.site) {
-      const res = await fetch('/api/site')
-      const site = await res.json()
-      console.log(`\nin +error.svelte: load: site: ${JSON.stringify(site)}\n`)
-      data = { ...data, site }
-      console.log(`\nin +error.svelte: onMount: data: ${JSON.stringify(data, null, 2)}\n`)
+      try {
+        const res = await fetch('/api/site')
+        const site = await res.json()
+        data = { ...data, site }
+      } catch (err) {
+        console.error(`\nin +error.svelte: onMount: fetch('/api/site'): ${err}\n`)
+      }
     }
   })
 </script>
