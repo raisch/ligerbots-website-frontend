@@ -1,8 +1,6 @@
 <script>
   // @ts-nocheck
 
-  import App from '../../App.svelte'
-
   const DEFAULT_PHOTO_FILENAME_DOWNLOAD = 'default_user.jpg'
   const DEFAULT_PHOTO_FILENAME_DISK = '9382f638-b807-409c-8cdf-88a93f797597.jpg'
 
@@ -44,13 +42,11 @@
   <meta property="og:title" content="LigerBots Facebook" />
 </svelte:head>
 
-<App>
-  {#each students as student}
-    <div class="facebook-entry">
-      <img src={student.imageUrl} alt="Profile picture of {student.fullname}" />
-      <br />
-      <div class="name">{student.fullname}</div>
-      <div class={student.school.toLowerCase()}>{student.school}</div>
-    </div>
-  {/each}
-</App>
+{#each students as student}
+  <div class="facebook-entry">
+    <img src={student.imageUrl} alt="Profile picture of {student.fullname}" />
+    <br />
+    <div class="name">{student.fullname}</div>
+    <div class={student.school.toLowerCase()}>{student.school}</div>
+  </div>
+{/each}

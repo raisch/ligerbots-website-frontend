@@ -7,5 +7,6 @@ export async function load ({ fetch }) {
   // console.log(
   //   `\nin +page.server.js/getSiteConfig, config: ${JSON.stringify(site)}\n`
   // )
+
   return { site }
 }

@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit'
 
-import getSiteConfig from '$lib/server/site'
 import getPost from '$lib/server/post'
 
 /**
@@ -23,13 +22,6 @@ function prettyDate (str) {
 export async function load ({ params }) {
   const slug = params.slug || 'unknown_post'
 
-  let site
-  try {
-    site = await getSiteConfig()
-  } catch (error) {
-    console.error('failed to retrieve site config:', error)
-  }
-
   /** @type {import('$lib/server/post').PostRecord} */
   let post
   try {
@@ -49,5 +41,5 @@ export async function load ({ params }) {
 
   post.publish_on = prettyDate(post.publish_on)
 
-  return { site, post }
+  return { post }
 }

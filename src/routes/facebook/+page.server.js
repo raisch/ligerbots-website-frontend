@@ -1,19 +1,12 @@
 import getSiteConfig from '$lib/server/site'
-import getUsers from '$lib/server/users.js'
+import User from '$lib/server/user.js'
 import getFiles from '$lib/server/files.js'
 
 export async function load ({ fetch }) {
-  let site
-  try {
-    site = await getSiteConfig()
-  } catch (error) {
-    console.error('failed to retrieve site config:', error)
-  }
-
-  /** @type {Array<import('$lib/server/users.js').UserRecord>} */
+  /** @type {Array<import('$lib/server/user.js').FacebookUserRecord>} */
   let users = []
   try {
-    users = await getUsers()
+    users = await User.listForFacebook()
     // console.log(`facebook users count: ${users.length}`)
   } catch (err) {
     console.error(`failed to retrieve users: ${err}`)
@@ -30,5 +23,5 @@ export async function load ({ fetch }) {
     console.error(`failed to retrieve photos: ${err}`)
   }
 
-  return { site, users, photos }
+  return { users, photos }
 }

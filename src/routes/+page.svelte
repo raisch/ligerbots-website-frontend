@@ -1,5 +1,4 @@
 <script>
-  import App from '../App.svelte'
   import MaintenancePane from '$lib/components/MaintenancePane.svelte'
 
   import UpcomingEventsBlock from '$lib/components/UpcomingEventsBlock.svelte'
@@ -20,24 +19,22 @@
   <meta property="og:title" content={title} />
 </svelte:head>
 
-<App>
-  {#if data.site.service_mode === 'maintenance'}
-    <MaintenancePane />
-  {:else}
-    <div class="row bottom-margin row-margins">
-      <BlogBlock />
-      <UpcomingEventsBlock />
-    </div>
+{#if data.site.service_mode === 'maintenance'}
+  <MaintenancePane />
+{:else}
+  <div class="row bottom-margin row-margins">
+    <BlogBlock />
+    <UpcomingEventsBlock />
+  </div>
 
-    <div class="row bottom-margin row-margins">
-      <AnnouncementsBlock />
-      <TwitterBlock />
-    </div>
+  <div class="row bottom-margin row-margins">
+    <AnnouncementsBlock />
+    <TwitterBlock />
+  </div>
 
-    <div class="row row-margins">
-      <div class="col-xs-12">
-        <BottomRowBlock />
-      </div>
+  <div class="row row-margins">
+    <div class="col-xs-12">
+      <BottomRowBlock />
     </div>
-  {/if}
-</App>
+  </div>
+{/if}

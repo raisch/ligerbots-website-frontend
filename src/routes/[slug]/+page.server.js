@@ -1,18 +1,10 @@
 import { error } from '@sveltejs/kit'
 
-import getSiteConfig from '$lib/server/site'
 import getPage from '$lib/server/page'
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load ({ params }) {
   const slug = params.slug || 'unknown_page'
-
-  let site
-  try {
-    site = await getSiteConfig()
-  } catch (error) {
-    console.error('failed to retrieve site config:', error)
-  }
 
   /** @type {import('$lib/server/page').PageRecord} */
   let page
@@ -23,11 +15,17 @@ export async function load ({ params }) {
     throw error(404, 'Page not found')
   }
 
-  // Replace sandbox attribute in iframes
-  page.content = page.content.replace(
-    /(<iframe.*?)sandbox(?:="")?>/g,
-    '$1 sandbox="allow-same-origin allow-scripts allow-popups allow-forms">'
-  )
+  if (!page) {
+    throw error(404, 'Page not found')
+  }
 
-  return { site, page }
+  // Replace sandbox attribute in iframes
+  if (page?.content) {
+    page.content = page.content.replace(
+      /(<iframe.*?)sandbox(?:="")?>/g,
+      '$1 sandbox="allow-same-origin allow-scripts allow-popups allow-forms">'
+    )
+  }
+
+  return { page }
 }

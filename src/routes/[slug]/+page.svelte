@@ -1,23 +1,24 @@
 <script>
-  import App from '../../App.svelte'
-
   /** @type {import('./$types').PageData} */
   export let data
+
+  export let title = data?.page?.title
+  export let script = data?.page?.script
+  export let style = data?.page?.style
+  export let content = data?.page?.content
 </script>
 
 <svelte:head>
-  <title>{data?.page?.title}</title>
-  <meta property="og:title" content={data?.page?.title} />
+  <title>{title}</title>
+  <meta property="og:title" content={title} />
 </svelte:head>
 
-<App>
-  <center><div class="notindex-title">{data?.page?.title}</div></center>
-  <div class="level4-heading"></div>
-  {#if data?.page?.script}
-    {@html data.page.script}
-  {/if}
-  {#if data?.page?.style}
-    {@html data.page.style}
-  {/if}
-  {@html data?.page?.content}
-</App>
+<center><div class="notindex-title">{title}</div></center>
+<div class="level4-heading"></div>
+{#if script}
+  {@html script}
+{/if}
+{#if style}
+  {@html style}
+{/if}
+{@html content}

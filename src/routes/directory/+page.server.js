@@ -1,31 +1,20 @@
-// @ts-nocheck
+import User from '$lib/server/user'
 
-import { getBackendClient } from '$lib/server/directus'
-import getSiteConfig from '$lib/server/site'
-import getUsers from '$lib/server/users'
-
-/** @type {import('./$types').PageLoad} */
-export async function load (opts) {
-  const client = await getBackendClient()
-
-  let site = {}
-  try {
-    site = await getSiteConfig()
-  } catch (error) {
-    console.error(`failed to retrieve site config: ${error}`)
-  }
-
+/** @type {import('./$types').PageServerLoad} */
+export async function load () {
   let users
   try {
-    users = await getUsers()
+    users = await User.listForDirectory()
   } catch (error) {
     console.error(error)
   }
 
   // sort by lastname (case-insensitive) ascending.
-  users = users.sort((a, b) =>
-    a.lastname.toUpperCase() < b.lastname.toUpperCase() ? -1 : 1
-  )
+  if (users) {
+    users = users.sort((a, b) =>
+      a.lastname.toUpperCase() < b.lastname.toUpperCase() ? -1 : 1
+    )
+  }
 
-  return { site, users }
+  return { users }
 }
