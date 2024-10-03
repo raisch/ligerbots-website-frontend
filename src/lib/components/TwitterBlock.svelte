@@ -1,4 +1,6 @@
 <script>
+  import LinkIcon from './icons/LinkIcon.svelte'
+
   /**
    * Function from Twitter to set up the Twitter widget.
    *
@@ -34,7 +36,7 @@
         style="color:white;"
         target="_blank"
         href="https://twitter.com/search?q=ligerbots&amp;src=typd"
-        data-svelte-h="svelte-kc9igs">TWITTER&nbsp;<i class="fa-solid fa-up-right-from-square fa-2xs"></i></a
+        data-svelte-h="svelte-kc9igs">TWITTER&nbsp;<LinkIcon /></a
       >
     </div>
     <div class="panel-body">
