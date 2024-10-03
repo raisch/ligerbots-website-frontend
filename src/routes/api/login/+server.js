@@ -16,19 +16,13 @@ import User from '$lib/server/user'
 export async function POST ({ request }) {
   const { email, password } = await request.json()
 
-  const userObj = await User.build({ email, password })
+  // const userObj = await User.findByEmail(email)
 
-  const result = await userObj.auth(true)
-  if (result.error) {
-    return json({ error: result.error })
-  } else if (result.user) {
-    const user = result.user
-    console.log('POST /api/auth/+server user', user)
-    if (user.status !== 'published') {
-      // fail login if user is not published
-    } else {
-      // do something with the user object
-    }
+  const user = await User.login(email, password)
+  if (!user) {
+    return json({ error: 'Invalid email or password' })
   }
-  return json({ result })
+
+  console.log('POST /api/auth/+server user', user)
+  return json({ user })
 }
