@@ -1,11 +1,10 @@
 import dotenv from 'dotenv'
 
-dotenv.config({
-  path: `.env.${process.env.NODE_ENV}`
-})
+dotenv.config({ path: `.env` })
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
+dotenv.config({ path: `.env.local` })
 
 import { sveltekit } from '@sveltejs/kit/vite';
-// import { redirect } from 'vite-plugin-url-redirect';
 import { defineConfig } from 'vite';
 
 const SERVER_PORT = parseInt(process.env.PUBLIC_SERVER_PORT || '4000')
@@ -29,10 +28,6 @@ export default defineConfig({
     }
   },
   plugins: [
-    // redirect({
-    //   from: /^.*\/@assets\/.+$/,
-    //   to: (src: string) => `${API_URL}/${ src.replace(/^.*\/@/, '') }`,
-    // }),
     sveltekit()
   ]
 });

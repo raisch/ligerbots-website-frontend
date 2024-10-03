@@ -12,70 +12,77 @@ const config = {
 
   kit: {
     adapter: adapter(),
+    alias: {
+      $components: './src/components',
+      $helpers: 'src/helpers',
+      $styles: 'src/styles',
+      $types: './src/types'
+    },
     csrf: {
       checkOrigin: true
     }
-    // csp: {
-    //   directives: {
-    //     'default-src': ["'self'", 'data:', `http://${backendHost}`],
-    //     'font-src': [
-    //       "'self'",
-    //       'fonts.googleapis.com',
-    //       'fonts.gstatic.com',
-    //       'cdnjs.cloudflare.com'
-    //     ],
-    //     'frame-src': [
-    //       "'self'",
-    //       "'unsafe-inline'",
-    //       "'unsafe-eval'",
-    //       'data:',
-    //       `${backendHost}`,
-    //       'calendar.google.com',
-    //       'docs.google.com',
-    //       'www.youtube.com',
-    //       '*.twitter.com',
-    //       '*.facebook.com',
-    //       'giphy.com'
-    //     ],
-    //     'img-src': [
-    //       "'self'",
-    //       "'unsafe-inline'",
-    //       "'unsafe-eval'",
-    //       'data:',
-    //       `${backendHost}`,
-    //       `*.staticflickr.com`,
-    //       '*.paypal.com',
-    //       '*.paypalobjects.com'
-    //     ],
-    //     'object-src': [
-    //       "'self'",
-    //       "'unsafe-inline'",
-    //       "'unsafe-eval'",
-    //       'data:',
-    //       `${backendHost}`
-    //     ],
-    //     'script-src': [
-    //       "'self'",
-    //       'unsafe-inline',
-    //       'data:',
-    //       `${backendHost}`,
-    //       '*.facebook.com',
-    //       '*.twitter.com',
-    //       'cdnjs.cloudflare.com'
-    //     ],
-    //     'style-src': [
-    //       "'self'",
-    //       'unsafe-inline',
-    //       `${backendHost}`,
-    //       'fonts.googleapis.com',
-    //       'cdnjs.cloudflare.com'
-    //     ]
-    //   }
-    // }
   }
 }
 
 export default config
+
+// csp: {
+//   directives: {
+//     'default-src': ["'self'", 'data:', `http://${backendHost}`],
+//     'font-src': [
+//       "'self'",
+//       'fonts.googleapis.com',
+//       'fonts.gstatic.com',
+//       'cdnjs.cloudflare.com'
+//     ],
+//     'frame-src': [
+//       "'self'",
+//       "'unsafe-inline'",
+//       "'unsafe-eval'",
+//       'data:',
+//       `${backendHost}`,
+//       'calendar.google.com',
+//       'docs.google.com',
+//       'www.youtube.com',
+//       '*.twitter.com',
+//       '*.facebook.com',
+//       'giphy.com'
+//     ],
+//     'img-src': [
+//       "'self'",
+//       "'unsafe-inline'",
+//       "'unsafe-eval'",
+//       'data:',
+//       `${backendHost}`,
+//       `*.staticflickr.com`,
+//       '*.paypal.com',
+//       '*.paypalobjects.com'
+//     ],
+//     'object-src': [
+//       "'self'",
+//       "'unsafe-inline'",
+//       "'unsafe-eval'",
+//       'data:',
+//       `${backendHost}`
+//     ],
+//     'script-src': [
+//       "'self'",
+//       'unsafe-inline',
+//       'data:',
+//       `${backendHost}`,
+//       '*.facebook.com',
+//       '*.twitter.com',
+//       'cdnjs.cloudflare.com'
+//     ],
+//     'style-src': [
+//       "'self'",
+//       'unsafe-inline',
+//       `${backendHost}`,
+//       'fonts.googleapis.com',
+//       'cdnjs.cloudflare.com'
+//     ]
+//   }
+// }
 
 /*
 default-src 'self' data: http://ligerbots.4msg.net:8055;
