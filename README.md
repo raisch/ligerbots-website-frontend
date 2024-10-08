@@ -47,51 +47,8 @@ where the `<App>` tag is defined as:
 As you can see, by breaking pages into a hierarchy of components, you gain concision of expression and a high level
 of reuse.
 
-
-
-## Notes on Web Security
-
-This code embraces all web-related standards, especially the "Content Security Policy" which
-greatly reduces the possibility of Cross Site Scripting (XSS) attacks.
-
-CSP provides an HTTP header which controls what sources can be used for a variety of elements, such as
-`<image>`, `<style>`, `<script>`, `<iframe>`, and `<embed>`. (See note below on use of the `<embed>` tag.)
-
-The only drawback to locking down what resources your page is allowed to access is that, for example, should you
-wish to include images from a source that is not listed in the CSP `image-src` portion of the header, the user's
-browser will refuse to allow that image on your page.
-
-Other than resources retrieved from both this (the front-end service) and our backend service, the current
-CSP header for this site allows the page to retrieve from the following sources:
-
-- font-src:
-  - fonts.googleapis.com
-  - fonts.gstatic.com
-  - cdnjs.cloudflare.com
-
-- frame-src:
-  - 'calendar.google.com
-  - docs.google.com
-  - www.youtube.com
-  - *.twitter.com
-  - giphy.com
-
-- img-src:
-  - *.staticflickr.com
-
-- script-src:
-  - cdnjs.cloudflare.com
-  - platform.twitter.com
-
-- style-src:
-  - fonts.googleapis.com
-  - cdnjs.cloudflare.com
-
-See [References/HTTP/Content Security Policy (CSP) on MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
-for further information.
-
 ## Note On The Use Of `<embed>` Tags
-The `<embed>` tag defines a container for an external resource, such as a web page, a picture, a media player, or a plug-in application; these tags are no longer supported broadly as they were originally intended as containers for `Java` Applets, `ActiveX` Controls, and Shockwave Flash, which are no longer used in the modern web.
+The `<embed>` tag defines a container for an external resource, such as a web page, a picture, a media player, or a plug-in application.
 
 We use the `<embed>` tag to embed active `SVG` elements in a page; active in this sense means they encapsulate
 images, links, and styles in the same object.
