@@ -1,0 +1,22 @@
+[Unit]
+Description=Ligerbots Web Frontend (dev) - see /opt/ligerbots/service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Environment=NODE_ENV=development
+Type=simple
+User=ligerbots
+Group=ligerbots
+WorkingDirectory=/opt/ligerbots/service
+ExecStart=/usr/local/bin/npm run dev
+Restart=always
+ # Restart service after 10 seconds if node service crashes
+RestartSec=10
+ # Output to syslog
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ligerbots-frontend-dev
+
+[Install]
+WantedBy=multi-user.target
