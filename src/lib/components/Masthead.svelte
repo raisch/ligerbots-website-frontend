@@ -3,6 +3,11 @@
   console.log('Masthead.svelte:', JSON.stringify(page))
 </script>
 
+<script>
+  import { page } from '$app/stores'
+  console.log('Masthead.svelte:', JSON.stringify($page))
+</script>
+
 <div class="row header" id="masthead">
   <div class="masthead">
     <a href="/">
