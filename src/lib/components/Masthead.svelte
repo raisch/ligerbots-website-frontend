@@ -1,16 +1,7 @@
-<script>
-  import { page } from '$app/stores'
-  console.log('Masthead.svelte:', JSON.stringify($page))
-</script>
-
 <div class="row header" id="masthead">
   <div class="masthead">
     <a href="/">
-      <img
-        id="liger-text"
-        src="//ligerbots.4msg.net:8055/assets/c632dcdf-27dd-448c-950d-21ec6e97e7ce"
-        alt="masthead text"
-      />
+      <img id="liger-text" src="/assets/c632dcdf-27dd-448c-950d-21ec6e97e7ce" alt="masthead text" />
       <img id="liger_head" src="//ligerbots.4msg.net:8055/assets/5579e4ad-0648-4819-b917-2ee06be2aad8" alt="logo" />
     </a>
   </div>
