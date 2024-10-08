@@ -33,7 +33,7 @@
   for (const student of students) {
     student.photo = findPhoto(student.slug)
     const imageFilename = student?.photo?.filename_disk.replace(/\.jpg$/, '')
-    student.imageUrl = imageFilename ? `http://ligerbots.4msg.net:8055/assets/${imageFilename}` : ''
+    student.imageUrl = imageFilename ? `/assets/${imageFilename}` : ''
   }
 </script>
 
