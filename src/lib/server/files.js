@@ -23,6 +23,9 @@ const FILES_QUERY = `{
  */
 export default async function getFiles (query = FILES_QUERY) {
   const client = await getBackendClient()
+
+  debug(`getFiles() query: ${query}`)
+
   let result
   try {
     const resp = await client.query(query, null, 'system')

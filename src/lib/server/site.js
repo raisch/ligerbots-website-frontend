@@ -37,16 +37,20 @@ const MAINTENANCE_MODE_QUERY = `{
  * If the service mode is 'maintenance', will also retrieve the maintenance page title and body
  * and add them to the returned object.
  *
+ * @param {GraphqlQuery} [query=SITE_CONFIG_QUERY]
+ *
  * @returns {Promise<SiteConfig>}
  *
  * @throws {Error} If the global or maintenance objects cannot be retrieved.
  */
-export default async function getSiteConfig () {
+export default async function getSiteConfig (query = SITE_CONFIG_QUERY) {
   const client = await getBackendClient()
+
+  debug(`getSite() query: ${query}`)
 
   let resp
   try {
-    resp = await client.query(SITE_CONFIG_QUERY)
+    resp = await client.query(query)
   } catch (error) {
     const errMsg = `Failed to retrieve site config: ${error}`
     console.error(errMsg)
@@ -65,6 +69,10 @@ export default async function getSiteConfig () {
 
   if (result.service_mode === 'maintenance') {
     console.log(`Site is in maintenance mode`)
+    let query = MAINTENANCE_MODE_QUERY
+
+    debug(`getSiteConfig() maintenance query: ${query}`)
+
     let resp
     try {
       resp = await client.query(MAINTENANCE_MODE_QUERY)

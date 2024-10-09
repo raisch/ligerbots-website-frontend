@@ -1,5 +1,12 @@
 import { writable } from 'svelte/store'
+import { browser } from '$app/environment'
 
-export const user = writable(
-  localStorage.user ? JSON.parse(localStorage.getItem('user')) : null
-)
+let userRec
+if (browser) {
+  userRec = localStorage.getItem('user') || null
+  if (userRec) {
+    userRec = JSON.parse(userRec)
+  }
+}
+
+export const user = writable(userRec || null)

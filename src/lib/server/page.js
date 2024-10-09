@@ -29,6 +29,8 @@ export default async function getPage (slug, query = PAGE_QUERY) {
 
   query = query.replace('{{slug}}', slug)
 
+  debug(`getPage(slug=${slug}) query: ${query}`)
+
   let result
   try {
     const resp = await client.query(query)

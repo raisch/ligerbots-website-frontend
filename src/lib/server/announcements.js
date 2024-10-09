@@ -62,6 +62,8 @@ const POSTS_QUERY = `
 export default async function getAnnouncements (query = POSTS_QUERY) {
   const client = await getBackendClient()
 
+  debug(`getAnnouncements() query: ${query}`)
+
   let result
   try {
     result = await client.query(query)

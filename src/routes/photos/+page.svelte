@@ -1,4 +1,6 @@
 <script>
+  import Debug from '$lib/debugging'
+
   /**
    * @typedef {Object} PageData
    *
@@ -11,6 +13,8 @@
 
   /** @type {PageData} */
   export let data
+
+  // Debug.on().log('Photos.+page data:', data)
 
   data.currentSeason = '2024/25'
   data.currentEvent = 'Reefscape'
@@ -63,13 +67,10 @@
       <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8 col-sm-pull-3 col-md-pull-3 col-lg-pull-2">
         <div class="gallery-dropdown">
           <button class="btn btn-primary dropdown-toggle gallery-dropdown-button" type="button" data-toggle="dropdown"
-            >2024/25 Reefscape
-            <!--div style="width: 5pt; display: inline-block;"></div-->
-            <!-- &nbsp;<span style="color:rgb(208, 78, 29)">&#9207;</span> -->
-            <!--span class="glyphicon glyphicon-triangle-bottom"></span-->
-            &nbsp;<span class="down-arrow">&#x25BC;</span>
+            >2024/25 Reefscape &nbsp;<span class="down-arrow">&#x25BC;</span>
           </button>
           <ul class="dropdown-menu gallery-dropdown-content">
+            <!-- svelte-ignore a11y-missing-attribute -->
             <li><a class="gallery-dropdown-item-active active"> 2024/25 Reefscape </a></li>
             <li><a href="/gallery?year=1" class="gallery-dropdown-item"> 2023/24 Crescendo </a></li>
             <li><a href="/gallery?year=2" class="gallery-dropdown-item"> 2022/23 Charged Up </a></li>

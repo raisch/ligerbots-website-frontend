@@ -26,6 +26,9 @@ export default class User {
           groups
         }
       }`
+
+    debug(`listForDirectory: query: ${query}`)
+
     let result
     try {
       result = await client.query(query)
@@ -113,6 +116,9 @@ export default class User {
           last_login
         }
       }`
+
+    debug(`findByEmail(${email}): query: ${query}`)
+
     let result
     try {
       result = await client.query(query)
@@ -155,6 +161,8 @@ export default class User {
     const query = `mutation Utils_hash_verify {
       utils_hash_verify(string: "${password}", hash: "${user.password}")
     }`
+
+    debug(`User.login query: ${query}`)
 
     let result
     try {

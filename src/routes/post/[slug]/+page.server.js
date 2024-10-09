@@ -1,6 +1,10 @@
+import createDebugMessages from 'debug'
+
 import { error } from '@sveltejs/kit'
 
 import getPost from '$lib/server/post'
+
+const debug = createDebugMessages('APP:routes/post/[slug]/+post.server')
 
 /**
  * Format date string to human-readable format.
@@ -31,7 +35,7 @@ export async function load ({ params }) {
     throw error(404, 'Page not found')
   }
 
-  console.log(`in [slug]/+post.server.js/load, post: ${JSON.stringify(post)}`)
+  debug(`in load, post: ${JSON.stringify(post)}`)
 
   // Replace sandbox attribute in iframes
   post.body = post?.body.replace(
