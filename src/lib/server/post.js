@@ -1,4 +1,8 @@
+import createDebugMessages from 'debug'
+
 import { getBackendClient } from '$lib/server/client'
+
+const debug = createDebugMessages('APP:$lib/server/post')
 
 const POST_QUERY = `{
   post(filter: { slug: { _eq: "{{slug}}" } }) {
@@ -32,17 +36,17 @@ export default async function getPost (slug, query = POST_QUERY) {
 
   query = query.replace('{{slug}}', slug)
 
-  // console.log(`getPost(slug=${slug}) query: ${query}`)
+  debug(`getPost(slug=${slug}) query: ${query}`)
 
   let result
   try {
     const resp = await client.query(query)
-    // console.log(`getPost(slug=${slug}) resp: ${JSON.stringify(resp)}`)
+    debug(`getPost(slug=${slug}) resp: ${JSON.stringify(resp)}`)
     result = resp.post.shift()
   } catch (/** @type {any} */ err) {
     throw new Error(`failed to retrieve post: ${JSON.stringify(err)}`)
   }
-  // console.log(`getPost(slug=${slug}) result: ${JSON.stringify(result)}`)
+  debug(`getPost(slug=${slug}) result: ${JSON.stringify(result)}`)
   return result
 }
 

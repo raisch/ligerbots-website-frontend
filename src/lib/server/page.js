@@ -1,4 +1,8 @@
+import createDebugMessages from 'debug'
+
 import { getBackendClient } from '$lib/server/client'
+
+const debug = createDebugMessages('APP:$lib/server/page')
 
 const PAGE_QUERY = `{
   page(filter: { slug: { _eq: "{{slug}}" } }) {
@@ -28,12 +32,12 @@ export default async function getPage (slug, query = PAGE_QUERY) {
   let result
   try {
     const resp = await client.query(query)
-    // console.log(`getPage(slug=${slug}) resp: ${JSON.stringify(resp)}`)
+    debug(`getPage(slug=${slug}) resp: ${JSON.stringify(resp)}`)
     result = resp.page.shift()
   } catch (/** @type {any} */ err) {
     throw new Error(`failed to retrieve page: ${JSON.stringify(err)}`)
   }
-  // console.log(`getPage(slug=${slug}) result: ${JSON.stringify(result)}`)
+  debug(`getPage(slug=${slug}) result: ${JSON.stringify(result)}`)
   return result
 }
 

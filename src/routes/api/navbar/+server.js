@@ -1,18 +1,22 @@
-import { json } from "@sveltejs/kit";
-import { getBackendClient } from "$lib/server/client";
-import { readItems } from "@directus/sdk";
+import createDebugMessages from 'debug'
 
-export async function GET(event) {
-  const client = await getBackendClient();
+import { json } from '@sveltejs/kit'
+import getSiteConfig from '$lib/server/site'
 
-  let res;
+const debug = createDebugMessages('APP:src/routes/api/navbar/+server')
+
+export async function GET (event) {
+  let result
   try {
-    res = await client.request(
-      readItems("global", { fields: ["navbar_definition"] })
-    );
-    return json(res.navbar_definition);
-  } catch (e) {
-    console.error("GET /api/navbar", e);
-    return json({ error: "Failed to fetch global configuration" });
+    result = await getSiteConfig()
+  } catch (/** @type {any} */ err) {
+    return json({
+      error: 'failed to retrieve site config',
+      message: err.message
+    })
   }
+
+  debug(`GET /api/navbar result: ${JSON.stringify(result)}`)
+
+  return json({ result })
 }

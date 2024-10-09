@@ -9,10 +9,21 @@
  *
  */
 
+import createDebugMessages from 'debug'
+
 import { json } from '@sveltejs/kit'
 
 import User from '$lib/server/user'
 
+const debug = createDebugMessages('APP:src/routes/api/login/+server')
+
+/**
+ *
+ * @param {Object} options
+ * @param {Request} options.request
+ *
+ * @returns {Promise<Response>}
+ */
 export async function POST ({ request }) {
   const { email, password } = await request.json()
 
@@ -23,6 +34,6 @@ export async function POST ({ request }) {
     return json({ error: 'Invalid email or password' })
   }
 
-  console.log('POST /api/auth/+server user', user)
+  debug('POST /api/auth/+server user', user)
   return json({ user })
 }

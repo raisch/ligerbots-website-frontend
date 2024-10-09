@@ -1,4 +1,8 @@
+import createDebugMessages from 'debug'
+
 import { getBackendClient } from '$lib/server/client'
+
+const debug = createDebugMessages('APP:$lib/server/files')
 
 const FILES_QUERY = `{
   files(limit: -1) {
@@ -26,6 +30,7 @@ export default async function getFiles (query = FILES_QUERY) {
   } catch (error) {
     throw new Error(`failed to retrieve files: ${error}`)
   }
+  debug(`getFiles() result: ${JSON.stringify(result)}`)
   return result
 }
 

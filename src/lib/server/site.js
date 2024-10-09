@@ -1,4 +1,8 @@
+import createDebugMessages from 'debug'
+
 import { getBackendClient } from '$lib/server/client'
+
+const debug = createDebugMessages('APP:$lib/server/site')
 
 /** @typedef {String} GraphqlQuery */
 
@@ -75,7 +79,8 @@ export default async function getSiteConfig () {
     }
   }
 
-  // console.log(`in getSiteConfig, result: ${JSON.stringify(result)}`)
+  debug(`in getSiteConfig, result: ${JSON.stringify(result)}`)
+
   return result
 }
 

@@ -30,11 +30,13 @@
   }
 
   onMount(async () => {
-    const res = await fetch('/api/site')
-    const site = await res.json()
-    data.config = site.navbar_config
+    const res = await fetch('/api/navbar')
+    const resp = await res.json()
+    console.log('navbar resp:', resp)
+    data.config = resp?.result?.navbar_config || []
 
     const user = sessionStorage.getItem('user')
+    console.log('user:', user)
     data.user = user ? JSON.parse(user) : null
   })
 </script>

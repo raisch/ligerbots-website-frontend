@@ -1,4 +1,8 @@
+import createDebugMessages from 'debug'
+
 import { getBackendClient } from './client.js'
+
+const debug = createDebugMessages('APP:$lib/server/user')
 
 export default class User {
   /**
@@ -73,6 +77,7 @@ export default class User {
     }
 
     if (!(result && result.users && Array.isArray(result.users))) {
+      debug('listForFacebook: no users found')
       return []
     }
 
@@ -118,6 +123,7 @@ export default class User {
     }
     const users = result?.users || []
     if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`findByEmail: no user found for email: ${email}`)
       return null
     }
     return users[0]
@@ -144,7 +150,7 @@ export default class User {
       console.error(`Failed to find user with email address: ${email}`)
       return null
     }
-    console.log(`User.login user: ${JSON.stringify(user, null, 2)}`)
+    debug(`User.login user: ${JSON.stringify(user, null, 2)}`)
 
     const query = `mutation Utils_hash_verify {
       utils_hash_verify(string: "${password}", hash: "${user.password}")
@@ -158,7 +164,7 @@ export default class User {
         `Failed to verify password for user with email address "${email}": ${err}`
       )
     }
-    console.log(`User.login result: ${JSON.stringify(result, null, 2)}`)
+    debug(`User.login result: ${JSON.stringify(result, null, 2)}`)
 
     if (user.password) {
       user.password = '***'
