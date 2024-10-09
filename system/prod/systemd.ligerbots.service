@@ -8,7 +8,7 @@ Environment=NODE_ENV=development
 Type=simple
 User=ligerbots
 Group=ligerbots
-WorkingDirectory=/opt/ligerbots/service
+WorkingDirectory=/opt/ligerbots/frontend
 ExecStart=/usr/local/bin/npm run preview
 Restart=always
  # Restart service after 10 seconds if node service crashes
