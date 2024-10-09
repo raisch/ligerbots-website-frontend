@@ -34,6 +34,8 @@
   "type": "module",
   "dependencies": {
     "@directus/sdk": "^17.0.1",
+    "@types/debug": "^4.1.12",
+    "debug": "^4.3.7",
     "dotenv": "^16.4.5"
   }
 }
