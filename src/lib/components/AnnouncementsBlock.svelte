@@ -1,6 +1,12 @@
 <script>
   import LinkIcon from './icons/LinkIcon.svelte'
-  // <LinkIcon />
+  import { onMount } from 'svelte'
+
+  // onMount(async () => {
+  //   const res = await fetch('/api/announcement')
+  //   const announcements = await res.json()
+  //   console.log('announcements:', announcements)
+  // })
 </script>
 
 <div class="col-md-6 col-sm-12">
