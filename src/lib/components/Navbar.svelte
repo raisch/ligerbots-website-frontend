@@ -61,7 +61,7 @@
                   {#if child.requires_login && !data.user}
                     <!-- Skip this item -->
                   {:else}
-                    <li><a href={child.url}>{@html child.title}</a></li>
+                    <li><a href={child.url} data-sveltekit-reload>{@html child.title}</a></li>
                     {#if child.divider_after}
                       <li role="separator" class="divider"></li>
                     {/if}
@@ -72,7 +72,7 @@
           {:else if elt.requires_login && !data.user}
             <!-- Skip this item -->
           {:else}
-            <li class="active"><a href={elt.url}>{@html elt.title}</a></li>
+            <li class="active"><a href={elt.url} data-sveltekit-reload>{@html elt.title}</a></li>
           {/if}
         {/each}
         {#if data.user}
