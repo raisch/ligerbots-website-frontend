@@ -2,8 +2,8 @@
   import LoginIcon from './icons/LoginIcon.svelte'
   import LogoutIcon from './icons/LogoutIcon.svelte'
   import DropDownIcon from './icons/DropDownIcon.svelte'
+
   import { onMount } from 'svelte'
-  import { getContext } from 'svelte'
 
   /**
    * @typedef {Object} NavbarConfig
