@@ -31,7 +31,7 @@ const POST_QUERY = `{
  *
  * @throws {Error} if failed to retrieve files.
  */
-export default async function getPost (slug, query = POST_QUERY) {
+export default async function getPostBySlug(slug, query = POST_QUERY) {
   const client = await getBackendClient()
 
   query = query.replace('{{slug}}', slug)

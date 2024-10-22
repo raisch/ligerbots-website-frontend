@@ -2,7 +2,7 @@ import createDebugMessages from 'debug'
 
 import { error } from '@sveltejs/kit'
 
-import getPost from '$lib/server/post'
+import getPostBySlug from '$lib/server/post'
 import { prettyDate } from '$lib/util'
 
 const debug = createDebugMessages('APP:routes/post/[slug]/+post.server')
@@ -14,7 +14,7 @@ export async function load({ params }) {
   /** @type {import('$lib/server/post').PostRecord} */
   let post
   try {
-    post = await getPost(slug)
+    post = await getPostBySlug(slug)
   } catch (err) {
     console.error(`Error fetching post: ${err}`)
     throw error(404, 'Page not found')
