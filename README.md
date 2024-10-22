@@ -19,16 +19,16 @@ Contact Coach Rob on slack if you're interested in helping.
     - /server - server-side javascript
   - routes - sveltekit routes
     - [slug] - general pages reachable via http://HOST/[slug]
+    - announcement - announcements (TBD), http://HOST/announcement & http://HOST/announcement/[slug]
     - api - service api for calls from client-side componentry, http://HOST/api/...
+    - blog - blog posts (TBD), http://HOST/blog & http://HOST/blog/[slug]
     - carpool - scaffolding (TBD), http://HOST/carpool
     - directory - user directory, http://HOST/directory
     - facebook - user photo gallery, http://HOST/facebook
     - login - user login (relies on /api/login), http://HOST/login
     - logout - user logout, http://HOST/logout
     - photos - photo gallery (TBD), http://HOST/photos
-    - post
-      - blog posts (TBD), should be http://HOST/blog & http://HOST/blog/[slug]
-      - announcements (TBD), should be http://HOST/announcement & http://HOST/announcement/[slug]
+    - post - DEPRECATED, see /announcement & /blog
     - signup - new user signup (TBD), http://HOST/signup
 - /static - static site resources (served via url: http://HOST/...)
 - /system - boilerplate and instructions for installation on a ubuntu linux service machine
