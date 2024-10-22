@@ -1,5 +1,5 @@
 [Unit]
-Description=Ligerbots Web Frontend (dev) - see /opt/ligerbots/service
+Description=Ligerbots Web Frontend (dev) - see /opt/ligerbots/frontend
 After=network.target
 StartLimitIntervalSec=0
 

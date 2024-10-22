@@ -29,20 +29,20 @@
 
 - For development - to allow you to `git pull` etc.:
   - `git clone https://github.com/raisch/ligerbots-website-frontend.git`
-  - `mv ./ligerbots-website-frontend ./service`
+  - `mv ./ligerbots-website-frontend ./frontend`
 
 - For production - will make a copy of the repo without .git:
-  - `degit raisch/ligerbots-website-frontend ./service`
+  - `degit raisch/ligerbots-website-frontend ./frontend`
 
 ## 4. Build service
 
-- `chown -R ligerbots:ligerbots /opt/ligerbots/service` - change the owner of the service
-- `cd /opt/ligerbots/service`
+- `chown -R ligerbots:ligerbots /opt/ligerbots/frontend` - change the owner of the service
+- `cd /opt/ligerbots/frontend`
 - `pnpm install` - install all service requirements
 
 ## 5. Run service
 
-- `cd /opt/ligerbots/service`
+- `cd /opt/ligerbots/frontend`
 
 - For development:
   - `pnpm run dev`
@@ -77,7 +77,7 @@ which is `4000` for dev and `4173` for prod.
 - `systemctl reset-failed`
 - `systemctl start ligerbots-frontend-$RUNTIME`
 - `systemctl status ligerbots-frontend-$RUNTIME` to assure the service is running.
-- `systemctl enable ligerbots-frontend-$RUNTIME` to start the service on boot.
+- `systemctl enable ligerbots-frontend-$RUNTIME` to set the service to start on boot.
 
 Note: The only difference between the dev and prod configuration is the command the service uses to run,
 which is `npm run dev` for dev and `npm run preview` for prod.
