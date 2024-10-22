@@ -13,6 +13,7 @@ export async function handle ({ event, resolve }) {
     )
     return Response.redirect(redirectUrl, 301)
   }
+
   return await resolve(event, {
     filterSerializedResponseHeaders: (key, value) => {
       return key.toLowerCase() === 'content-type'
