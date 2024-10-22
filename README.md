@@ -4,6 +4,35 @@ This is the repo for the new Ligerbots website, a work in progress.
 
 Contact Coach Rob on slack if you're interested in helping.
 
+## Directory Structure
+- /bin - useful scripts (probably out-of-date)
+- /src - site components (svelte)
+  - lib
+    - /components - svelte componentry
+      - /icons - useful icons as svelte components
+        - Note: Sourced from svelte-icon-pack, might wish to use a better pack, like
+          lucide-svelte
+      - *.svelte - site components
+        - Note: Most of these are just html ripped from existing site and should be refactored
+          into actual components. To do so, we'll need to decide on a site wide css layout
+          library. The existing site uses an old version of bootstrap which is sub-optimal.
+    - /server - server-side javascript
+  - routes - sveltekit routes
+    - [slug] - general pages reachable via http://HOST/[slug]
+    - api - service api for calls from client-side componentry, http://HOST/api/...
+    - carpool - scaffolding (TBD), http://HOST/carpool
+    - directory - user directory, http://HOST/directory
+    - facebook - user photo gallery, http://HOST/facebook
+    - login - user login (relies on /api/login), http://HOST/login
+    - logout - user logout, http://HOST/logout
+    - photos - photo gallery (TBD), http://HOST/photos
+    - post
+      - blog posts (TBD), should be http://HOST/blog & http://HOST/blog/[slug]
+      - announcements (TBD), should be http://HOST/announcement & http://HOST/announcement/[slug]
+    - signup - new user signup (TBD), http://HOST/signup
+- /static - static site resources (served via url: http://HOST/...)
+- /system - boilerplate and instructions for installation on a ubuntu linux service machine
+
 ## Architecture
 
 This site is built using [`sveltekit`](kit.svelte.dev) which is a leading-edge, standards-compliant framework
