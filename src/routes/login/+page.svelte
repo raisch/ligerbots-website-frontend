@@ -62,7 +62,7 @@
   <div class="title-bar">
     <center>
       <div class="notindex-title">
-        <a href="/gallery" style="color: white;">LOGIN</a>
+        <a href="/login" style="color: white;">LOGIN</a>
       </div>
     </center>
     <br />
