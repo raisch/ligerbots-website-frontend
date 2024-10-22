@@ -3,27 +3,12 @@ import createDebugMessages from 'debug'
 import { error } from '@sveltejs/kit'
 
 import getPost from '$lib/server/post'
+import { prettyDate } from '$lib/util'
 
 const debug = createDebugMessages('APP:routes/post/[slug]/+post.server')
 
-/**
- * Format date string to human-readable format.
- *
- * @param {String} str
- * @returns {String}
- */
-function prettyDate (str) {
-  const date = new Date(str)
-  return date.toLocaleDateString('en-US', {
-    // weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-
 /** @type {import('./$types').PageServerLoad} */
-export async function load ({ params }) {
+export async function load({ params }) {
   const slug = params.slug || 'unknown_post'
 
   /** @type {import('$lib/server/post').PostRecord} */
