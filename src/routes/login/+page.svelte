@@ -17,7 +17,6 @@
   async function handleSubmit(/** @type {Event} */ evt) {
     let loginFields = { email, password }
 
-    // TODO: implement login
     const res = await fetch('/api/login', {
       method: 'POST',
       headers: {
