@@ -21,7 +21,7 @@ const debug = createDebugMessages('APP:$lib/server/client')
  */
 
 /** @type {string|undefined} */
-const API_URL = process.env.API_URL
+const API_URL = `${process.env.API_SCHEME}://${process.env.API_HOST}:${process.env.API_PORT}`
 debug(`API_URL: "${API_URL}"`)
 
 /** @type {string|undefined} */

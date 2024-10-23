@@ -1,6 +1,7 @@
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
+import { stringify } from '../util'
 
 const debug = createDebugMessages('APP:$lib/server/site')
 
@@ -43,7 +44,7 @@ const MAINTENANCE_MODE_QUERY = `{
  *
  * @throws {Error} If the global or maintenance objects cannot be retrieved.
  */
-export default async function getSiteConfig (query = SITE_CONFIG_QUERY) {
+export default async function getSiteConfig(query = SITE_CONFIG_QUERY) {
   const client = await getBackendClient()
 
   debug(`getSite() query: ${query}`)
@@ -52,8 +53,8 @@ export default async function getSiteConfig (query = SITE_CONFIG_QUERY) {
   try {
     resp = await client.query(query)
   } catch (error) {
-    const errMsg = `Failed to retrieve site config: ${error}`
-    console.error(errMsg)
+    const errMsg = `Failed to retrieve site config: ${stringify(error, null, 2)}`
+    console.error(errMsg, error)
     throw new Error(errMsg)
   }
 
