@@ -47,6 +47,7 @@ export default async function getPostBySlug(slug, query = POST_QUERY) {
     throw new Error(`failed to retrieve post: ${JSON.stringify(err)}`)
   }
   debug(`getPost(slug=${slug}) result: ${JSON.stringify(result)}`)
+
   return result
 }
 

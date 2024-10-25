@@ -15,6 +15,7 @@ export async function load({ params }) {
   let post
   try {
     post = await getPostBySlug(slug)
+    post = post
   } catch (err) {
     console.error(`Error fetching post: ${err}`)
     throw error(404, 'Page not found')
