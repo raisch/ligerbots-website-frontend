@@ -8,7 +8,7 @@
 <!-- But I tried to match the style as best I could -->
 
 {#each data.posts.post as post}
-  <div class="row page-body">
+  <div class="row page-body" style="margin-bottom: 10px; background: none;">
     <div class="col-md-12 col-md-offset-0 col-sm-10 col-sm-offset-1 col-xs-12">
       <div class="row row-margins">
         <div class="col-xs-12">
