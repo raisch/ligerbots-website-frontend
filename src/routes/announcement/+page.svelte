@@ -3,7 +3,6 @@
 </script>
 
 <div class="level4-heading">Announcements</div>
-<h1 class="text-center">THIS IS A TEST!</h1>
 
 <!-- I tried to match the style as best I could :) -->
 
@@ -13,9 +12,9 @@
       <div class="col-md-12 offset-md-0 col-sm-10 offset-sm-1 col-xs-12">
         <div class="row">
           <div class="col-xs-12">
-            <div class="p-3 panel panel-sprs" style="padding: 10px;">
+            <div class="panel panel-sprs" style="padding: 10px;">
 
-              <a href={ `/announcement/${post.slug}` } class="h1">{ post.title }</a>
+              <a href={ `/announcement/${post.slug}` } class="h2">{ post.title }</a>
               <p>{ post.publish_on }</p>
 
             </div>
