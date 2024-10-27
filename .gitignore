@@ -164,6 +164,3 @@ vite.config.ts.timestamp-*
 # Protected Images
 /data/*
 /static/images/protected/*
-
-# NPM
-package-lock.json

@@ -46,7 +46,7 @@
               <div class="announce-content">
                 <p>
                   { truncate(getTextFromHTML(post.body), 200) }
-                  <a href={`/announcement/${posts.slug}`} class="more-link">Continue Reading <span class="screen-reader-text">“{ post.title }”</span></a>
+                  <a href={`/announcement/${post.slug}`} class="more-link">Continue Reading <span class="screen-reader-text">“{ post.title }”</span></a>
                 </p>
               </div>
             </div>
