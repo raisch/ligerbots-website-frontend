@@ -20,6 +20,7 @@ export default class Announcement {
                     _and: [{ type: { _eq: "announcement" } }, { status: { _eq: "published" } }]
                 }
                 sort: "-publish_on"
+                limit: 5
             ) {
                 slug
                 title

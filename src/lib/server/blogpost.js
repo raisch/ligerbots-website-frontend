@@ -20,6 +20,7 @@ export default class BlogPost {
                     _and: [{ type: { _eq: "blog_post" } }, { status: { _eq: "published" } }]
                 }
                 sort: "-publish_on"
+                limit: 5
             ) {
                 slug
                 title
