@@ -31,27 +31,26 @@
     {#if posts.error}
       <p class="text-center" style="font-size: 30px; color: red; margin-top: 10px;">ERROR</p>
       <p class="text-center">There was an error while trying to load the announcements.</p>
+      <p class="text-center">{ posts.error }</p>
       <p class="text-center"><a href="/announcement">You can try this link.</a></p>
     {/if}
 
     {#if !posts.error }
       {#each posts.posts as post}
-        {#if post.status === "published" && post.type === "announcement"}
-          <div id="ann-panel" class="panel-body">
-            <div class="announce text-margins">
-              <div class="announce-title">
-                <a href={`/announcement/${post.slug}`}>{ post.title }</a>
-              </div>
-              <div class="announce-date">{ post.publish_on }</div>
-              <div class="announce-content">
-                <p>
-                  { truncate(getTextFromHTML(post.body), 200) }
-                  <a href={`/announcement/${post.slug}`} class="more-link">Continue Reading <span class="screen-reader-text">“{ post.title }”</span></a>
-                </p>
-              </div>
+        <div id="ann-panel" class="panel-body">
+          <div class="announce text-margins">
+            <div class="announce-title">
+              <a href={`/announcement/${post.slug}`}>{ post.title }</a>
+            </div>
+            <div class="announce-date">{ post.publish_on }</div>
+            <div class="announce-content">
+              <p>
+                { truncate(getTextFromHTML(post.body), 200) }
+                <a href={`/announcement/${post.slug}`} class="more-link">Continue Reading <span class="screen-reader-text">“{ post.title }”</span></a>
+              </p>
             </div>
           </div>
-        {/if}
+        </div>
       {/each}
     {/if}
 

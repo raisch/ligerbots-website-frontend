@@ -1,38 +1,34 @@
 import createDebugMessages from 'debug'
-
 import { getBackendClient } from '$lib/server/client'
 
-const debug = createDebugMessages('APP:$lib/server/post')
+const debug = createDebugMessages('APP:$lib/server/blogpost')
 
-export default class Post {
+export default class BlogPost {
     /**
-     * List all posts in Directus
+     * List all blog posts in Directus
+     * This only retrieves posts that are published.
      * 
-     * @returns {Promise<Array<PostRecord>>}
+     * @returns {Promise<Array<BlogPostRecord>>}
      */
-    static async getAllPosts() {
+    static async listPublishedBlogPosts() {
         const client = await getBackendClient();
 
         const query = `
         {
-            post {
+            post(
+                filter: {
+                    _and: [{ type: { _eq: "blog_post" } }, { status: { _eq: "published" } }]
+                }
+                sort: "-publish_on"
+            ) {
                 slug
-                status
-                type
                 title
                 body
                 publish_on
-                auto_publish
-                thumbnail {
-                    id
-                    filename_disk
-                    filename_download
-                }
             }
-        }
-        `
+        }`
 
-        debug(`Post.getAllPosts(query: ${query})`);
+        debug(`BlogPost.listPublishedAnnouncements(query: ${query})`);
 
         let result;
 
@@ -40,42 +36,33 @@ export default class Post {
             const resp = await client.query(query);
             result = resp;
         } catch (err) {
-            throw new Error(`Failed to retrieve all posts: ${JSON.stringify(err)}`);
+            throw new Error(`Failed to retrieve posts: ${JSON.stringify(err)}`);
         }
 
         return result
     }
 
     /**
-     * Get post from Directus
+     * Get blog post from Directus
      * 
      * @param {string} slug - The slug of the post.
      * 
-     * @returns {Promise<PostRecord>}
+     * @returns {Promise<BlogPostRecord>}
      */
-    static async getPostBySlug(slug) {
+    static async getBlogPostBySlug(slug) {
         const client = await getBackendClient();
 
         const query = `
         {
             post(filter: { slug: { _eq: "${slug}" } }) {
                 slug
-                status
-                type
                 title
                 body
                 publish_on
-                auto_publish
-                thumbnail {
-                    id
-                    filename_disk
-                    filename_download
-                }
             }
-        }
-        `
+        }`
 
-        debug(`Post.getPostBySlug(slug: ${slug} query: ${query})`);
+        debug(`BlogPost.getBlogPostBySlug(query: ${query})`);
 
         let result;
 
@@ -91,11 +78,9 @@ export default class Post {
 }
 
 /**
- * @typedef {Object} PostRecord
+ * @typedef {Object} BlogPostRecord
  *
  * @property {string} slug
- * @property {string} type
- * @property {string} status
  * @property {string} publish_on
  * @property {string} title
  * @property {string} body

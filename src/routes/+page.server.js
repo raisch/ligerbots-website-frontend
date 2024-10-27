@@ -1,7 +1,7 @@
 /** @type {import('./$types').PageServerLoad} */
 import getSiteConfig from '$lib/server/site'
 // import getNavbarConfig from '$lib/server/navbar'
-import Post from '$lib/server/post'
+import Announcement from '$lib/server/announcement'
 
 export async function load ({ fetch }) {
   const site = await getSiteConfig()
@@ -12,10 +12,10 @@ export async function load ({ fetch }) {
   // Fetch the posts
   let posts
   try {
-    let result = await Post.getAllPosts()
+    let result = await Announcement.listPublishedAnnouncements()
     posts = { posts: result.post, error: '' }
   } catch (err) {
-    posts = { error: `Error Fetching Posts` }
+    posts = { error: err }
     console.error(`Error fetching post: ${err}`)
   }
 
