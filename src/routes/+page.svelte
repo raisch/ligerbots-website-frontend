@@ -28,7 +28,7 @@
   </div>
 
   <div class="row bottom-margin row-margins">
-    <AnnouncementsBlock />
+    <AnnouncementsBlock posts={data.posts} />
     <TwitterBlock />
   </div>
 
