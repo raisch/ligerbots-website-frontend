@@ -15,7 +15,7 @@ export async function load ({ fetch }) {
     let result = await Announcement.listPublishedAnnouncements()
     posts = { posts: result.post, error: '' }
   } catch (err) {
-    posts = { error: err }
+    posts = { posts: [], error: err.toString() }
     console.error(`Error fetching post: ${err}`)
   }
 
