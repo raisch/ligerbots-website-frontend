@@ -4,6 +4,31 @@ This is the repo for the new Ligerbots website, a work in progress.
 
 Contact Coach Rob on slack if you're interested in helping.
 
+## Development Strategy
+The ultimate goal of this project is to replace the current LigerBots web site with one
+built on better, more modern, and more secure tools and technologies than those in the
+current site.
+
+To this end, it was determined that we should follow this path:
+
+1. Select new tools/platforms to build the new site [__*COMPLETE*__]
+2. Create as complete and loyal a copy of the existing site as possible [75% COMPLETE]
+3. Create a new carpool app using the new tools.
+4. Change the site to adhere to the design and style changes defined by the marketing & graphics teams.
+
+The following features are still need to complete #2:
+- Announcements: front page block, list, & detail pages
+- Blog Posts: front page block, list, & detail pages
+- Photo Gallery: as defined by existing web site
+
+### Carpool App
+The coaches are very keen on us providing a way to manage carpools to and from events.
+
+To this end, we've created a data model (in Directus) to support this function and will need to
+create the required pages.
+
+We hope to deliver this app, as a plugin to the existing web site, by the end of 2024.
+
 ## Directory Structure
 - /bin - useful scripts (probably out-of-date)
 - /src - site components (svelte)
