@@ -2,10 +2,10 @@
   import { goto } from '$app/navigation'
 
   /** @type {string}*/
-  let email
+  let email = ''
 
   /** @type {string}*/
-  let password
+  let password = ''
 
   const handleSubmit = (/** @type {Event} */ evt) => {
     let loginFields = { email, password }

@@ -1,16 +1,16 @@
 import 'dotenv/config'
-import createDebugMessages from 'debug'
+import Debug from 'debug'
 
 import { createDirectus, rest, graphql, staticToken } from '@directus/sdk'
 
-const debug = createDebugMessages('APP:$lib/server/client')
+const debug = Debug('APP:$lib/server/client')
 
 /**
  * Backend Client functions.<br/>
  * <br/>
  * Reads the Directus API URL, username, and password from environment variables.
  *
- * @module lib/backend
+ * @module lib/server/client
  *
  * @exports isDirectusClient
  * @exports getBackendClient

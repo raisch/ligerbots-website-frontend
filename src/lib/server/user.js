@@ -1,8 +1,10 @@
-import createDebugMessages from 'debug'
+/** @module */
+
+import Debug from 'debug'
 
 import { getBackendClient } from './client.js'
 
-const debug = createDebugMessages('APP:$lib/server/user')
+const $debug = Debug('APP:$lib/server/user')
 
 export default class User {
   /**
@@ -10,7 +12,9 @@ export default class User {
    *
    * @returns {Promise.<Array.<DirectoryUserRecord>>} - The list of users.
    */
-  static async listForDirectory () {
+  static async listForDirectory() {
+    const debug = $debug.extend('listForDirectory')
+
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -48,7 +52,9 @@ export default class User {
    *
    * @returns {Promise.<Array.<FacebookUserRecord>>} - The list of users.
    */
-  static async listForFacebook () {
+  static async listForFacebook() {
+    const debug = $debug.extend('listForFacebook')
+
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -97,7 +103,9 @@ export default class User {
    * @throws {Error} If the Directus client is not valid.
    * @throws {Error} If the query fails.
    */
-  static async findByEmail (email) {
+  static async findByEmail(email) {
+    const debug = $debug.extend('findByEmail')
+
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -123,9 +131,7 @@ export default class User {
     try {
       result = await client.query(query)
     } catch (err) {
-      throw new Error(
-        `Failed to find user with email address "${email}": ${err}`
-      )
+      throw new Error(`Failed to find user with email address "${email}": ${err}`)
     }
     const users = result?.users || []
     if (!(Array.isArray(users) && users.length === 1)) {
@@ -147,7 +153,9 @@ export default class User {
    * @throws {Error} If the query fails.
    * @throws {Error} If the user is not found
    */
-  static async login (email, password) {
+  static async login(email, password) {
+    const debug = $debug.extend('login')
+
     const client = await getBackendClient()
 
     /** @type {UserRecord | null} */
@@ -168,9 +176,7 @@ export default class User {
     try {
       result = await client.query(query, null, 'system')
     } catch (err) {
-      throw new Error(
-        `Failed to verify password for user with email address "${email}": ${err}`
-      )
+      throw new Error(`Failed to verify password for user with email address "${email}": ${err}`)
     }
     debug(`User.login result: ${JSON.stringify(result, null, 2)}`)
 

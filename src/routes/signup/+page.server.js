@@ -1,12 +1,14 @@
-// import getSiteConfig from '$lib/server/site'
+/** @module */
 
-// export async function load ({ fetch }) {
-//   let site
-//   try {
-//     site = await getSiteConfig()
-//   } catch (error) {
-//     console.error('failed to retrieve site config:', error)
-//   }
+import getSiteConfig from '$lib/server/site'
 
-//   return { site }
-// }
+export async function load({ fetch }) {
+  let site
+  try {
+    site = await getSiteConfig()
+  } catch (error) {
+    console.error('failed to retrieve site config:', error)
+  }
+
+  return { site }
+}

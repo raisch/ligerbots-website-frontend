@@ -1,9 +1,10 @@
+/** @module */
 import { error } from '@sveltejs/kit'
 
 import getPage from '$lib/server/page'
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load ({ params }) {
+export async function load({ params }) {
   const slug = params.slug || 'unknown_page'
 
   /** @type {import('$lib/server/page').PageRecord} */

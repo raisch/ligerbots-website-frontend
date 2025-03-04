@@ -1,7 +1,9 @@
+/** @module */
+
 import User from '$lib/server/user'
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load () {
+export async function load() {
   let users
   try {
     users = await User.listForDirectory()
@@ -11,9 +13,7 @@ export async function load () {
 
   // sort by lastname (case-insensitive) ascending.
   if (users) {
-    users = users.sort((a, b) =>
-      a.lastname.toUpperCase() < b.lastname.toUpperCase() ? -1 : 1
-    )
+    users = users.sort((a, b) => (a.lastname.toUpperCase() < b.lastname.toUpperCase() ? -1 : 1))
   }
 
   return { users }

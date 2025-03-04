@@ -1,9 +1,12 @@
-import getPostsByType from '$lib/server/post.js'
+/** @module */
 
-/** @type {import('./$types').PageServerLoad} */
+/** @import {PostRecordList} from '$lib/server/post.js' */
+import { getPostsByType } from '$lib/server/post.js'
+
+/** @type {import('@sveltejs/kit').Load} */
 export async function load() {
-  /** @type {Array<object>} */
-  let posts
+  /** @type {PostRecordList|null} */
+  let posts = null
   try {
     posts = await getPostsByType('announcement')
   } catch (error) {

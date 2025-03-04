@@ -2,7 +2,7 @@ import adapter from '@sveltejs/adapter-node'
 
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 
-const backendHost = 'ligerbots.4msg.net:8055'
+// const backendHost = 'ligerbots.4msg.net:8055'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -14,8 +14,8 @@ const config = {
     adapter: adapter(),
     alias: {
       $components: './src/components',
-      $helpers: 'src/helpers',
-      $styles: 'src/styles',
+      $helpers: './src/helpers',
+      $styles: './src/styles',
       $types: './src/types'
     },
     csrf: {

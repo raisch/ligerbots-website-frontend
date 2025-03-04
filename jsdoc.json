@@ -1,3 +1,28 @@
 {
-  "plugins": ["plugins/markdown"]
+  "tags": {
+    "allowUnknownTags": false,
+    "dictionaries": [ "jsdoc" ]
+  },
+  "source": {
+    "include": [ "./src" ],
+    "includePattern": "\\.js$",
+    "excludePattern": "(node_modules/|docs)"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "opts": {
+    "template": "./node_modules/docdash",
+    "encoding": "utf8",
+    "destination": "./docs",
+    "recurse": true,
+    "verbose": true,
+    "private": true,
+    "---package": "./package.json",
+    "---readme": "README.md"
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
 }

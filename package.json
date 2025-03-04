@@ -4,22 +4,25 @@
   "private": true,
   "scripts": {
     "env": "env",
-    "dev": "npx vite dev",
-    "build": "npx vite build",
-    "preview": "npx vite preview",
-    "check": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --watch",
-    "doc:build": "npx jsdoc -c jsdoc.json  --readme ./README.md lib/* -r -d docs",
-    "doc:clean": "rm -rf docs",
-    "doc:open": "open docs/index.html"
+    "dev": "pnpx vite dev",
+    "build": "pnpx vite build",
+    "preview": "pnpx vite preview",
+    "check": "pnpx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "pnpx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json --watch",
+    "doc:build": "pnpx jsdoc --configure ./jsdoc.json  --readme ./README.md ./src/lib",
+    "doc:clean": "rm -rf ./docs",
+    "doc:open": "open ./docs/index.html",
+    "docs": "npm run doc:clean && npm run doc:build && npm run doc:open"
   },
   "comment": "https://kit.svelte.dev/docs/adapter-auto",
   "devDependencies": {
     "@sveltejs/adapter-node": "^5.2.2",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@types/debug": "^4.1.12",
     "@types/node": "^22.5.5",
     "axios": "^1.7.7",
+    "docdash": "^2.0.2",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.30.0",
@@ -34,7 +37,6 @@
   "type": "module",
   "dependencies": {
     "@directus/sdk": "^17.0.1",
-    "@types/debug": "^4.1.12",
     "debug": "^4.3.7",
     "dotenv": "^16.4.5"
   }
