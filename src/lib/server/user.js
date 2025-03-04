@@ -116,6 +116,7 @@ export default class User {
           lastname
           email_address
           groups
+          is_admin
           school
           graduation_year
           password
@@ -196,6 +197,7 @@ export default class User {
  * @property {String} lastname
  * @property {String} email_address
  * @property {Array.<String>} groups
+ * @property {boolean} is_admin
  * @property {String} school
  * @property {String} graduation_year
  * @property {String} password
