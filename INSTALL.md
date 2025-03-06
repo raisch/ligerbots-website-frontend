@@ -7,9 +7,6 @@
 - `pnpm install`
 - Copy `.env-example` to `.env` and update the following entries with values Rob will provide you in slack:
 
-- PUBLIC_SERVER_HOST="127.0.0.1"
-- PUBLIC_SERVER_PORT=4000
-- API_URL="http://admin.0mo.cc:8055"
 - API_TOKEN="SECRET ACCESS TOKEN"
 
 With any luck, you should be able to run a copy of the new website locally.
