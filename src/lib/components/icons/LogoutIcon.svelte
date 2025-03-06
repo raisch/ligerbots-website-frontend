@@ -1,8 +1,5 @@
 <script>
-  import { Icon } from 'svelte-icons-pack'
-  import { FiLogOut } from 'svelte-icons-pack/fi'
-
-  FiLogOut.a = { ...FiLogOut.a, 'stroke-width': 4 }
+  import Icon from "@iconify/svelte"
 </script>
 
-<Icon src={FiLogOut} size="1em" />
+<Icon icon="material-symbols:logout" size="1em" />

@@ -1,8 +1,6 @@
-<script>
-  import { Icon } from 'svelte-icons-pack'
-  import { TrFillCaretDown } from 'svelte-icons-pack/tr'
-
-  // FiLogIn.a = { ...FiLogIn.a, 'stroke-width': 4 }
+<script lang="ts">
 </script>
 
-<Icon src={TrFillCaretDown} size="12" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path fill="currentColor" d="m7 10l5 5l5-5z" />
+</svg>
