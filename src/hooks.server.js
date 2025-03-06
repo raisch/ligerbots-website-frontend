@@ -1,9 +1,6 @@
 // This hook will remove the Content-Type header from the response
 
-const API_URL = process.env.API_URL
-if (!API_URL) {
-  throw new Error('in hooks.server.js, API_URL must be defined in environment variables.')
-}
+const API_URL = `${process.env.API_SCHEME}://${process.env.API_HOST}:${process.env.API_PORT}`
 
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {

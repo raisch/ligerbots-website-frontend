@@ -1,7 +1,3 @@
-/** @module */
-
-/** @import {PostRecord} from '$lib/server/post.js' */
-
 import createDebugMessages from 'debug'
 
 import { error } from '@sveltejs/kit'
@@ -15,7 +11,7 @@ const debug = createDebugMessages('APP:routes/announcement/[slug]/+post.server')
 export async function load({ params }) {
   const slug = params.slug || 'unknown_post'
 
-  /** @type {PostRecord} */
+  /** @type {import('$lib/server/post').PostRecord} */
   let post
   try {
     post = await getPostBySlug(slug)

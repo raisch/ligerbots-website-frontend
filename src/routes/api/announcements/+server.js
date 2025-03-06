@@ -1,21 +1,17 @@
-/** @module */
-
-import Debug from 'debug'
+import createDebugMessages from 'debug'
 
 import { json } from '@sveltejs/kit'
 
 import getAnnouncements from '$lib/server/announcements.js'
 
-const $debug = Debug('APP:src/routes/api/announcements/+server')
+const debug = createDebugMessages('APP:src/routes/api/announcements/+server')
 
 /**
  * Get all announcements.
  *
  * @returns {Promise<Response>}
  */
-export async function GET() {
-  const debug = $debug.extend('GET')
-
+export async function GET () {
   let result
   try {
     result = await getAnnouncements()

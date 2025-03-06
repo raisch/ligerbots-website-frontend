@@ -1,16 +1,16 @@
 import 'dotenv/config'
-import Debug from 'debug'
+import createDebugMessages from 'debug'
 
 import { createDirectus, rest, graphql, staticToken } from '@directus/sdk'
 
-const debug = Debug('APP:$lib/server/client')
+const debug = createDebugMessages('APP:$lib/server/client')
 
 /**
  * Backend Client functions.<br/>
  * <br/>
  * Reads the Directus API URL, username, and password from environment variables.
  *
- * @module lib/server/client
+ * @module lib/backend
  *
  * @exports isDirectusClient
  * @exports getBackendClient
@@ -21,8 +21,7 @@ const debug = Debug('APP:$lib/server/client')
  */
 
 /** @type {string|undefined} */
-const API_URL = process.env.API_URL
-// const API_URL = `${process.env.API_SCHEME}://${process.env.API_HOST}:${process.env.API_PORT}`
+const API_URL = `${process.env.API_SCHEME}://${process.env.API_HOST}:${process.env.API_PORT}`
 debug(`API_URL: "${API_URL}"`)
 
 /** @type {string|undefined} */

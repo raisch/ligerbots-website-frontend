@@ -1,4 +1,4 @@
-/**
+/** @module
  * This is the service:port/api/auth route that will be used to authenticate users against their
  * password hash as stored in directus user collection.
  *
@@ -7,16 +7,15 @@
  * with the following payload:
  *    { email: string, password: string }
  *
- * @module
  */
 
-import Debug from 'debug'
+import createDebugMessages from 'debug'
 
 import { json } from '@sveltejs/kit'
 
 import User from '$lib/server/user'
 
-const $debug = Debug('APP:src/routes/api/login/+server')
+const debug = createDebugMessages('APP:src/routes/api/login/+server')
 
 /**
  *
@@ -25,9 +24,7 @@ const $debug = Debug('APP:src/routes/api/login/+server')
  *
  * @returns {Promise<Response>}
  */
-export async function POST({ request }) {
-  const debug = $debug.extend('POST')
-
+export async function POST ({ request }) {
   const { email, password } = await request.json()
 
   // const userObj = await User.findByEmail(email)

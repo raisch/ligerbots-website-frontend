@@ -1,17 +1,14 @@
-import Debug from 'debug'
+import createDebugMessages from 'debug'
 
 import { error } from '@sveltejs/kit'
 
 import getPostBySlug from '$lib/server/post'
 import { prettyDate } from '$lib/util'
 
-const $debug = Debug('APP:routes/announcement/[slug]/+post.server')
+const debug = createDebugMessages('APP:routes/announcement/[slug]/+post.server')
 
 /** @type {import('@sveltejs/kit').Load} */
 export async function load({ params }) {
-  const debug = $debug.extend('load')
-  debug(`params: ${JSON.stringify(params)}`)
-
   const slug = params.slug || 'unknown_post'
 
   /** @type {import('$lib/server/post').PostRecord} */
@@ -23,7 +20,7 @@ export async function load({ params }) {
     throw error(404, 'Page not found')
   }
 
-  debug(`post: ${JSON.stringify(post)}`)
+  debug(`in load, post: ${JSON.stringify(post)}`)
 
   // Replace sandbox attribute in iframes
   post.body = post?.body.replace(

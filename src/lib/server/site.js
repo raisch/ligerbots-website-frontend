@@ -1,11 +1,9 @@
-/** @module */
-
-import Debug from 'debug'
+import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
 import { stringify } from '../util'
 
-const $debug = Debug('APP:$lib/server/site')
+const debug = createDebugMessages('APP:$lib/server/site')
 
 /** @typedef {String} GraphqlQuery */
 
@@ -47,8 +45,6 @@ const MAINTENANCE_MODE_QUERY = `{
  * @throws {Error} If the global or maintenance objects cannot be retrieved.
  */
 export default async function getSiteConfig(query = SITE_CONFIG_QUERY) {
-  const debug = $debug.extend('getSiteConfig')
-
   const client = await getBackendClient()
 
   debug(`getSite() query: ${query}`)

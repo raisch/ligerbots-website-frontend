@@ -1,14 +1,11 @@
-/** @module */
-
-import Debug from 'debug'
+import createDebugMessages from 'debug'
 
 import { json } from '@sveltejs/kit'
 import getSiteConfig from '$lib/server/site'
 
-const $debug = Debug('APP:src/routes/api/navbar/+server')
+const debug = createDebugMessages('APP:src/routes/api/navbar/+server')
 
-export async function GET(event) {
-  const debug = $debug.extend('GET')
+export async function GET (event) {
   let result
   try {
     result = await getSiteConfig()

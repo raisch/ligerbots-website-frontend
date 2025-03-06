@@ -1,10 +1,8 @@
-/** @module */
-
-import Debug from 'debug'
+import createDebugMessages from 'debug'
 
 import { getBackendClient } from './client.js'
 
-const $debug = Debug('APP:$lib/server/user')
+const debug = createDebugMessages('APP:$lib/server/user')
 
 export default class User {
   /**
@@ -12,9 +10,7 @@ export default class User {
    *
    * @returns {Promise.<Array.<DirectoryUserRecord>>} - The list of users.
    */
-  static async listForDirectory() {
-    const debug = $debug.extend('listForDirectory')
-
+  static async listForDirectory () {
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -52,9 +48,7 @@ export default class User {
    *
    * @returns {Promise.<Array.<FacebookUserRecord>>} - The list of users.
    */
-  static async listForFacebook() {
-    const debug = $debug.extend('listForFacebook')
-
+  static async listForFacebook () {
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -103,9 +97,7 @@ export default class User {
    * @throws {Error} If the Directus client is not valid.
    * @throws {Error} If the query fails.
    */
-  static async findByEmail(email) {
-    const debug = $debug.extend('findByEmail')
-
+  static async findByEmail (email) {
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -116,7 +108,6 @@ export default class User {
           lastname
           email_address
           groups
-          is_admin
           school
           graduation_year
           password
@@ -132,7 +123,9 @@ export default class User {
     try {
       result = await client.query(query)
     } catch (err) {
-      throw new Error(`Failed to find user with email address "${email}": ${err}`)
+      throw new Error(
+        `Failed to find user with email address "${email}": ${err}`
+      )
     }
     const users = result?.users || []
     if (!(Array.isArray(users) && users.length === 1)) {
@@ -154,9 +147,7 @@ export default class User {
    * @throws {Error} If the query fails.
    * @throws {Error} If the user is not found
    */
-  static async login(email, password) {
-    const debug = $debug.extend('login')
-
+  static async login (email, password) {
     const client = await getBackendClient()
 
     /** @type {UserRecord | null} */
@@ -177,7 +168,9 @@ export default class User {
     try {
       result = await client.query(query, null, 'system')
     } catch (err) {
-      throw new Error(`Failed to verify password for user with email address "${email}": ${err}`)
+      throw new Error(
+        `Failed to verify password for user with email address "${email}": ${err}`
+      )
     }
     debug(`User.login result: ${JSON.stringify(result, null, 2)}`)
 
@@ -197,7 +190,6 @@ export default class User {
  * @property {String} lastname
  * @property {String} email_address
  * @property {Array.<String>} groups
- * @property {boolean} is_admin
  * @property {String} school
  * @property {String} graduation_year
  * @property {String} password
