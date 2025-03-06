@@ -13,7 +13,7 @@
     "doc:clean": "rm -rf docs",
     "doc:open": "open docs/index.html",
     "docker:build": "docker build -t website .",
-    "docker:run": "docker run -p 4000:4000 website",
+    "docker:run": "docker run -d --restart=unless-stopped -p 4000:4000 website",
     "docker:stop": "docker stop $(docker ps -q --filter ancestor=website)",
     "docker:clean": "docker system prune -a"
   },
