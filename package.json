@@ -16,7 +16,8 @@
     "docker:build": "docker build -t ligerbots .",
     "docker:start": "docker run -d --name=\"ligerbots\" --restart=unless-stopped -p 4000:4000 ligerbots",
     "docker:stop": "docker stop $(docker ps -q --filter ancestor=website)",
-    "docker:clean": "docker system prune -a"
+    "docker:clean": "pnpm run docker:stop && docker rm ligerbots && docker rmi ligerbots",
+    "docker:clean-all": "docker system prune -a -f"
   },
   "comment": "https://kit.svelte.dev/docs/adapter-auto",
   "devDependencies": {
