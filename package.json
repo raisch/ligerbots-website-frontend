@@ -5,6 +5,7 @@
   "scripts": {
     "env": "env",
     "dev": "npx vite dev",
+    "start": "node ./build/index.js",
     "build": "npx vite build",
     "preview": "npx vite preview",
     "check": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json",
@@ -12,8 +13,8 @@
     "doc:build": "npx jsdoc -c jsdoc.json  --readme ./README.md lib/* -r -d docs",
     "doc:clean": "rm -rf docs",
     "doc:open": "open docs/index.html",
-    "docker:build": "docker build -t website .",
-    "docker:run": "docker run -d --restart=unless-stopped -p 4000:4000 website",
+    "docker:build": "docker build -t ligerbots .",
+    "docker:start": "docker run -d --name=\"ligerbots\" --restart=unless-stopped -p 4000:4000 ligerbots",
     "docker:stop": "docker stop $(docker ps -q --filter ancestor=website)",
     "docker:clean": "docker system prune -a"
   },

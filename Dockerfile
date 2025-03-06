@@ -8,6 +8,7 @@ COPY ./build /app
 
 RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile
+RUN pnpm build
 
 ENV PUBLIC_SERVER_HOST="127.0.0.1"
 ENV PUBLIC_SERVER_PORT=4000
@@ -20,4 +21,4 @@ ENV API_PORT=443
 
 EXPOSE ${PUBLIC_SERVER_PORT}
 
-CMD ["node", "./build/index.js"]
+CMD ["pnpm", "run", "preview"]
