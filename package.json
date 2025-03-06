@@ -5,7 +5,7 @@
   "scripts": {
     "env": "env",
     "dev": "npx vite dev",
-    "start": "node ./build/index.js",
+    "start": "PORT=4000 node ./build/index.js > site.log 2>&1 &",
     "build": "npx vite build",
     "preview": "npx vite preview",
     "check": "npx svelte-kit sync && npx svelte-check --tsconfig ./tsconfig.json",
