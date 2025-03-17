@@ -2,39 +2,40 @@
   // List Active Carpool Events
   // path: /carpool
 
+  import { goto } from '$app/navigation'
+
+  /**
+   * Navigate to the event details page when an event is clicked
+   * @param {string} eventId - The unique identifier for the event
+   */
+  function goToDetails(eventId) {
+    goto(`/carpool/${eventId}`)
+  }
+
   // TODO: Implement the logic to fetch and display active carpool events
   // This is using placeholder data and could change
   // Also the styling is really bad because idk how to use bootstrap
 
-  let data = [
-    {
-      name: "Robocon",
-      description: "Robocon Event",
-      startDate: "9/21/2024",
-      endDate: "9/21/2024",
-      location: "WPS",
-
-      trips: []
-    }
-  ]
+  export let data
+  export let events = data?.events || []
 </script>
 
 <div class="container mt-4">
-  <h1>Carpool Event List Page</h1>
+  <h1>Carpool Events</h1>
 
-  {#if data.length > 0}
+  {#if events.length > 0}
     <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-      {#each data as event}
-        <div class="col-md-4">
-          <div class="card mb-4">
+      {#each events as event}
+        <div class="col-md-6">
+          <div class="card mb-6">
             <div class="card-body">
-              <h2 class="card-title">{event.name}</h2>
-              <p class="card-text">{event.description}</p>
-              <p class="card-text"><strong>Start Date:</strong> {event.startDate}</p>
-              <p class="card-text"><strong>End Date:</strong> {event.endDate}</p>
+              <h2 class="card-title"><a href="/carpool/{event.id}">{event.name}</a></h2>
+              <p class="card-text">{@html event.description}</p>
+              <p class="card-text"><strong>Start Date:</strong> {event.start_date}</p>
+              <p class="card-text"><strong>End Date:</strong> {event.end_date}</p>
               <p class="card-text"><strong>Location:</strong> {event.location}</p>
 
-              <button class="btn btn-primary" on:click={() => alert('View Details not implemented yet')}>View Details</button>
+              <button class="btn btn-primary" on:click={() => goToDetails(event.id)}>View Trips</button>
             </div>
           </div>
         </div>
