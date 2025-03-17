@@ -190,7 +190,7 @@ export default class Event {
       throw new Error(`failed to retrieve events: ${JSON.stringify(err)}`)
     }
     debug(`getEvents(status=${status}) result: ${JSON.stringify(result)}`)
-    console.log(result)
+    // console.log(result)
     return result
   }
 
