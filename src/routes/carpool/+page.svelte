@@ -12,10 +12,6 @@
     goto(`/carpool/${eventId}`)
   }
 
-  // TODO: Implement the logic to fetch and display active carpool events
-  // This is using placeholder data and could change
-  // Also the styling is really bad because idk how to use bootstrap
-
   export let data
   export let events = data?.events || []
 </script>
@@ -24,13 +20,13 @@
   <h1>Carpool Events</h1>
 
   {#if events.length > 0}
-    <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+    <div class="row events-list">
       {#each events as event}
         <div class="col-md-6">
           <div class="card mb-6">
             <div class="card-body">
               <h2 class="card-title"><a href="/carpool/{event.id}">{event.name}</a></h2>
-              <p class="card-text">{@html event.description}</p>
+              <p class="card-text">{event.description}</p>
               <p class="card-text"><strong>Start Date:</strong> {event.start_date}</p>
               <p class="card-text"><strong>End Date:</strong> {event.end_date}</p>
               <p class="card-text"><strong>Location:</strong> {event.location}</p>
@@ -44,3 +40,33 @@
     <p>No active carpool events available.</p>
   {/if}
 </div>
+
+<style>
+  .events-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    background-color: #ddd;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+  }
+  .card {
+    padding: 1rem;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  .card-title {
+    font-size: 3rem;
+  }
+  .card-text {
+    font-size: 1.75rem;
+  }
+  .btn {
+    margin-top: 10px;
+  }
+</style>
