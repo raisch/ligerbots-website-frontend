@@ -11,7 +11,7 @@ export async function handle({ event, resolve }) {
    */
   if (event.url.pathname.startsWith('/assets')) {
     const redirectUrl = API_URL + event.url.pathname
-    console.log(`REDIRECTING assets request: ${event.url.pathname} => ${redirectUrl}`)
+    // console.log(`REDIRECTING assets request: ${event.url.pathname} => ${redirectUrl}`)
     return Response.redirect(redirectUrl, 301)
   }
 
