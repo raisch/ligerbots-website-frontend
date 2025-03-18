@@ -12,12 +12,36 @@
     goto(`/carpool/${eventId}`)
   }
 
+  import { onMount } from 'svelte';
+
+  let isAdmin = false;
+
+  onMount(() => {
+    const user = sessionStorage.getItem('user');
+
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      console.log(parsedUser);
+      isAdmin = parsedUser.is_admin;
+    }
+  });
+
   export let data
   export let events = data?.events || []
+
+  function deleteEvent(eventId) {
+    alert("havent implemented yet cuz im lazy - ray")
+  }
 </script>
 
 <div class="container mt-4">
   <h1>Carpool Events</h1>
+
+  {#if isAdmin}
+    <div class="alert alert-info">
+      <strong>Admin Access:</strong> You have admin access to manage carpool events.
+    </div>
+  {/if}
 
   {#if events.length > 0}
     <div class="row events-list">
@@ -31,6 +55,13 @@
               <p class="card-text"><strong>End Date:</strong> {event.end_date}</p>
               <p class="card-text"><strong>Location:</strong> {event.location}</p>
               <button class="btn btn-primary" on:click={() => goToDetails(event.id)}>View Trips</button>
+
+              {#if isAdmin}
+                <div class="bg-light p-2 rounded">
+                  <button class="btn btn-secondary" on:click={() => goto(`/carpool/${event.id}/edit`)}>Edit Event</button>
+                  <button class="btn btn-danger" on:click={() => deleteEvent(event.id)}>Delete Event</button>
+                </div>
+              {/if}
             </div>
           </div>
         </div>
