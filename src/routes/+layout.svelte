@@ -15,8 +15,8 @@
 </script>
 
 <div id="header-ghost"><!-- provides white-to-transparent shading at top of page --></div>
-<div class="container-fluid no-side-padding" id="page-container">
-  <div class="col-xs-12 no-side-padding" id="main-column">
+<div class="max-w-full mx-auto px-0" id="page-container">
+  <div class="w-full px-0" id="main-column">
     <Masthead />
     {#key user}
       <Navbar />

@@ -17,13 +17,13 @@
   export let data = config
 </script>
 
-<div class="row row-margins">
-  <div class="col-xs-12">
-    <div class="panel panel-warning">
-      <div class="panel-heading">
-        <h1 class="maintenance-alert">{data.maintenance_page_title}</h1>
+<div class="flex flex-col space-y-4">
+  <div class="w-full">
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 p-4 rounded-lg">
+      <div class="bg-yellow-200 text-yellow-800 font-bold p-2 rounded-t-lg">
+        <h1 class="text-red-600">{data.maintenance_page_title}</h1>
       </div>
-      <div class="panel-body maintenance-body">
+      <div class="p-4 text-darkred">
         {@html data.maintenance_page_body}
       </div>
     </div>

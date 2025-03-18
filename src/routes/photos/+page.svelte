@@ -29,120 +29,101 @@
   <meta property="og:title" content={data.title} />
 </svelte:head>
 
-<div class="row">
-  <div class="title-bar">
-    <center>
-      <div class="notindex-title">
-        <a href="/gallery" style="color: white;">PHOTOS</a>
-      </div>
-    </center>
-    <br />
+<div class="flex flex-col">
+  <div class="bg-orange-600 text-white font-serif font-bold text-lg text-center py-2 rounded-lg">
+    <a href="/gallery" style="color: white;">PHOTOS</a>
   </div>
 
-  <center style="margin-bottom: 2.25em; word-wrap: break-word;">
-    <h5 class="gallery-link">
+  <center class="mb-9 word-wrap">
+    <h5 class="font-semibold italic text-sm leading-6 m-0">
       To see all LigerBots photos: <a href={data.photos_link} target="_blank">flickr.com/photos/ligerbots/</a>
     </h5>
-    <h5 class="gallery-link">
+    <h5 class="font-semibold italic text-sm leading-6 m-0">
       To see all LigerBots videos: <a href={data.videos_link} target="_blank">youtube.com/c/ligerbots</a>
     </h5>
   </center>
 
-  <div class="gallery-container">
-    <div class="row gallery-buttons-bar-container-top">
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-        <a style="float: left;" class="gallery-nav-button" href="/gallery?year=1">
-          <!--span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span-->
+  <div class="px-7">
+    <div class="flex justify-between items-center mb-3.5">
+      <div class="w-1/2 sm:w-1/4 md:w-1/4 lg:w-1/6">
+        <a class="text-orange-600 transition duration-100" href="/gallery?year=1">
           <span class="left-guillemet">&laquo;</span>&nbsp;Previous year
         </a>
       </div>
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 col-sm-push-6 col-md-push-6 col-lg-push-8">
-        <a style="float: right;" class="gallery-nav-button-disabled" href="/gallery">
+      <div class="w-1/2 sm:w-1/4 md:w-1/4 lg:w-1/6 sm:order-3">
+        <a class="text-gray-400 cursor-not-allowed" href="/gallery">
           Next year&nbsp;<span class="right-guillemet">&raquo;</span>
-          <!-- span class="glyphicon glyphicon-chevron-right"></span>
-            <span class="glyphicon glyphicon-chevron-right"></span-->
         </a>
       </div>
 
-      <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8 col-sm-pull-3 col-md-pull-3 col-lg-pull-2">
-        <div class="gallery-dropdown">
-          <button class="btn btn-primary dropdown-toggle gallery-dropdown-button" type="button" data-toggle="dropdown"
-            >2024/25 Reefscape &nbsp;<span class="down-arrow">&#x25BC;</span>
+      <div class="w-full sm:w-1/2 md:w-1/2 lg:w-2/3 sm:order-2">
+        <div class="relative inline-block">
+          <button class="bg-transparent border-none p-0 m-0 text-orange-600 font-bold text-lg leading-6 transition duration-100" type="button">
+            2024/25 Reefscape &nbsp;<span class="down-arrow">&#x25BC;</span>
           </button>
-          <ul class="dropdown-menu gallery-dropdown-content">
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <li><a class="gallery-dropdown-item-active active"> 2024/25 Reefscape </a></li>
-            <li><a href="/gallery?year=1" class="gallery-dropdown-item"> 2023/24 Crescendo </a></li>
-            <li><a href="/gallery?year=2" class="gallery-dropdown-item"> 2022/23 Charged Up </a></li>
-            <li><a href="/gallery?year=3" class="gallery-dropdown-item"> 2021/22 Rapid React </a></li>
-            <li>
-              <a href="/gallery?year=4" class="gallery-dropdown-item"> 2020/21 Infinite Recharge at Home </a>
-            </li>
-            <li><a href="/gallery?year=5" class="gallery-dropdown-item"> 2019/20 Infinite Recharge </a></li>
-            <li><a href="/gallery?year=6" class="gallery-dropdown-item"> 2018/19 Destination: Deep Space </a></li>
-            <li><a href="/gallery?year=7" class="gallery-dropdown-item"> 2017/18 Power Up </a></li>
-            <li><a href="/gallery?year=8" class="gallery-dropdown-item"> 2016/17 Steamworks </a></li>
-            <li><a href="/gallery?year=9" class="gallery-dropdown-item"> 2015/16 Stronghold </a></li>
-            <li><a href="/gallery?year=10" class="gallery-dropdown-item"> 2014/15 Recycle Rush </a></li>
-            <li><a href="/gallery?year=11" class="gallery-dropdown-item"> 2014 Aerial Assist </a></li>
-            <li><a href="/gallery?year=12" class="gallery-dropdown-item"> 2013 Ultimate Ascent </a></li>
-            <li><a href="/gallery?year=13" class="gallery-dropdown-item"> 2012 Rebound Rumble </a></li>
-            <li><a href="/gallery?year=14" class="gallery-dropdown-item"> 2011 Logo Motion </a></li>
-            <li><a href="/gallery?year=15" class="gallery-dropdown-item"> 2010 Breakaway </a></li>
-            <li><a href="/gallery?year=16" class="gallery-dropdown-item"> 2009 Lunacy </a></li>
-            <li><a href="/gallery?year=17" class="gallery-dropdown-item"> 2008 FIRST Overdrive </a></li>
+          <ul class="absolute hidden bg-white text-black shadow-lg rounded-lg mt-2">
+            <li><a class="block px-4 py-2 bg-blue-600 text-white"> 2024/25 Reefscape </a></li>
+            <li><a href="/gallery?year=1" class="block px-4 py-2 hover:bg-gray-200"> 2023/24 Crescendo </a></li>
+            <li><a href="/gallery?year=2" class="block px-4 py-2 hover:bg-gray-200"> 2022/23 Charged Up </a></li>
+            <li><a href="/gallery?year=3" class="block px-4 py-2 hover:bg-gray-200"> 2021/22 Rapid React </a></li>
+            <li><a href="/gallery?year=4" class="block px-4 py-2 hover:bg-gray-200"> 2020/21 Infinite Recharge at Home </a></li>
+            <li><a href="/gallery?year=5" class="block px-4 py-2 hover:bg-gray-200"> 2019/20 Infinite Recharge </a></li>
+            <li><a href="/gallery?year=6" class="block px-4 py-2 hover:bg-gray-200"> 2018/19 Destination: Deep Space </a></li>
+            <li><a href="/gallery?year=7" class="block px-4 py-2 hover:bg-gray-200"> 2017/18 Power Up </a></li>
+            <li><a href="/gallery?year=8" class="block px-4 py-2 hover:bg-gray-200"> 2016/17 Steamworks </a></li>
+            <li><a href="/gallery?year=9" class="block px-4 py-2 hover:bg-gray-200"> 2015/16 Stronghold </a></li>
+            <li><a href="/gallery?year=10" class="block px-4 py-2 hover:bg-gray-200"> 2014/15 Recycle Rush </a></li>
+            <li><a href="/gallery?year=11" class="block px-4 py-2 hover:bg-gray-200"> 2014 Aerial Assist </a></li>
+            <li><a href="/gallery?year=12" class="block px-4 py-2 hover:bg-gray-200"> 2013 Ultimate Ascent </a></li>
+            <li><a href="/gallery?year=13" class="block px-4 py-2 hover:bg-gray-200"> 2012 Rebound Rumble </a></li>
+            <li><a href="/gallery?year=14" class="block px-4 py-2 hover:bg-gray-200"> 2011 Logo Motion </a></li>
+            <li><a href="/gallery?year=15" class="block px-4 py-2 hover:bg-gray-200"> 2010 Breakaway </a></li>
+            <li><a href="/gallery?year=16" class="block px-4 py-2 hover:bg-gray-200"> 2009 Lunacy </a></li>
+            <li><a href="/gallery?year=17" class="block px-4 py-2 hover:bg-gray-200"> 2008 FIRST Overdrive </a></li>
           </ul>
         </div>
       </div>
     </div>
 
-    <div class="gallery-content">
-      <a href="/gallery?album=72177720320536974" style="text-decoration: none;">
-        <div
-          class="gallery-thumbnail"
-          style="background-image: url(https://farm66.staticflickr.com/65535/54014893604_f3d3d7c808_z.jpg);"
-        >
-          <div class="gallery-caption">FRC Robocon NE, 9/21/24</div>
+    <div class="text-center">
+      <a href="/gallery?album=72177720320536974" class="no-underline">
+        <div class="bg-cover bg-center rounded-lg m-2 border border-gray-300 w-48 h-48 transition duration-300 hover:opacity-70" style="background-image: url(https://farm66.staticflickr.com/65535/54014893604_f3d3d7c808_z.jpg);">
+          <div class="bg-blue-600 rounded-b-lg w-full absolute bottom-0 text-center p-1 text-white">
+            FRC Robocon NE, 9/21/24
+          </div>
         </div>
       </a>
-      <a href="/gallery?album=72177720320430286" style="text-decoration: none;">
-        <div
-          class="gallery-thumbnail"
-          style="background-image: url(https://farm66.staticflickr.com/65535/54004511582_905f8cb21f_z.jpg);"
-        >
-          <div class="gallery-caption">Newton Upper Falls Village Day, 9/15/24</div>
+      <a href="/gallery?album=72177720320430286" class="no-underline">
+        <div class="bg-cover bg-center rounded-lg m-2 border border-gray-300 w-48 h-48 transition duration-300 hover:opacity-70" style="background-image: url(https://farm66.staticflickr.com/65535/54004511582_905f8cb21f_z.jpg);">
+          <div class="bg-blue-600 rounded-b-lg w-full absolute bottom-0 text-center p-1 text-white">
+            Newton Upper Falls Village Day, 9/15/24
+          </div>
         </div>
       </a>
-      <a href="/gallery?album=72177720320425369" style="text-decoration: none;">
-        <div
-          class="gallery-thumbnail"
-          style="background-image: url(https://farm66.staticflickr.com/65535/54002445812_cde9a976bd_z.jpg);"
-        >
-          <div class="gallery-caption">STEAM Expo for Neurodivergent Students, 9/15/24</div>
+      <a href="/gallery?album=72177720320425369" class="no-underline">
+        <div class="bg-cover bg-center rounded-lg m-2 border border-gray-300 w-48 h-48 transition duration-300 hover:opacity-70" style="background-image: url(https://farm66.staticflickr.com/65535/54002445812_cde9a976bd_z.jpg);">
+          <div class="bg-blue-600 rounded-b-lg w-full absolute bottom-0 text-center p-1 text-white">
+            STEAM Expo for Neurodivergent Students, 9/15/24
+          </div>
         </div>
       </a>
-      <a href="/gallery?album=72177720320339316" style="text-decoration: none;">
-        <div
-          class="gallery-thumbnail"
-          style="background-image: url(https://farm66.staticflickr.com/65535/53997209140_838169a304_z.jpg);"
-        >
-          <div class="gallery-caption">Countryside Elementary School Picnic, 9/9/24</div>
+      <a href="/gallery?album=72177720320339316" class="no-underline">
+        <div class="bg-cover bg-center rounded-lg m-2 border border-gray-300 w-48 h-48 transition duration-300 hover:opacity-70" style="background-image: url(https://farm66.staticflickr.com/65535/53997209140_838169a304_z.jpg);">
+          <div class="bg-blue-600 rounded-b-lg w-full absolute bottom-0 text-center p-1 text-white">
+            Countryside Elementary School Picnic, 9/9/24
+          </div>
         </div>
       </a>
     </div>
-    <div class="row gallery-buttons-bar-container-bottom">
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
-        <a style="float: left;" class="gallery-nav-button" href="/gallery?year=1">
-          <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span>
-          Previous year
+    <div class="flex justify-between items-center mt-3.5">
+      <div class="w-1/2 sm:w-1/4 md:w-1/4 lg:w-1/4">
+        <a class="text-orange-600 transition duration-100" href="/gallery?year=1">
+          <span class="left-guillemet">&laquo;</span>&nbsp;Previous year
         </a>
       </div>
-      <div class="col-sm-6 col-md-6 col-lg-6"></div>
-      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
-        <a style="float: right;" class="gallery-nav-button-disabled" href="/gallery?">
-          Next year<span class="glyphicon glyphicon-chevron-right"></span><span
-            class="glyphicon glyphicon-chevron-right"
-          ></span>
+      <div class="w-1/2 sm:w-1/4 md:w-1/4 lg:w-1/4">
+        <a class="text-gray-400 cursor-not-allowed" href="/gallery?">
+          Next year<span class="right-guillemet">&raquo;</span>
         </a>
       </div>
     </div>

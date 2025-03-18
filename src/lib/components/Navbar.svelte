@@ -41,31 +41,31 @@
   })
 </script>
 
-<nav class="navbar navbar-expand-lg navbar-ligerbots">
-  <div class="container-fluid" id="navbar-container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle navbar-toggle-ligerbots" data-target="#myNavbar">
-        <span class="icon-bar icon-bar-ligerbots">...</span>
-        <span class="icon-bar icon-bar-ligerbots"></span>
-        <span class="icon-bar icon-bar-ligerbots"></span>
+<nav class="bg-blue-600 shadow-md rounded-t-lg">
+  <div class="container mx-auto px-4" id="navbar-container">
+    <div class="flex items-center justify-between">
+      <button type="button" class="text-white focus:outline-none" data-target="#myNavbar">
+        <span class="block w-6 h-0.5 bg-white mb-1"></span>
+        <span class="block w-6 h-0.5 bg-white mb-1"></span>
+        <span class="block w-6 h-0.5 bg-white"></span>
       </button>
     </div>
-    <div class="collapse navbar-collapse" id="navbar">
-      <ul class="nav navbar-nav nav-stacked">
+    <div class="hidden w-full md:flex md:items-center md:w-auto" id="navbar">
+      <ul class="flex flex-col md:flex-row md:space-x-4">
         {#each data.config as elt}
           {#if elt.children}
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href={elt.url}>
+            <li class="relative group">
+              <a class="text-white hover:text-gray-300" href={elt.url}>
                 {@html elt.title}<DropDownIcon />
               </a>
-              <ul class="dropdown-menu">
+              <ul class="absolute hidden group-hover:block bg-white text-black shadow-lg rounded-lg mt-2">
                 {#each elt.children as child}
                   {#if child.requires_login && !data.user}
                     <!-- Skip this item -->
                   {:else}
-                    <li><a href={child.url} data-sveltekit-reload>{@html child.title}</a></li>
+                    <li><a href={child.url} class="block px-4 py-2 hover:bg-gray-200">{@html child.title}</a></li>
                     {#if child.divider_after}
-                      <li role="separator" class="divider"></li>
+                      <li class="border-t border-gray-300"></li>
                     {/if}
                   {/if}
                 {/each}
@@ -74,13 +74,13 @@
           {:else if elt.requires_login && !data.user}
             <!-- Skip this item -->
           {:else}
-            <li class="active"><a href={elt.url} data-sveltekit-reload>{@html elt.title}</a></li>
+            <li class="active"><a href={elt.url} class="text-white hover:text-gray-300">{@html elt.title}</a></li>
           {/if}
         {/each}
         {#if data.user}
-          <li><a href="/logout" data-sveltekit-reload><LogoutIcon /> Logout</a></li>
+          <li><a href="/logout" class="text-white hover:text-gray-300"><LogoutIcon /> Logout</a></li>
         {:else}
-          <li class="active"><a href="/login" data-sveltekit-reload><LoginIcon /> Login</a></li>
+          <li class="active"><a href="/login" class="text-white hover:text-gray-300"><LoginIcon /> Login</a></li>
         {/if}
       </ul>
     </div>

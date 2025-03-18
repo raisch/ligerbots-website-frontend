@@ -294,7 +294,7 @@ body{
 }
 
 .dropdown-menu {
-    border-radius: 0 0 var(--box-radius) var(--box-radius);
+    border-radius: 0 0 var(--box-radius) var (--box-radius);
 }
 
 .navbar-toggle-ligerbots {
