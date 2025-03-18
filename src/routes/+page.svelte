@@ -22,18 +22,18 @@
 {#if data.site.service_mode === 'maintenance'}
   <MaintenancePane />
 {:else}
-  <div class="row bottom-margin row-margins">
+  <div class="flex flex-col space-y-4">
     <BlogBlock />
     <UpcomingEventsBlock />
   </div>
 
-  <div class="row bottom-margin row-margins">
+  <div class="flex flex-col space-y-4">
     <AnnouncementsBlock />
     <TwitterBlock />
   </div>
 
-  <div class="row row-margins">
-    <div class="col-xs-12">
+  <div class="flex flex-col">
+    <div class="w-full">
       <BottomRowBlock />
     </div>
   </div>

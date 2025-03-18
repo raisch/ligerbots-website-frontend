@@ -58,24 +58,19 @@
   <meta property="og:title" content="LigerBots Login" />
 </svelte:head>
 
-<div class="row">
-  <div class="title-bar">
-    <center>
-      <div class="notindex-title">
-        <a href="/login" style="color: white;">LOGIN</a>
-      </div>
-    </center>
-    <br />
+<div class="flex flex-col space-y-4">
+  <div class="bg-blue-600 text-white font-serif font-bold text-lg text-center py-2 rounded-lg">
+    <a href="/login" style="color: white;">LOGIN</a>
   </div>
-  <div class="row bottom-margin row-margins">
-    <div class="col-xs-12">
+  <div class="flex flex-col space-y-4">
+    <div class="w-full">
       <center>
-        <form on:submit|preventDefault={handleSubmit}>
-          <input class="form-field" bind:value={email} type="email" placeholder="Email" />
-          <input class="form-field" bind:value={password} type="password" placeholder="Password" />
-          <button class="form-field"> Login </button>
+        <form on:submit|preventDefault={handleSubmit} class="space-y-4">
+          <input class="border border-gray-300 p-2 rounded-lg w-full" bind:value={email} type="email" placeholder="Email" />
+          <input class="border border-gray-300 p-2 rounded-lg w-full" bind:value={password} type="password" placeholder="Password" />
+          <button class="bg-blue-500 text-white py-2 px-4 rounded-lg"> Login </button>
         </form>
-        <div id="error-msg" class="bottom-margin">Error</div>
+        <div id="error-msg" class="text-red-500 mt-4">Error</div>
         <br />
         <p>
           Don't have an account?
