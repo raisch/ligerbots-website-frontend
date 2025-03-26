@@ -3,9 +3,24 @@ import createDebugMessages from 'debug'
 import { getBackendClient } from '$lib/server/client'
 
 import Queries from '$lib/server/graphql/event'
+import { EventSchema } from '$lib/schemata/event'
 
 const debug = createDebugMessages('APP:lib/server/event')
+
 export default class Event {
+  /**
+   * Tests for event.
+   *
+   * @param {any} evt
+   * @returns {boolean}
+   */
+  static isEvent(evt) {
+    const { error, value } = EventSchema.validate(evt)
+    debug(`isEvent() error: ${JSON.stringify(error)}`)
+    debug(`isEvent() value: ${JSON.stringify(value)}`)
+    return error === undefined
+  }
+
   /**
    * Get events from Directus.
    *
@@ -733,6 +748,7 @@ export default class Event {
  * @property {string} start_date
  * @property {string} end_date
  * @property {string} status
+ * @property {Array.<TripRecord>} [trips]
  */
 
 /**

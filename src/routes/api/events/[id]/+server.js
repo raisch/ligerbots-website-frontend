@@ -15,7 +15,7 @@ export async function GET({ params }) {
   const { id } = params
   try {
     const eventData = await Event.getEventById(id)
-    if (!eventData) {
+    if (!Event.isEvent(eventData)) {
       return errResp({ message: 'Event not found' }, 404)
     }
     return json(eventData)
