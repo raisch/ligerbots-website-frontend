@@ -36,15 +36,6 @@ export async function POST({ params, request }) {
     console.error('Error updating event', error)
     return errResp(error)
   }
-  const { id } = params
-  const eventData = await request.json()
-  try {
-    const updatedEvent = await Event.updateEvent(id, eventData)
-    return json(updatedEvent)
-  } catch (error) {
-    console.error('Error updating event', error)
-    return errResp(error)
-  }
 }
 
 // Archive an event
@@ -57,26 +48,10 @@ export async function PATCH({ params }) {
     console.error('Error archiving event', error)
     return errResp(error)
   }
-  const { id } = params
-  try {
-    const archivedEvent = await Event.archiveEvent(id)
-    return json(archivedEvent)
-  } catch (error) {
-    console.error('Error archiving event', error)
-    return errResp(error)
-  }
 }
 
 // Delete an event
 export async function DELETE({ params }) {
-  const { id } = params
-  try {
-    const result = await Event.deleteEvent(id)
-    return json(result)
-  } catch (error) {
-    console.error('Error deleting event', error)
-    return errResp(error)
-  }
   const { id } = params
   try {
     const result = await Event.deleteEvent(id)
