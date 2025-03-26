@@ -2,353 +2,21 @@ import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
 
+import Queries from '$lib/server/graphql/event'
+
 const debug = createDebugMessages('APP:lib/server/event')
-
-const EVENT_QUERY = `{
-  event(filter: { status: { _eq: "{{status}}" } }) {
-      id
-      name
-      status
-      description
-      start_date
-      end_date
-      location
-  }
-}`
-
-const EVENT_BY_ID_QUERY = `{
-  event_by_id(id: "{{id}}") {
-        id
-        start_date
-        end_date
-        name
-        description
-        status
-        location
-        trips {
-            item {
-                ... on destination_trip {
-                    destination
-                    departs_from
-                    departs_on
-                    departs_at
-                    status
-                    rides {
-                        item {
-                            ... on trip_ride {
-                                id
-                                ride {
-                                    vehicle_type
-                                    name
-                                    seats
-                                    driver {
-                                        item {
-                                            ... on users {
-                                                id
-                                                firstname
-                                                lastname
-                                                email_address
-                                                phone_number
-                                                photo {
-                                                    id
-                                                    filename_disk
-                                                    filename_download
-                                                }
-                                            }
-                                        }
-                                        id
-                                        collection
-                                    }
-                                    id
-                                }
-                                riders {
-                                    item {
-                                        ... on users {
-                                            id
-                                            firstname
-                                            lastname
-                                            email_address
-                                            phone_number
-                                            photo {
-                                                id
-                                                filename_disk
-                                                filename_download
-                                            }
-                                        }
-                                    }
-                                    id
-                                    collection
-                                }
-                                id
-                                riders_func {
-                                    count
-                                }
-                            }
-                        }
-                        collection
-                    }
-                    id
-                    status
-                    rides_func {
-                        count
-                    }
-                }
-                ... on return_trip {
-                    id
-                    status
-                    destination
-                    departs_from
-                    departs_on
-                    departs_at
-                    rides {
-                        item {
-                            ... on trip_ride {
-                                id
-                                ride {
-                                    vehicle_type
-                                    name
-                                    seats
-                                    driver {
-                                        item {
-                                            ... on users {
-                                                id
-                                                firstname
-                                                lastname
-                                                email_address
-                                                phone_number
-                                                photo {
-                                                    id
-                                                    filename_disk
-                                                    filename_download
-                                                }
-                                            }
-                                        }
-                                        id
-                                        collection
-                                    }
-                                    id
-                                }
-                                riders {
-                                    item {
-                                        ... on users {
-                                            id
-                                            firstname
-                                            lastname
-                                            email_address
-                                            phone_number
-                                            photo {
-                                                id
-                                                filename_disk
-                                                filename_download
-                                            }
-                                        }
-                                    }
-                                    id
-                                    collection
-                                }
-                                id
-                                riders_func {
-                                    count
-                                }
-                            }
-                        }
-                        collection
-                    }
-                    id
-                    status
-                    rides_func {
-                        count
-                    }
-                }
-            }
-            id
-            collection
-        }
-    }
-}`
-
-// GraphQL mutation for creating a new event
-const CREATE_EVENT_MUTATION = `mutation ($event: create_event_input!) {
-  create_event_item(data: $event) {
-    id
-    name
-    status
-    description
-    start_date
-    end_date
-    location
-  }
-}`
-
-// GraphQL mutation for updating an existing event
-const UPDATE_EVENT_MUTATION = `mutation ($id: ID!, $event: update_event_input!) {
-  update_event_item(id: $id, data: $event) {
-    id
-    name
-    status
-    description
-    start_date
-    end_date
-    location
-  }
-}`
-
-// GraphQL mutation for deleting an event
-const DELETE_EVENT_MUTATION = `mutation ($id: ID!) {
-  delete_event_item(id: $id) {
-    id
-  }
-}`
-
-// GraphQL mutation for creating a destination trip
-const CREATE_DESTINATION_TRIP_MUTATION = `mutation ($trip: create_destination_trip_input!) {
-  create_destination_trip_item(data: $trip) {
-    id
-    destination
-    departs_from
-    departs_on
-    departs_at
-    status
-    event {
-      id
-    }
-  }
-}`
-
-// GraphQL mutation for updating a destination trip
-const UPDATE_DESTINATION_TRIP_MUTATION = `mutation ($id: ID!, $trip: update_destination_trip_input!) {
-  update_destination_trip_item(id: $id, data: $trip) {
-    id
-    destination
-    departs_from
-    departs_on
-    departs_at
-    status
-  }
-}`
-
-// GraphQL mutation for creating a return trip
-const CREATE_RETURN_TRIP_MUTATION = `mutation ($trip: create_return_trip_input!) {
-  create_return_trip_item(data: $trip) {
-    id
-    destination
-    departs_from
-    departs_on
-    departs_at
-    status
-    event {
-      id
-    }
-  }
-}`
-
-// GraphQL mutation for updating a return trip
-const UPDATE_RETURN_TRIP_MUTATION = `mutation ($id: ID!, $trip: update_return_trip_input!) {
-  update_return_trip_item(id: $id, data: $trip) {
-    id
-    destination
-    departs_from
-    departs_on
-    departs_at
-    status
-  }
-}`
-
-// GraphQL mutation for deleting a trip (works for both destination and return trips)
-const DELETE_TRIP_MUTATION = `mutation ($collection: String!, $id: ID!) {
-  delete_item(collection: $collection, id: $id) {
-    id
-  }
-}`
-
-// GraphQL mutation for creating a trip ride
-const CREATE_TRIP_RIDE_MUTATION = `mutation ($tripRide: create_trip_ride_input!) {
-  create_trip_ride_item(data: $tripRide) {
-    id
-    ride {
-      id
-      vehicle_type
-      name
-      seats
-    }
-    trip {
-      id
-      collection
-    }
-  }
-}`
-
-// GraphQL mutation for updating a trip ride
-const UPDATE_TRIP_RIDE_MUTATION = `mutation ($id: ID!, $tripRide: update_trip_ride_input!) {
-  update_trip_ride_item(id: $id, data: $tripRide) {
-    id
-    ride {
-      id
-      vehicle_type
-      name
-      seats
-    }
-  }
-}`
-
-// GraphQL mutation for deleting a trip ride
-const DELETE_TRIP_RIDE_MUTATION = `mutation ($id: ID!) {
-  delete_trip_ride_item(id: $id) {
-    id
-  }
-}`
-
-// GraphQL mutation for adding a rider to a trip ride
-const ADD_RIDER_MUTATION = `mutation ($tripRideId: ID!, $userId: ID!) {
-  update_trip_ride_item(
-    id: $tripRideId, 
-    data: { 
-      riders: { 
-        create: [{ 
-          item: { 
-            id: $userId, 
-            collection: "users" 
-          } 
-        }] 
-      } 
-    }
-  ) {
-    id
-    riders_func {
-      count
-    }
-  }
-}`
-
-// GraphQL mutation for removing a rider from a trip ride
-const REMOVE_RIDER_MUTATION = `mutation ($tripRideId: ID!, $relationshipId: ID!) {
-  update_trip_ride_item(
-    id: $tripRideId, 
-    data: { 
-      riders: { 
-        delete: [$relationshipId] 
-      } 
-    }
-  ) {
-    id
-    riders_func {
-      count
-    }
-  }
-}`
-
 export default class Event {
   /**
    * Get events from Directus.
    *
    * @param {string} [status='published'] - The status of the events to retrieve.
-   * @param {*} [query=PAGE_QUERY] - The GraphQL query to use. It should contain a placeholder for the status.
+   * @param {*} [query=Queries.EVENT_QUERY] - The GraphQL query to use. It should contain a placeholder for the status.
    *
    * @returns {Promise<EventsList>}
    *
    * @throws {Error} if failed to retrieve events.
    */
-  static async getEvents(status = 'published', query = EVENT_QUERY) {
+  static async getEvents(status = 'published', query = Queries.EVENT_QUERY) {
     const client = await getBackendClient()
 
     query = query.replace('{{status}}', status)
@@ -372,10 +40,10 @@ export default class Event {
    * Get a single event by ID.
    *
    * @param {string} id - The ID of the event to retrieve.
-   * @param {string} [query=EVENT_BY_ID_QUERY] - The GraphQL query to use. It should contain a placeholder for the ID.
+   * @param {string} [query=Queries.EVENT_BY_ID_QUERY] - The GraphQL query to use. It should contain a placeholder for the ID.
    * @returns {Promise<EventRecord|undefined>} - The event record if found, otherwise undefined.
    */
-  static async getEventById(id, query = EVENT_BY_ID_QUERY) {
+  static async getEventById(id, query = Queries.EVENT_BY_ID_QUERY) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -404,13 +72,13 @@ export default class Event {
    * @param {string} eventData.end_date - The end date of the event (ISO format).
    * @param {string} eventData.location - The location of the event.
    * @param {string} [eventData.status='draft'] - The status of the event.
-   * @param {string} [mutation=CREATE_EVENT_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.CREATE_EVENT_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<EventRecord>} - The created event record.
-   * 
+   *
    * @throws {Error} if failed to create the event.
    */
-  static async createEvent(eventData, mutation = CREATE_EVENT_MUTATION) {
+  static async createEvent(eventData, mutation = Queries.CREATE_EVENT_MUTATION) {
     if (!eventData.name) {
       throw new Error('Event name is required')
     }
@@ -421,7 +89,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       event: {
         ...eventData
@@ -455,13 +123,13 @@ export default class Event {
    * @param {string} [eventData.end_date] - The end date of the event (ISO format).
    * @param {string} [eventData.location] - The location of the event.
    * @param {string} [eventData.status] - The status of the event.
-   * @param {string} [mutation=UPDATE_EVENT_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.UPDATE_EVENT_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<EventRecord>} - The updated event record.
-   * 
+   *
    * @throws {Error} if failed to update the event.
    */
-  static async updateEvent(id, eventData, mutation = UPDATE_EVENT_MUTATION) {
+  static async updateEvent(id, eventData, mutation = Queries.UPDATE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -471,7 +139,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       id,
       event: {
@@ -500,13 +168,13 @@ export default class Event {
    * Archive an event by changing its status to 'archived'.
    *
    * @param {string} id - The ID of the event to archive.
-   * @param {string} [mutation=UPDATE_EVENT_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.UPDATE_EVENT_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<EventRecord>} - The archived event record.
-   * 
+   *
    * @throws {Error} if failed to archive the event.
    */
-  static async archiveEvent(id, mutation = UPDATE_EVENT_MUTATION) {
+  static async archiveEvent(id, mutation = Queries.UPDATE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -518,19 +186,19 @@ export default class Event {
    * Delete an event from Directus.
    *
    * @param {string} id - The ID of the event to delete.
-   * @param {string} [mutation=DELETE_EVENT_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.DELETE_EVENT_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<{id: string}>} - Object containing the ID of the deleted event.
-   * 
+   *
    * @throws {Error} if failed to delete the event.
    */
-  static async deleteEvent(id, mutation = DELETE_EVENT_MUTATION) {
+  static async deleteEvent(id, mutation = Queries.DELETE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       id
     }
@@ -561,13 +229,13 @@ export default class Event {
    * @param {string} tripData.departs_on - The departure date (ISO format).
    * @param {string} tripData.departs_at - The departure time.
    * @param {string} [tripData.status='published'] - The status of the trip.
-   * @param {string} [mutation=CREATE_DESTINATION_TRIP_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.CREATE_DESTINATION_TRIP_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The created trip.
-   * 
+   *
    * @throws {Error} if failed to create the trip.
    */
-  static async createDestinationTrip(eventId, tripData, mutation = CREATE_DESTINATION_TRIP_MUTATION) {
+  static async createDestinationTrip(eventId, tripData, mutation = Queries.CREATE_DESTINATION_TRIP_MUTATION) {
     if (!eventId) {
       throw new Error('Event ID is required')
     }
@@ -582,7 +250,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       trip: {
         ...tripData,
@@ -618,13 +286,13 @@ export default class Event {
    * @param {string} tripData.departs_on - The departure date (ISO format).
    * @param {string} tripData.departs_at - The departure time.
    * @param {string} [tripData.status='published'] - The status of the trip.
-   * @param {string} [mutation=CREATE_RETURN_TRIP_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.CREATE_RETURN_TRIP_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The created trip.
-   * 
+   *
    * @throws {Error} if failed to create the trip.
    */
-  static async createReturnTrip(eventId, tripData, mutation = CREATE_RETURN_TRIP_MUTATION) {
+  static async createReturnTrip(eventId, tripData, mutation = Queries.CREATE_RETURN_TRIP_MUTATION) {
     if (!eventId) {
       throw new Error('Event ID is required')
     }
@@ -639,7 +307,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       trip: {
         ...tripData,
@@ -675,13 +343,13 @@ export default class Event {
    * @param {string} [tripData.departs_on] - The departure date (ISO format).
    * @param {string} [tripData.departs_at] - The departure time.
    * @param {string} [tripData.status] - The status of the trip.
-   * @param {string} [mutation=UPDATE_DESTINATION_TRIP_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.UPDATE_DESTINATION_TRIP_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The updated trip.
-   * 
+   *
    * @throws {Error} if failed to update the trip.
    */
-  static async updateDestinationTrip(tripId, tripData, mutation = UPDATE_DESTINATION_TRIP_MUTATION) {
+  static async updateDestinationTrip(tripId, tripData, mutation = Queries.UPDATE_DESTINATION_TRIP_MUTATION) {
     if (!tripId) {
       throw new Error('Trip ID is required')
     }
@@ -691,7 +359,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       id: tripId,
       trip: {
@@ -725,13 +393,13 @@ export default class Event {
    * @param {string} [tripData.departs_on] - The departure date (ISO format).
    * @param {string} [tripData.departs_at] - The departure time.
    * @param {string} [tripData.status] - The status of the trip.
-   * @param {string} [mutation=UPDATE_RETURN_TRIP_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.UPDATE_RETURN_TRIP_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The updated trip.
-   * 
+   *
    * @throws {Error} if failed to update the trip.
    */
-  static async updateReturnTrip(tripId, tripData, mutation = UPDATE_RETURN_TRIP_MUTATION) {
+  static async updateReturnTrip(tripId, tripData, mutation = Queries.UPDATE_RETURN_TRIP_MUTATION) {
     if (!tripId) {
       throw new Error('Trip ID is required')
     }
@@ -741,7 +409,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       id: tripId,
       trip: {
@@ -770,13 +438,13 @@ export default class Event {
    *
    * @param {string} tripId - The ID of the trip to delete.
    * @param {string} collection - The collection name ('destination_trip' or 'return_trip').
-   * @param {string} [mutation=DELETE_TRIP_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.DELETE_TRIP_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<{id: string}>} - Object containing the ID of the deleted trip.
-   * 
+   *
    * @throws {Error} if failed to delete the trip.
    */
-  static async deleteTrip(tripId, collection, mutation = DELETE_TRIP_MUTATION) {
+  static async deleteTrip(tripId, collection, mutation = Queries.DELETE_TRIP_MUTATION) {
     if (!tripId) {
       throw new Error('Trip ID is required')
     }
@@ -786,7 +454,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       id: tripId,
       collection
@@ -820,13 +488,13 @@ export default class Event {
    * @param {number} rideData.ride.seats - The number of seats available.
    * @param {Object} [rideData.ride.driver] - The driver information.
    * @param {string} rideData.ride.driver.id - The ID of the driver user.
-   * @param {string} [mutation=CREATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.CREATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The created trip ride.
-   * 
+   *
    * @throws {Error} if failed to create the trip ride.
    */
-  static async createTripRide(tripId, tripCollection, rideData, mutation = CREATE_TRIP_RIDE_MUTATION) {
+  static async createTripRide(tripId, tripCollection, rideData, mutation = Queries.CREATE_TRIP_RIDE_MUTATION) {
     if (!tripId) {
       throw new Error('Trip ID is required')
     }
@@ -840,7 +508,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     // Format the ride data for the mutation
     const tripRideData = {
       ride: rideData.ride,
@@ -881,13 +549,13 @@ export default class Event {
    * @param {number} [rideData.ride.seats] - The number of seats available.
    * @param {Object} [rideData.ride.driver] - The driver information.
    * @param {string} [rideData.ride.driver.id] - The ID of the driver user.
-   * @param {string} [mutation=UPDATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.UPDATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The updated trip ride.
-   * 
+   *
    * @throws {Error} if failed to update the trip ride.
    */
-  static async updateTripRide(tripRideId, rideData, mutation = UPDATE_TRIP_RIDE_MUTATION) {
+  static async updateTripRide(tripRideId, rideData, mutation = Queries.UPDATE_TRIP_RIDE_MUTATION) {
     if (!tripRideId) {
       throw new Error('Trip ride ID is required')
     }
@@ -897,7 +565,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       id: tripRideId,
       tripRide: rideData
@@ -923,19 +591,19 @@ export default class Event {
    * Delete a trip ride.
    *
    * @param {string} tripRideId - The ID of the trip ride to delete.
-   * @param {string} [mutation=DELETE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.DELETE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<{id: string}>} - Object containing the ID of the deleted trip ride.
-   * 
+   *
    * @throws {Error} if failed to delete the trip ride.
    */
-  static async deleteTripRide(tripRideId, mutation = DELETE_TRIP_RIDE_MUTATION) {
+  static async deleteTripRide(tripRideId, mutation = Queries.DELETE_TRIP_RIDE_MUTATION) {
     if (!tripRideId) {
       throw new Error('Trip ride ID is required')
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       id: tripRideId
     }
@@ -961,13 +629,13 @@ export default class Event {
    *
    * @param {string} tripRideId - The ID of the trip ride.
    * @param {string} userId - The ID of the user to add as a rider.
-   * @param {string} [mutation=ADD_RIDER_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.ADD_RIDER_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The updated trip ride with rider count.
-   * 
+   *
    * @throws {Error} if failed to add the rider.
    */
-  static async addRiderToTripRide(tripRideId, userId, mutation = ADD_RIDER_MUTATION) {
+  static async addRiderToTripRide(tripRideId, userId, mutation = Queries.ADD_RIDER_MUTATION) {
     if (!tripRideId) {
       throw new Error('Trip ride ID is required')
     }
@@ -977,7 +645,7 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       tripRideId,
       userId
@@ -1004,13 +672,13 @@ export default class Event {
    *
    * @param {string} tripRideId - The ID of the trip ride.
    * @param {string} relationshipId - The ID of the relationship to remove.
-   * @param {string} [mutation=REMOVE_RIDER_MUTATION] - The GraphQL mutation to use.
-   * 
+   * @param {string} [mutation=Queries.REMOVE_RIDER_MUTATION] - The GraphQL mutation to use.
+   *
    * @returns {Promise<Object>} - The updated trip ride with rider count.
-   * 
+   *
    * @throws {Error} if failed to remove the rider.
    */
-  static async removeRiderFromTripRide(tripRideId, relationshipId, mutation = REMOVE_RIDER_MUTATION) {
+  static async removeRiderFromTripRide(tripRideId, relationshipId, mutation = Queries.REMOVE_RIDER_MUTATION) {
     if (!tripRideId) {
       throw new Error('Trip ride ID is required')
     }
@@ -1020,25 +688,37 @@ export default class Event {
     }
 
     const client = await getBackendClient()
-    
+
     const variables = {
       tripRideId,
       relationshipId
     }
 
     debug(`removeRiderFromTripRide(tripRideId=${tripRideId}, relationshipId=${relationshipId}) mutation: ${mutation}`)
-    debug(`removeRiderFromTripRide(tripRideId=${tripRideId}, relationshipId=${relationshipId}) variables: ${JSON.stringify(variables)}`)
+    debug(
+      `removeRiderFromTripRide(tripRideId=${tripRideId}, relationshipId=${relationshipId}) variables: ${JSON.stringify(
+        variables
+      )}`
+    )
 
     let result
     try {
       result = await client.mutation(mutation, variables)
-      debug(`removeRiderFromTripRide(tripRideId=${tripRideId}, relationshipId=${relationshipId}) resp: ${JSON.stringify(result)}`)
+      debug(
+        `removeRiderFromTripRide(tripRideId=${tripRideId}, relationshipId=${relationshipId}) resp: ${JSON.stringify(
+          result
+        )}`
+      )
       result = result?.update_trip_ride_item || {}
     } catch (/** @type {any} */ err) {
       throw new Error(`Failed to remove rider from trip ride: ${JSON.stringify(err)}`)
     }
 
-    debug(`removeRiderFromTripRide(tripRideId=${tripRideId}, relationshipId=${relationshipId}) result: ${JSON.stringify(result)}`)
+    debug(
+      `removeRiderFromTripRide(tripRideId=${tripRideId}, relationshipId=${relationshipId}) result: ${JSON.stringify(
+        result
+      )}`
+    )
     return result
   }
 }
@@ -1061,7 +741,7 @@ export default class Event {
 
 /**
  * @typedef {Object} TripRecord
- * 
+ *
  * @property {string} id
  * @property {string} destination
  * @property {string} departs_from
@@ -1074,7 +754,7 @@ export default class Event {
 
 /**
  * @typedef {Object} TripRideRecord
- * 
+ *
  * @property {string} id
  * @property {RideRecord} ride
  * @property {Object} trip
@@ -1083,7 +763,7 @@ export default class Event {
 
 /**
  * @typedef {Object} RideRecord
- * 
+ *
  * @property {string} id
  * @property {string} vehicle_type
  * @property {string} name
@@ -1093,7 +773,7 @@ export default class Event {
 
 /**
  * @typedef {Object} UserRecord
- * 
+ *
  * @property {string} id
  * @property {string} firstname
  * @property {string} lastname
