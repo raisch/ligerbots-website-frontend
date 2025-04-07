@@ -29,6 +29,7 @@ export async function GET({ params }) {
 export async function POST({ params, request }) {
   const { id } = params
   const eventData = await request.json()
+  console.log(eventData)
   try {
     const updatedEvent = await Event.updateEvent(id, eventData)
     return json(updatedEvent)

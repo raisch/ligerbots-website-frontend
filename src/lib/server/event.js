@@ -47,7 +47,6 @@ export default class Event {
       throw new Error(`failed to retrieve events: ${JSON.stringify(err)}`)
     }
     debug(`getEvents(status=${status}) result: ${JSON.stringify(result)}`)
-    // console.log(result)
     return result
   }
 
@@ -138,6 +137,7 @@ export default class Event {
    * @param {string} [eventData.end_date] - The end date of the event (ISO format).
    * @param {string} [eventData.location] - The location of the event.
    * @param {string} [eventData.status] - The status of the event.
+   * @param {Array<{collection: string, item: {id: string, [key: string]: any}|string, id?: string}>} [eventData.trips] - The trips associated with the event.
    * @param {string} [mutation=Queries.UPDATE_EVENT_MUTATION] - The GraphQL mutation to use.
    *
    * @returns {Promise<EventRecord>} - The updated event record.
@@ -155,6 +155,34 @@ export default class Event {
 
     const client = await getBackendClient()
 
+    // Process trips data if present to ensure proper format for GraphQL
+    if (eventData.trips) {
+      // Make a deep copy to avoid modifying the original object
+      const processedEventData = { ...eventData }
+      
+      // If trips is an array with complex objects, we need to ensure they're properly formatted
+      if (Array.isArray(processedEventData.trips)) {
+        // Format trips data according to the GraphQL schema requirements
+        // This ensures that complex objects are properly serialized
+        processedEventData.trips = processedEventData.trips.map((trip) => {
+          if (trip.item && typeof trip.item === 'object') {
+            // Convert the item object to the expected format
+            // If it's a string ID reference, keep it as is
+            if (typeof trip.item !== 'string' && trip.item.id) {
+              return {
+                ...trip,
+                item: trip.item.id // Use just the ID reference instead of the full object
+              }
+            }
+          }
+          return trip
+        })
+      }
+      
+      // Use the processed data for the update
+      eventData = processedEventData
+    }
+
     const variables = {
       id,
       event: {
@@ -168,6 +196,8 @@ export default class Event {
     let result
     try {
       result = await client.query(mutation, variables)
+      console.log("\n\n\n\n\n")
+      console.log(result)
       debug(`updateEvent(id=${id}) resp: ${JSON.stringify(result)}`)
       result = result?.update_event_item || {}
     } catch (/** @type {any} */ err) {
