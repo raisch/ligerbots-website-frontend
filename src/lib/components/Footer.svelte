@@ -12,7 +12,7 @@
             /> -->
           </div>
           <div class="small-sprs">
-            <embed class="sprs-image" src="/images/sponsor_bar_narrow_2024a.svg" />
+            <!-- <embed class="sprs-image" src="/images/sponsor_bar_narrow_2024a.svg" /> -->
           </div>
         </div>
         <div style="text-align: center;">

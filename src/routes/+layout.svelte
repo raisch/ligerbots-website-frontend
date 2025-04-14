@@ -1,6 +1,7 @@
 <script>
   import { getContext, onMount } from 'svelte'
   import Masthead from '$lib/components/Masthead.svelte'
+  import IconList from '$lib/components/Icon-List.svelte'
   import Navbar from '$lib/components/Navbar.svelte'
   import MainPane from '$lib/components/MainPane.svelte'
   import Footer from '$lib/components/Footer.svelte'
@@ -14,10 +15,11 @@
   })
 </script>
 
-<div id="header-ghost"><!-- provides white-to-transparent shading at top of page --></div>
-<div class="container-fluid no-side-padding" id="page-container">
-  <div class="col-xs-12 no-side-padding" id="main-column">
+<div id="header-ghost"></div>
+<div class="w-full overflow-x-hidden px-0" id="page-container">
+  <div class="col-xs-12 w-full px-0" id="main-column">
     <Masthead />
+    <IconList />
     {#key user}
       <Navbar />
     {/key}
