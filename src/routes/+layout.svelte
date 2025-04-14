@@ -14,7 +14,7 @@
   })
 </script>
 
-<div id="header-ghost"></div>
+<div id="header-ghost"><!-- provides white-to-transparent shading at top of page --></div>
 <div class="container-fluid no-side-padding" id="page-container">
   <div class="col-xs-12 no-side-padding" id="main-column">
     <Masthead />
