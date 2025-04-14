@@ -43,8 +43,10 @@
   "type": "module",
   "dependencies": {
     "@directus/sdk": "^17.0.1",
+    "@tailwindcss/vite": "^4.0.14",
     "@types/debug": "^4.1.12",
     "debug": "^4.3.7",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "tailwindcss": "^4.0.14"
   }
 }
