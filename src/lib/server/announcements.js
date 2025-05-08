@@ -1,3 +1,5 @@
+/** @module lib/server/announcements */
+
 import createDebugMessages from 'debug'
 import { getBackendClient } from './client.js'
 
@@ -26,15 +28,34 @@ const POSTS_QUERY = `
       }
   }`
 
-// const POST_QUERY = `{
-//   post(filter: { slug: { _eq: "{{slug}}" } }) {
-//     slug
-//     title
-//     script
-//     content
-//     style
-//   }
-// }`
+/**
+ * Get announcements from Directus.
+ *
+ * @param {string} [query=POSTS_QUERY]
+ *
+ * @throws {Error} if failed to retrieve files.
+ *
+ * @returns {Promise<AnnouncementsList>}
+ */
+export default async function getAnnouncements(query = POSTS_QUERY) {
+  const client = await getBackendClient()
+
+  debug(`getAnnouncements() query: ${query}`)
+
+  let result
+  try {
+    result = await client.query(query)
+  } catch (/** @type {any} */ err) {
+    throw new Error(`failed to retrieve posts: ${JSON.stringify(err)}`)
+  }
+  if (!(result && result.post && Array.isArray(result.post))) {
+    console.error(`getAnnouncements() failed to retrieve posts: ${JSON.stringify(result)}`)
+    return []
+  }
+  result = result.post
+  debug(`getPosts() result: ${JSON.stringify(result)}`)
+  return result
+}
 
 /**
  * @typedef {Object} Announcement
@@ -50,33 +71,3 @@ const POSTS_QUERY = `
 /**
  * @typedef {Array.<Announcement>} AnnouncementsList
  */
-
-/**
- *
- * @param {string} [query=POSTS_QUERY]
- *
- * @throws {Error} if failed to retrieve files.
- *
- * @returns {Promise<AnnouncementsList>}
- */
-export default async function getAnnouncements (query = POSTS_QUERY) {
-  const client = await getBackendClient()
-
-  debug(`getAnnouncements() query: ${query}`)
-
-  let result
-  try {
-    result = await client.query(query)
-  } catch (/** @type {any} */ err) {
-    throw new Error(`failed to retrieve posts: ${JSON.stringify(err)}`)
-  }
-  if (!(result && result.post && Array.isArray(result.post))) {
-    console.error(
-      `getAnnouncements() failed to retrieve posts: ${JSON.stringify(result)}`
-    )
-    return []
-  }
-  result = result.post
-  debug(`getPosts() result: ${JSON.stringify(result)}`)
-  return result
-}

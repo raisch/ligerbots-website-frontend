@@ -1,3 +1,5 @@
+/** @module lib/util */
+
 /**
  * Format date string to human-readable format: 'January 1, 2024'.
  *

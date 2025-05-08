@@ -1,3 +1,5 @@
+/** @module routes/carpool/[id] */
+
 import Event from '$lib/server/event.js'
 
 /** @type {import('./$types').PageServerLoad} */

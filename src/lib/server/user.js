@@ -1,3 +1,15 @@
+/**
+ * Server-side User related functions.
+ *
+ * - listAll: Get a list of all users.
+ * - listForDirectory: List all published users for the /directory route.
+ * - listForFacebook: List all published users with photos for the /facebook route.
+ * - findByEmail: Find a user by email address.
+ * - login: Log in a user.
+ *
+ * @module
+ */
+
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from './client.js'
@@ -5,6 +17,63 @@ import { getBackendClient } from './client.js'
 const debug = createDebugMessages('APP:$lib/server/user')
 
 export default class User {
+  /**
+   * Get a list of all users.
+   *
+   * @returns {Promise.<Array.<UserRecord>>} - The list of all users.
+   */
+  static async listAll() {
+    const client = await getBackendClient()
+    const query = `
+      query Users {
+        users(limit: -1, sort: ["lastname", "firstname"]) {
+          id
+          status
+          last_login
+          firstname
+          lastname
+          fullname
+          slug
+          photo {
+            id
+            filename_disk
+            filename_download
+          }
+          email_address
+          groups
+          is_admin
+          school
+          graduation_year
+          phone_number
+          parent_names
+          parents_email_address
+          emergency_phone_number
+          children,
+          address
+          city
+          state
+          zipcode
+          notes
+        }
+      }`
+
+    debug(`listAll: query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      console.error(`Failed to list users: ${JSON.stringify(err)}`)
+      throw new Error(`Failed to list users: ${err}`, { cause: err })
+    }
+
+    if (!(result && result.users && Array.isArray(result.users))) {
+      return []
+    }
+
+    return result.users
+  }
+
   /**
    * List all published users for the /directory route.
    *

@@ -1,3 +1,4 @@
+/** @module */
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'

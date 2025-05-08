@@ -1,3 +1,5 @@
+/** @module */
+
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
@@ -24,7 +26,7 @@ const PAGE_QUERY = `{
  *
  * @throws {Error} if failed to retrieve files.
  */
-export default async function getPage (slug, query = PAGE_QUERY) {
+export default async function getPage(slug, query = PAGE_QUERY) {
   const client = await getBackendClient()
 
   query = query.replace('{{slug}}', slug)

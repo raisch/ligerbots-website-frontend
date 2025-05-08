@@ -1,3 +1,5 @@
+/** @module */
+
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
@@ -21,7 +23,7 @@ const FILES_QUERY = `{
  *
  * @throws {Error} if failed to retrieve files.
  */
-export default async function getFiles (query = FILES_QUERY) {
+export default async function getFiles(query = FILES_QUERY) {
   const client = await getBackendClient()
 
   debug(`getFiles() query: ${query}`)

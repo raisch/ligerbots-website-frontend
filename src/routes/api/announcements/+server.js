@@ -1,3 +1,5 @@
+/** @module routes/api/announcements */
+
 import createDebugMessages from 'debug'
 
 import { json } from '@sveltejs/kit'
@@ -11,7 +13,7 @@ const debug = createDebugMessages('APP:src/routes/api/announcements/+server')
  *
  * @returns {Promise<Response>}
  */
-export async function GET () {
+export async function GET() {
   let result
   try {
     result = await getAnnouncements()

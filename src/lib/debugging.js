@@ -1,3 +1,5 @@
+/** @module debugging */
+
 // Client-side debugging messages
 
 import { browser } from '$app/environment'
@@ -7,20 +9,20 @@ const DEBUGGING = '__LIGERBOTS_DEBUGGING__'
 export default class Debug {
   static _state = 'false'
 
-  static get state () {
+  static get state() {
     return Debug._state === 'true'
   }
 
-  static on () {
+  static on() {
     Debug._state = 'true'
     return Debug
   }
 
-  static off () {
+  static off() {
     Debug._state = 'false'
   }
 
-  static test () {
+  static test() {
     console.log('test')
     Debug.on()
     Debug.log('Debugging is on')
@@ -33,7 +35,7 @@ export default class Debug {
    *
    * @param  {...any} args
    */
-  static log (...args) {
+  static log(...args) {
     if (Debug.state) {
       console.log(...args)
     }

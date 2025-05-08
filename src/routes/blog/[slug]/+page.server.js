@@ -1,3 +1,5 @@
+/** @module module:routes/blog/[slug] */
+
 import createDebugMessages from 'debug'
 
 import { error } from '@sveltejs/kit'

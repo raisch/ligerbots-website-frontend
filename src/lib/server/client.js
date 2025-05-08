@@ -1,3 +1,5 @@
+/** @module lib/server/client */
+
 import 'dotenv/config'
 import createDebugMessages from 'debug'
 
@@ -10,8 +12,6 @@ const debug = createDebugMessages('APP:$lib/server/client')
  * <br/>
  * Reads the Directus API URL, username, and password from environment variables.
  *
- * @module lib/backend
- *
  * @exports isDirectusClient
  * @exports getBackendClient
  *
@@ -20,11 +20,27 @@ const debug = createDebugMessages('APP:$lib/server/client')
  *
  */
 
-/** @type {string|undefined} */
+/**
+ * URL to the Directus API.<br/>
+ * <br/>
+ * This is the URL of the Directus API that will be used to authenticate users.<br/>
+ * It is read from the environment variable `API_URL`.<br/>
+ * <br/>
+ * The URL should be in the format `https://example.com` or `http://example.com`.<br/>
+ *
+ * @type {string|undefined}
+ */
 const API_URL = process.env.API_URL // || `${process.env.API_SCHEME}://${process.env.API_HOST}:${process.env.API_PORT}`
 debug(`API_URL: "${API_URL}"`)
 
-/** @type {string|undefined} */
+/**
+ * Security token to the Directus API.<br/>
+ * <br/>
+ * This is the security token that will be used to authenticate users.<br/>
+ * It is read from the environment variable `API_TOKEN`.<br/>
+ * <br/>
+ * @type {string|undefined}
+ */
 const API_TOKEN = process.env.API_TOKEN
 debug(`API_TOKEN: "${API_TOKEN}"`)
 
@@ -32,9 +48,13 @@ if (!(API_URL && API_TOKEN)) {
   throw new Error('API_URL, API_TOKEN must be defined in environment variables.')
 }
 
-/** @type {string[]} */
+/**
+ * Client properties used by isDirectusClient() to check if an object is a DirectusClient.
+ * <br/>
+ * @constant {string[]}
+ * @default
+ */
 const CLIENT_PROPS = [
-  // DirectusClient properties used by isDirectusClient()
   'globals',
   'url',
   'with',
@@ -49,15 +69,14 @@ const CLIENT_PROPS = [
 ]
 
 /**
- * @typedef {*}  DirectusClient - See {@link https://www.npmjs.com/package/@directus/sdk}
- *
- * @property {function} globals - get global settings
- * @property {function} login
- * @property {function} request - supports REST requests
- * @property {function} query - supports GraphQL queries
+ * The client instance of the Directus SDK.<br/>
+ * <br/>
+ * This is the client instance that will be used to authenticate users.<br/>
+ * It is created using the `createDirectus` function from the Directus SDK.<br/>
+ * It is memoized to avoid creating multiple instances of the client.<br/>
+ * <br/>
+ * @type {DirectusClient}
  */
-
-/** @type {DirectusClient} */
 let client
 
 /**
@@ -107,3 +126,12 @@ export async function getBackendClient(apiUrl = API_URL, apiToken = API_TOKEN) {
 export function isDirectusClient(client) {
   return typeof client === 'object' && CLIENT_PROPS.every((prop) => prop in client)
 }
+
+/**
+ * @typedef {*}  DirectusClient - See {@link https://www.npmjs.com/package/@directus/sdk}
+ *
+ * @property {function} globals - get global settings
+ * @property {function} login
+ * @property {function} request - supports REST requests
+ * @property {function} query - supports GraphQL queries
+ */

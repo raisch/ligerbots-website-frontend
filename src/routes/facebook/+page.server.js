@@ -1,8 +1,17 @@
+/** @module routes/facebook */
+
 import getSiteConfig from '$lib/server/site'
 import User from '$lib/server/user.js'
 import getFiles from '$lib/server/files.js'
 
-export async function load ({ fetch }) {
+/**
+ * Loader for the Facebook page.
+ *
+ * @param {object} options
+ * @param {import('@sveltejs/kit').RequestEvent} options.fetch
+ * @returns {Promise<{ users: Array<import('$lib/server/user.js').FacebookUserRecord>, photos: Array<import('$lib/server/files.js').FileRecord> }>}
+ */
+export async function load({ fetch }) {
   /** @type {Array<import('$lib/server/user.js').FacebookUserRecord>} */
   let users = []
   try {

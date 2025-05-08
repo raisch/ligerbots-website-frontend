@@ -1,3 +1,5 @@
+/** @module routes/signup */
+
 // import getSiteConfig from '$lib/server/site'
 
 // export async function load ({ fetch }) {
