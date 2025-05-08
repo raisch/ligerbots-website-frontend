@@ -1,4 +1,16 @@
-/** @module lib/server/client */
+/**
+ * Server-side client to the Directus API.<br/>
+ *
+ * Reads the Directus API URL, username, and password from environment variables.
+ *
+ * @exports isDirectusClient
+ * @exports getBackendClient
+ *
+ * @requires {@link https://www.npmjs.com/package/dotenv|dotenv}
+ * @requires {@link https://www.npmjs.com/package/@directus/sdk|@directus/sdk}
+ *
+ * @module lib/server/client
+ */
 
 import 'dotenv/config'
 import createDebugMessages from 'debug'
@@ -9,14 +21,7 @@ const debug = createDebugMessages('APP:$lib/server/client')
 
 /**
  * Backend Client functions.<br/>
- * <br/>
- * Reads the Directus API URL, username, and password from environment variables.
- *
- * @exports isDirectusClient
- * @exports getBackendClient
- *
- * @requires {@link https://www.npmjs.com/package/dotenv|dotenv}
- * @requires {@link https://www.npmjs.com/package/@directus/sdk|@directus/sdk}
+
  *
  */
 
@@ -92,6 +97,7 @@ let client
  * @throws {Error} If there is an error logging in.
  *
  * @example
+ * <caption>Usage:</caption>
  *  const client = await getBackendClient() // Uses environment variables for service url and login credentials.
  *
  *  const folders = await this._client.request(

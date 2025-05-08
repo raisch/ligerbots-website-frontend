@@ -11,4 +11,10 @@ if (browser) {
   }
 }
 
+/**
+ * A writable store to manage the user state.
+ * <br/>
+ * This store is used to keep track of the current user in the application.
+ * It is initialized with the user data from localStorage if available.
+ */
 export const user = writable(userRec || null)

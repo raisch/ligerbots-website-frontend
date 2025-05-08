@@ -1,6 +1,8 @@
-/** @module debugging */
-
-// Client-side debugging messages
+/**
+ * Client-side debugging messages.
+ *
+ * @module debugging
+ */
 
 import { browser } from '$app/environment'
 

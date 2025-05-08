@@ -5,6 +5,17 @@
 const API_URL = process.env.API_URL // || `${process.env.API_SCHEME}://${process.env.API_HOST}:${process.env.API_PORT}`
 
 /** @type {import('@sveltejs/kit').Handle} */
+/**
+ * Hook to redirect /assets requests.
+ *
+ * This function is called for every request to the server.
+ *
+ * @param {HandlerArgs} opts
+ * @property {RequestEvent} opts.event
+ * @property {function} opts.resolve
+ *
+ * @returns {Promise<Response>} The resolved response.
+ */
 export async function handle({ event, resolve }) {
   /*
    * NB: On the service machine, we use nginx to redirect requests to /assets to the backend
@@ -18,8 +29,14 @@ export async function handle({ event, resolve }) {
   }
 
   return await resolve(event, {
-    filterSerializedResponseHeaders: (key, value) => {
+    filterSerializedResponseHeaders: (/** @type {any} */ key, /** @type {any} */ value) => {
       return key.toLowerCase() === 'content-type'
     }
   })
 }
+
+/**
+ * @typedef {object} HandlerArgs
+ * @property {import('@sveltejs/kit').RequestEvent} event - The request event.
+ * @property {function} resolve - The resolve function.
+ */

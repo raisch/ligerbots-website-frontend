@@ -1,1 +1,4 @@
-/** @module lib/profile */
+/**
+ * Currently not implemented
+ * @module lib/profile
+ */
