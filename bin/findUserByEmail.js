@@ -2,9 +2,9 @@
 
 import 'dotenv/config'
 
-import { readUser } from '../lib/user.js'
+import User from '../src/lib/server/user.js'
 
-function usage () {
+function usage() {
   console.log('Usage: showUser <email>')
   process.exit(1)
 }
@@ -14,7 +14,7 @@ if (!userEmailAddress) {
   usage()
 }
 
-const user = await readUser(userEmailAddress)
+const user = await User.findByEmail(userEmailAddress)
 
 console.log({ user })
 
