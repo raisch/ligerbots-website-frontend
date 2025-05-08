@@ -1,4 +1,10 @@
-/** @module lib/server/announcements */
+/**
+ * Access Directus announcements.
+ *
+ * This module provides a function to retrieve announcements from the Directus API.
+ *
+ * @module lib/server/announcements
+ */
 
 import createDebugMessages from 'debug'
 import { getBackendClient } from './client.js'
