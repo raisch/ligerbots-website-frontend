@@ -104,9 +104,6 @@
 
         <button type="submit" class="btn btn-primary">Save Changes</button>
         <button type="button" class="btn btn-danger" on:click={archiveEvent}>Archive Event</button>
-        <p>
-            <strong>Note:</strong> saving changes functionality implemented.
-        </p>
     </form>
 
     <h2>Trips</h2>
@@ -125,10 +122,12 @@
                             <p class="card-text"><strong>Departs At:</strong> {trip.item.departs_at}</p>
                             <p class="card-text"><strong>Arrives At:</strong> {trip.item.destination}</p>
 
+                            <p>trip id: {trip.item.id}</p>
+
                             <button class="btn btn-primary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}`)}>View Trip</button>
 
                             <div class="bg-light p-2 rounded">
-                                <button class="btn btn-secondary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}/edit`)}>Edit Trip</button>
+                                <button class="btn btn-secondary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}/${trip.collection}/edit`)}>Edit Trip</button>
                                 <button class="btn btn-danger" on:click={() => alert("Delete trip functionality not implemented yet")}>Delete Trip</button>
                             </div>
                         </div>

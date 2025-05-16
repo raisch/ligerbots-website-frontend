@@ -193,6 +193,128 @@ const queries = {
     }
 }`,
 
+  // GraphQL mutation for getting trips
+  GET_DESTINATION_TRIPS_MUTATION: `query ($event_id: ID!) {
+    event_by_id(id: $event_id) {
+      trips {
+        item {
+          ... on destination_trip {
+            id
+            destination
+            departs_from
+            departs_on
+            departs_at
+            status
+            rides {
+              id
+              collection
+              item {
+                ... on trip_ride {
+                  id
+                  ride {
+                    vehicle_type
+                    name
+                    seats
+                    driver {
+                      item {
+                        ... on users {
+                          id
+                          firstname
+                          lastname
+                          email_address
+                          phone_number
+                        }
+                      }
+                    }
+                  }
+                  riders {
+                    item {
+                      ... on users {
+                        id
+                        firstname
+                        lastname
+                        email_address
+                        phone_number
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        collection
+      }
+    }
+  }`,
+
+  // GraphQL mutation for getting trip by id
+  GET_TRIP_BY_ID_MUTATION: `query ($id: ID!) {
+    trip_by_id(id: $id) {
+      id
+      destination
+      departs_from
+      departs_on
+      departs_at
+      status
+    }
+  }`,
+
+  // GraphQL mutation for getting return trips
+  GET_RETURN_TRIPS_MUTATION: `query ($event_id: ID!) {
+    event_by_id(id: $event_id) {
+      trips {
+        item {
+          ... on return_trip {
+            id
+            destination
+            departs_from
+            departs_on
+            departs_at
+            status
+            rides {
+              id
+              collection
+              item {
+                ... on trip_ride {
+                  id
+                  ride {
+                    vehicle_type
+                    name
+                    seats
+                    driver {
+                      item {
+                        ... on users {
+                          id
+                          firstname
+                          lastname
+                          email_address
+                          phone_number
+                        }
+                      }
+                    }
+                  }
+                  riders {
+                    item {
+                      ... on users {
+                        id
+                        firstname
+                        lastname
+                        email_address
+                        phone_number
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        collection
+      }
+    }
+  }`,
+
   // GraphQL mutation for creating a destination trip
   CREATE_DESTINATION_TRIP_MUTATION: `mutation ($trip: create_destination_trip_input!) {
     create_destination_trip_item(data: $trip) {
