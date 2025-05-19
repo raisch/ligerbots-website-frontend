@@ -246,6 +246,10 @@ export default class User {
 
     return !!result?.utils_hash_verify ? user : null
   }
+
+  static async requestAccount(/** @type {UserAccountRequest} */ request) {
+    
+  }
 }
 
 /**
@@ -299,4 +303,28 @@ export default class User {
  * @property {String} photo.id
  * @property {String} photo.filename_disk
  * @property {String} photo.filename_download
+ */
+
+/**
+ * @typedef UserAccountRequest
+ * @property {string} firstname
+ * @property {string} lastname
+ * @property {string} username
+ * @property {string} email
+ * @property {string} phonenumber
+ * @property {string} address1
+ * @property {string} address2
+ * @property {string} city
+ * @property {string} state
+ * @property {string} zip
+ * @property {string} school
+ * @property {string} category
+ * 
+ * @property {string[]?} parentNames
+ * @property {string?} parentEmail
+ * @property {string?} parentPhone
+ * @property {number?} graduationYear
+ * 
+ * @property {string[]?} roles
+ * @property {string[]?} childrenNames
  */
