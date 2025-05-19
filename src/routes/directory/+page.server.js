@@ -5,8 +5,10 @@ import User from '$lib/server/user'
 /** Loader for directory
  * @returns {Promise<object>} - Returns a promise that resolves to an object containing an array of users.
  */
-export async function load() {
-  let users
+export async function load(page) {
+  User.requireLogin(page)
+
+  let users  
 
   try {
     users = await User.listForDirectory()

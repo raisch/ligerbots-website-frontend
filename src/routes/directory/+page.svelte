@@ -1,5 +1,6 @@
 <script>
   import { page } from '$app/stores'
+  import User from '../../lib/server/user';
 
   // console.log(`in directory/+page.js, page is ${JSON.stringify($page, null, 2)}`)
 
@@ -11,8 +12,6 @@
    * @typedef {Object} PageData
    * @property {DirectoryUserList} users
    */
-
-  requireLogin()
   
   /** @type {PageData}*/
   export let data

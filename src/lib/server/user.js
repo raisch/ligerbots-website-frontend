@@ -13,6 +13,7 @@
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from './client.js'
+import { error, redirect } from '@sveltejs/kit'
 
 const debug = createDebugMessages('APP:$lib/server/user')
 
@@ -265,6 +266,16 @@ export default class User {
     const cookies = document.cookie.split(';')
     const cookie = cookies.find(cookie => cookie.trim().startsWith(name + '='))
     return cookie ? cookie.split('=', 2)[1] : null
+  }
+
+  /**
+   * @param {import('@sveltejs/kit').ServerLoadEvent} page
+   */
+  static requireLogin(page) {
+    const user = page.cookies.get('user')
+    if (!user) {
+      throw redirect(302, `/login?redirect=${encodeURIComponent(page.url.pathname + page.url.search)}#msg=not-logged-in`)
+    }
   }
 }
 

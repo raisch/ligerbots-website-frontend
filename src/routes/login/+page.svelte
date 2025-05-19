@@ -70,14 +70,14 @@
   </div>
   <div class="row bottom-margin row-margins">
     <div class="col-xs-12">
-      {#if $page.url.hash.startsWith('#msg=')}
-        <div id="top-error-msg">
-          {#if $page.url.hash === '#msg=not-logged-in'}
-            You must be logged in to view this page.
-          {/if}
-        </div>
-      {/if}
       <center>
+        {#if $page.url.hash.startsWith('#msg=')}
+          <div id="top-error-msg">
+            {#if $page.url.hash === '#msg=not-logged-in'}
+              You must be logged in to view this page.
+            {/if}
+          </div>
+        {/if}
         <form on:submit|preventDefault={handleSubmit}>
           <input class="form-field" bind:value={email} type="email" placeholder="Email" />
           <input class="form-field" bind:value={password} type="password" placeholder="Password" />
@@ -96,7 +96,7 @@
 
 <style>
   .form-field {
-    width: 300px;
+    width: 400px;
     height: 40px;
     margin: 10px;
     padding: 5px;
@@ -118,10 +118,12 @@
     color: red;
   }
   #top-error-msg {
+    width: 400px;
     border: 1px solid red;
     color: red;
-    background-color: lightcoral;
+    background-color: pink;
     padding: 10px;
     border-radius: 5px;
+    font-size: 14px;
   }
 </style>
