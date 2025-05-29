@@ -78,9 +78,10 @@ export default class User {
   /**
    * List all published users for the /directory route.
    *
+   * @param {Filters=} filter 
    * @returns {Promise.<Array.<DirectoryUserRecord>>} - The list of users.
    */
-  static async listForDirectory() {
+  static async listForDirectory(filter) {
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -110,7 +111,15 @@ export default class User {
       return []
     }
 
-    return result.users
+    /** @type {DirectoryUserRecord[]} */
+    let users = result.users
+
+    if (filter) {
+      if (filter.type === 'coaches') {
+        users = users.filter(user => user.groups.includes('Coach') || user.groups.includes('Mentor'))
+      }
+    }
+    return users
   }
 
   /**
@@ -354,4 +363,10 @@ export default class User {
  * 
  * @property {string[]?} roles
  * @property {string[]?} childrenNames
+ */
+
+/**
+ * @typedef {Object} Filters
+ * @property {string=} type
+ * @property {string[]=} roles
  */

@@ -4,7 +4,7 @@
   // console.log(`in directory/+page.js, page is ${JSON.stringify($page, null, 2)}`)
 
   /**
-   * @typedef {Array.<import('../../lib/server/user').DirectoryUserRecord>} DirectoryUserList
+   * @typedef {Array.<import('../../../lib/server/user').DirectoryUserRecord>} DirectoryUserList
    */
 
   /**

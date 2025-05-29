@@ -9,7 +9,7 @@
   $: user = {}
 
   onMount(async () => {
-    user = sessionStorage.getItem('user')
+    user = document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 1)[1] || sessionStorage.getItem('user')
     // console.log(`layout user:`, user)
   })
 </script>

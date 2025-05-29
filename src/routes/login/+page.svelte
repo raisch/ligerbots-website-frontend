@@ -4,7 +4,6 @@
   import { goto } from '$app/navigation'
   import { redirect } from '@sveltejs/kit'
   import { browser } from '$app/environment'
-  import { page } from '$app/stores';
 
   $: user = writable()
   setContext('user', user)
@@ -41,7 +40,9 @@
     document.cookie = `auth=true; path=/; max-age=86400; samesite=strict`
 
     // save user
-    sessionStorage.setItem('user', JSON.stringify(result.user))
+
+    // sessionStorage.setItem('user', JSON.stringify(result.user))
+    document.cookie = `user=${JSON.stringify(result.user)}; path=/; max-age=86400; samesite=strict`
 
     user.set(result.user)
     if (browser) {
@@ -63,7 +64,7 @@
   <div class="title-bar">
     <center>
       <div class="notindex-title">
-        <a href="/login" style="color: white;">LOGIN</a>
+        <span style="color: white;">LOGIN</span>
       </div>
     </center>
     <br />
@@ -71,17 +72,10 @@
   <div class="row bottom-margin row-margins">
     <div class="col-xs-12">
       <center>
-        {#if $page.url.hash.startsWith('#msg=')}
-          <div id="top-error-msg">
-            {#if $page.url.hash === '#msg=not-logged-in'}
-              You must be logged in to view this page.
-            {/if}
-          </div>
-        {/if}
         <form on:submit|preventDefault={handleSubmit}>
           <input class="form-field" bind:value={email} type="email" placeholder="Email" />
           <input class="form-field" bind:value={password} type="password" placeholder="Password" />
-          <button class="form-field"> Login </button>
+          <button class="form-field">Login</button>
         </form>
         <div id="error-msg" class="bottom-margin">Error</div>
         <br />
@@ -96,7 +90,7 @@
 
 <style>
   .form-field {
-    width: 400px;
+    width: 300px;
     height: 40px;
     margin: 10px;
     padding: 5px;
@@ -111,19 +105,10 @@
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     outline: none;
   }
-  
-  
+    
+
   #error-msg {
     display: none;
     color: red;
-  }
-  #top-error-msg {
-    width: 400px;
-    border: 1px solid red;
-    color: red;
-    background-color: pink;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 14px;
   }
 </style>

@@ -35,8 +35,8 @@
     // console.log('navbar resp:', resp)
     data.config = resp?.result?.navbar_config || []
 
-    const user = sessionStorage.getItem('user')
-    // console.log('user:', user)
+    const user = document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 1)[1] || sessionStorage.getItem('user')
+    console.log('user:', user)
     data.user = user ? JSON.parse(user) : null
   })
 </script>
