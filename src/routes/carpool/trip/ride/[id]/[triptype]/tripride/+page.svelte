@@ -16,20 +16,6 @@
   let id = data.id;
   let tripData = trip.item || {};
 
-  // Form for creating new ride
-  let showCreateForm = false;
-  let newRideData = {
-    ride: {
-      vehicle_type: '',
-      name: '',
-      seats: 4,
-      driver: null
-    },
-    trip: {
-      id: id,
-      collection: tripType
-    }
-  };
 
   onMount(() => {
     const user = sessionStorage.getItem('user');
@@ -93,74 +79,6 @@
     goto(`/carpool/trip/ride/${id}/${tripType}/edit`);
   }
 
-  function toggleCreateForm() {
-    showCreateForm = !showCreateForm;
-  }
-
-  async function handleCreateRide() {
-    try {
-      const response = await fetch('/api/triprides', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newRideData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create ride');
-      }
-
-      const result = await response.json();
-      alert('Ride created successfully!');
-      
-      // Reset form
-      newRideData = {
-        ride: {
-          vehicle_type: '',
-          name: '',
-          seats: 4,
-          driver: null
-        },
-        trip: {
-          id: id,
-          collection: tripType
-        }
-      };
-      showCreateForm = false;
-      
-      // Refresh the page to show the new ride
-      window.location.reload();
-    } catch (error) {
-      console.error('Error creating ride:', error);
-      alert('Failed to create ride. Please try again.');
-    }
-  }
-
-  /**
-   * @param {any} rideId
-   */
-  async function handleDeleteRide(rideId) {
-    if (!confirm('Are you sure you want to delete this ride?')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/triprides/${rideId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete ride');
-      }
-
-      alert('Ride deleted successfully!');
-      window.location.reload();
-    } catch (error) {
-      console.error('Error deleting ride:', error);
-      alert('Failed to delete ride. Please try again.');
-    }
-  }
 
   /**
    * @param {any} ride
@@ -195,9 +113,6 @@
           {#if isAdmin}
             <div>
               <button class="btn btn-primary" on:click={handleEditTrip}>Edit Trip</button>
-              <button class="btn btn-success" on:click={toggleCreateForm}>
-                {showCreateForm ? 'Cancel' : 'Add New Ride'}
-              </button>
             </div>
           {/if}
         </div>
@@ -221,49 +136,6 @@
     {/if}
   </div>
 
-  <!-- Create New Ride Form -->
-  {#if showCreateForm && isAdmin}
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <h3>Create New Ride</h3>
-          </div>
-          <div class="card-body">
-            <form on:submit|preventDefault={handleCreateRide}>
-              <div class="row">
-                <div class="col-md-6">
-                  <label for="vehicle-type" class="form-label">Vehicle Type</label>
-                  <select bind:value={newRideData.ride.vehicle_type} id="vehicle-type" class="form-control mb-3" required>
-                    <option value="">Select Vehicle Type</option>
-                    <option value="Car">Car</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Van">Van</option>
-                    <option value="Truck">Truck</option>
-                    <option value="Bus">Bus</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label for="vehicle-name" class="form-label">Vehicle Name</label>
-                  <input bind:value={newRideData.ride.name} id="vehicle-name" type="text" class="form-control mb-3" placeholder="e.g., John's Honda Civic" required />
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <label for="seats" class="form-label">Number of Seats</label>
-                  <input bind:value={newRideData.ride.seats} id="seats" type="number" min="1" max="50" class="form-control mb-3" required />
-                </div>
-              </div>
-              <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-success">Create Ride</button>
-                <button type="button" class="btn btn-secondary" on:click={toggleCreateForm}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  {/if}
 
   <!-- Trip Rides List -->
   <div class="row">
@@ -295,11 +167,6 @@
                     <button class="btn btn-primary btn-sm" on:click={() => handleViewRide(ride.item?.id)}>
                       View Details
                     </button>
-                    {#if isAdmin}
-                      <button class="btn btn-danger btn-sm" on:click={() => handleDeleteRide(ride.item?.id)}>
-                        Delete
-                      </button>
-                    {/if}
                   </div>
                 </div>
               </div>
@@ -309,9 +176,6 @@
       {:else}
         <div class="alert alert-info">
           <p>No rides have been created for this trip yet.</p>
-          {#if isAdmin}
-            <button class="btn btn-success" on:click={toggleCreateForm}>Create First Ride</button>
-          {/if}
         </div>
       {/if}
     </div>

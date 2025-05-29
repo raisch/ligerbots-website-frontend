@@ -89,7 +89,7 @@
                         <div>
                           <strong>Ride ID:</strong> {ride.id || 'Unknown'}
                         </div>
-                        <button class="btn btn-sm btn-primary" on:click={() => goto(`/carpool/trip/ride/${ride.id}`)}>View Details</button>
+                        <button class="btn btn-sm btn-primary" on:click={() => goto(`/carpool/trip/ride/${ride.id}/${tripType}/tripride`)}>View Details</button>
                       </div>
                     </li>
                   {/each}
