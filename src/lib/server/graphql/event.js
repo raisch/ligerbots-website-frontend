@@ -502,7 +502,8 @@ const queries = {
         count
       }
     }
-  }`
+  }`,
+
 }
 
 export default queries
