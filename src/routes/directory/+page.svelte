@@ -12,6 +12,8 @@
    * @property {DirectoryUserList} users
    */
 
+  requireLogin()
+  
   /** @type {PageData}*/
   export let data
 

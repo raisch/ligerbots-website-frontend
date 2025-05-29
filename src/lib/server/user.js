@@ -250,6 +250,22 @@ export default class User {
   static async requestAccount(/** @type {UserAccountRequest} */ request) {
     
   }
+  
+  /**
+   * 
+   * @param {import('@sveltejs/kit').Cookies} cookies 
+   * @returns 
+   */
+  
+  /**
+   * @param {string} name
+   */
+  static getCookie(name) {
+    if (typeof document === 'undefined') return null // only run in browser
+    const cookies = document.cookie.split(';')
+    const cookie = cookies.find(cookie => cookie.trim().startsWith(name + '='))
+    return cookie ? cookie.split('=', 2)[1] : null
+  }
 }
 
 /**

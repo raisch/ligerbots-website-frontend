@@ -4,6 +4,7 @@
   import { goto } from '$app/navigation'
   import { redirect } from '@sveltejs/kit'
   import { browser } from '$app/environment'
+  import { page } from '$app/stores';
 
   $: user = writable()
   setContext('user', user)
@@ -69,6 +70,13 @@
   </div>
   <div class="row bottom-margin row-margins">
     <div class="col-xs-12">
+      {#if $page.url.hash.startsWith('#msg=')}
+        <div id="top-error-msg">
+          {#if $page.url.hash === '#msg=not-logged-in'}
+            You must be logged in to view this page.
+          {/if}
+        </div>
+      {/if}
       <center>
         <form on:submit|preventDefault={handleSubmit}>
           <input class="form-field" bind:value={email} type="email" placeholder="Email" />
@@ -87,8 +95,33 @@
 </div>
 
 <style>
+  .form-field {
+    width: 300px;
+    height: 40px;
+    margin: 10px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    transition: all 0.1s ease-in-out;
+    display: block;
+  }
+  .form-field:is(:hover, :focus):not(:disabled) {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+  
+  
   #error-msg {
     display: none;
     color: red;
+  }
+  #top-error-msg {
+    border: 1px solid red;
+    color: red;
+    background-color: lightcoral;
+    padding: 10px;
+    border-radius: 5px;
   }
 </style>
