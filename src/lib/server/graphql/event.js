@@ -450,6 +450,58 @@ const queries = {
         count
       }
     }
+  }`,
+
+  // GraphQL query for getting a trip ride by ID
+  GET_TRIP_RIDE_BY_ID_QUERY: `query ($id: ID!) {
+    trip_ride_by_id(id: $id) {
+      id
+      ride {
+        id
+        vehicle_type
+        name
+        seats
+        driver {
+          item {
+            ... on users {
+              id
+              firstname
+              lastname
+              email_address
+              phone_number
+              photo {
+                id
+                filename_disk
+                filename_download
+              }
+            }
+          }
+          id
+          collection
+        }
+      }
+      riders {
+        item {
+          ... on users {
+            id
+            firstname
+            lastname
+            email_address
+            phone_number
+            photo {
+              id
+              filename_disk
+              filename_download
+            }
+          }
+        }
+        id
+        collection
+      }
+      riders_func {
+        count
+      }
+    }
   }`
 }
 

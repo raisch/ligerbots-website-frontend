@@ -766,6 +766,43 @@ export default class Event {
     )
     return result
   }
+
+  /**
+   * Get a trip ride by ID.
+   *
+   * @param {string} tripRideId - The ID of the trip ride to retrieve.
+   * @param {string} [query=Queries.GET_TRIP_RIDE_BY_ID_QUERY] - The GraphQL query to use.
+   *
+   * @returns {Promise<Object>} - The trip ride record.
+   *
+   * @throws {Error} if failed to retrieve the trip ride.
+   */
+  static async getTripRideById(tripRideId, query = Queries.GET_TRIP_RIDE_BY_ID_QUERY) {
+    if (!tripRideId) {
+      throw new Error('Trip ride ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    const variables = {
+      id: tripRideId
+    }
+
+    debug(`getTripRideById(tripRideId=${tripRideId}) query: ${query}`)
+    debug(`getTripRideById(tripRideId=${tripRideId}) variables: ${JSON.stringify(variables)}`)
+
+    let result
+    try {
+      result = await client.query(query, variables)
+      debug(`getTripRideById(tripRideId=${tripRideId}) resp: ${JSON.stringify(result)}`)
+      result = result?.trip_ride_by_id || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to retrieve trip ride: ${JSON.stringify(err)}`)
+    }
+
+    debug(`getTripRideById(tripRideId=${tripRideId}) result: ${JSON.stringify(result)}`)
+    return result
+  }
 }
 
 /**

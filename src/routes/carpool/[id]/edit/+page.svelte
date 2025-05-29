@@ -115,7 +115,7 @@
                     <div class="card mb-6">
                         <div class="card-body">
                             <h2 class="card-title">
-                                <a href={`/carpool/trip/ride/${trip.item.id}`}>{trip.item.destination}</a>
+                                <a href={`/carpool/trip/ride/${trip.item.id}/${trip.collection}`}>{trip.item.destination}</a>
                             </h2>
                             <p class="card-text"><strong>Departs From:</strong> {trip.item.departs_from}</p>
                             <p class="card-text"><strong>Departs On:</strong> {trip.item.departs_on}</p>
@@ -124,7 +124,7 @@
 
                             <p>trip id: {trip.item.id}</p>
 
-                            <button class="btn btn-primary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}`)}>View Trip</button>
+                            <button class="btn btn-primary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}/${trip.collection}`)}>View Trip</button>
 
                             <div class="bg-light p-2 rounded">
                                 <button class="btn btn-secondary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}/${trip.collection}/edit`)}>Edit Trip</button>

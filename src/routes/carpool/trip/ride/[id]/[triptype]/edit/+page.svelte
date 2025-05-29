@@ -27,23 +27,38 @@
 
     async function saveTrip() {
         try {
+            // Filter out complex nested data that shouldn't be updated via trip mutation
+            const tripUpdateData = {
+                id: formData.id,
+                destination: formData.destination,
+                departs_from: formData.departs_from,
+                departs_on: formData.departs_on,
+                departs_at: formData.departs_at,
+                status: formData.status
+                // Explicitly exclude 'rides' - they should be updated separately
+            };
+            
             const response = await fetch(`/api/trips/${$page.params.triptype}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(tripUpdateData),
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update trip.');
+                const errorText = await response.text();
+                throw new Error(`Failed to update trip: ${response.status} ${errorText}`);
             }
+
+            const result = await response.json();
 
             alert('Trip updated successfully!');
             goto(`/carpool/trip/ride/${formData.id}/${$page.params.triptype}`);
         } catch (error) {
             console.error('Error updating trip:', error);
-            alert('Failed to update trip.');
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            alert(`Failed to update trip: ${errorMessage}`);
         }
     }
 </script>
