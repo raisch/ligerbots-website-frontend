@@ -30,19 +30,14 @@
   }
 
   onMount(async () => {
-    // console.log('Navbar onMount')
     const res = await fetch('/api/navbar')
     const resp = await res.json()
-    // console.log('navbar resp:', resp)
     data.config = resp?.result?.navbar_config || []
 
     try {
-      console.log('document.cookie:', document.cookie)
       const user = document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 2)[1] || sessionStorage.getItem('user')
-      // console.log('user:', user)
       data.user = user ? JSON.parse(decodeURIComponent(user)) : null
     } catch (err) {
-      // console.error(`Cookie error: ${err}`)
       data.user = null
     }
   })
