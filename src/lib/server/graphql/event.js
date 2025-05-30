@@ -496,6 +496,93 @@ const queries = {
     }
   }`,
 
+  // GraphQL queries and mutations for rides (vehicles)
+  GET_ALL_RIDES_QUERY: `{
+    ride {
+      id
+      vehicle_type
+      name
+      seats
+      driver {
+        item {
+          ... on users {
+            id
+            firstname
+            lastname
+            email_address
+            phone_number
+          }
+        }
+        id
+        collection
+      }
+    }
+  }`,
+
+  GET_RIDE_BY_ID_QUERY: `query ($id: ID!) {
+    ride_by_id(id: $id) {
+      id
+      vehicle_type
+      name
+      seats
+      driver {
+        item {
+          ... on users {
+            id
+            firstname
+            lastname
+            email_address
+            phone_number
+          }
+        }
+        id
+        collection
+      }
+    }
+  }`,
+
+  CREATE_RIDE_MUTATION: `mutation ($ride: create_ride_input!) {
+    create_ride_item(data: $ride) {
+      id
+      vehicle_type
+      name
+      seats
+      driver {
+        item {
+          ... on users {
+            id
+            firstname
+            lastname
+          }
+        }
+      }
+    }
+  }`,
+
+  UPDATE_RIDE_MUTATION: `mutation ($id: ID!, $ride: update_ride_input!) {
+    update_ride_item(id: $id, data: $ride) {
+      id
+      vehicle_type
+      name
+      seats
+      driver {
+        item {
+          ... on users {
+            id
+            firstname
+            lastname
+          }
+        }
+      }
+    }
+  }`,
+
+  DELETE_RIDE_MUTATION: `mutation ($id: ID!) {
+    delete_ride_item(id: $id) {
+      id
+    }
+  }`
+
 }
 
 export default queries

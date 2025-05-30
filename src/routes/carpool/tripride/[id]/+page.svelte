@@ -139,6 +139,42 @@
   }
 
   /**
+   * @param {any} rider
+   */
+  async function handleKickRider(rider) {
+    if (!rider.id) {
+      alert('Invalid rider data.');
+      return;
+    }
+
+    const riderName = `${rider.item?.firstname || 'Unknown'} ${rider.item?.lastname || ''}`.trim();
+    if (!confirm(`Are you sure you want to remove ${riderName} from this ride?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/triprides/${id}/leave`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ relationshipId: rider.id }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to remove rider');
+      }
+
+      alert(`Successfully removed ${riderName} from the ride!`);
+      window.location.reload(); // Refresh to show updated rider list
+    } catch (error) {
+      console.error('Error removing rider:', error);
+      alert(`Failed to remove rider: ${error.message}`);
+    }
+  }
+
+  /**
    * @param {string} email
    */
   function handleEmailRider(email) {
@@ -273,19 +309,28 @@
                         </h6>
                         <div class="d-flex gap-2 mt-2">
                           {#if rider.item?.email_address}
-                            <button 
-                              class="btn btn-sm btn-outline-primary" 
+                            <button
+                              class="btn btn-sm btn-outline-primary"
                               on:click={() => handleEmailRider(rider.item.email_address)}
                             >
                               Email
                             </button>
                           {/if}
                           {#if rider.item?.phone_number}
-                            <button 
-                              class="btn btn-sm btn-outline-primary" 
+                            <button
+                              class="btn btn-sm btn-outline-primary"
                               on:click={() => handleCallRider(rider.item.phone_number)}
                             >
                               Call
+                            </button>
+                          {/if}
+                          {#if isAdmin && rider.item?.id !== currentUser?.id}
+                            <button
+                              class="btn btn-sm btn-danger"
+                              on:click={() => handleKickRider(rider)}
+                              title="Remove rider from this ride"
+                            >
+                              Remove
                             </button>
                           {/if}
                         </div>

@@ -61,6 +61,45 @@
             alert(`Failed to update trip: ${errorMessage}`);
         }
     }
+
+    function handleViewRide(rideId) {
+        if (rideId) {
+            goto(`/carpool/tripride/${rideId}`);
+        }
+    }
+
+    async function removeRide(rideId) {
+        if (!confirm('Are you sure you want to remove this ride?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/triprides/${rideId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete ride');
+            }
+
+            alert('Ride removed successfully!');
+            window.location.reload();
+        } catch (error) {
+            console.error('Error removing ride:', error);
+            alert('Failed to remove ride. Please try again.');
+        }
+    }
+
+    function getAvailableSeats(ride) {
+        if (!ride?.item?.ride?.seats) return 0;
+        const totalSeats = ride.item.ride.seats;
+        const riderCount = ride.item.riders?.length || 0;
+        return totalSeats - riderCount;
+    }
+
+    function getRiderCount(ride) {
+        return ride?.item?.riders?.length || 0;
+    }
 </script>
 
 <h1>Carpool Trip Edit</h1>
@@ -94,6 +133,48 @@
 
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
+
+    <h2>Rides for this Trip</h2>
+    {#if formData.rides && formData.rides.length > 0}
+        <div class="row">
+            {#each formData.rides as ride}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2 class="mb-0">
+                                {ride.item?.ride?.name || 'Unnamed Ride'}
+                            </h2>
+                            <span class="badge {getAvailableSeats(ride) > 0 ? 'badge-success' : 'badge-warning'}">
+                                {getAvailableSeats(ride)} seats available
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Vehicle:</strong> {ride.item?.ride?.vehicle_type || 'N/A'}</p>
+                            <p><strong>Total Seats:</strong> {ride.item?.ride?.seats || 0}</p>
+                            <p><strong>Current Riders:</strong> {getRiderCount(ride)}</p>
+                            
+                            {#if ride.item?.ride?.driver?.item}
+                                <p><strong>Driver:</strong> {ride.item.ride.driver.item.firstname} {ride.item.ride.driver.item.lastname}</p>
+                            {/if}
+
+                            <div class="d-flex gap-2 mt-3">
+                                <button class="btn btn-primary btn-sm" on:click={() => handleViewRide(ride.item?.id)}>
+                                    View Details
+                                </button>
+                                <button class="btn btn-danger btn-sm" on:click={() => removeRide(ride.item?.id)}>
+                                    Remove Ride
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {/each}
+        </div>
+    {:else}
+        <div class="alert alert-info">
+            <p>No rides have been created for this trip yet.</p>
+        </div>
+    {/if}
 {:else}
     <div class="alert alert-danger">
         <strong>Access Denied:</strong> You do not have permission to edit carpool trips.
@@ -103,3 +184,53 @@
 {/if}
 
 <br /> <br />
+
+<style>
+  .badge {
+    color: white;
+    padding: 0.5em 0.75em;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
+  
+  .badge-success {
+    background-color: #28a745;
+  }
+  
+  .badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+  }
+  
+  .card-header {
+    background-color: #f8f9fa;
+  }
+
+  .btn {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .alert {
+    border-radius: 0.25rem;
+    padding: 1rem;
+  }
+
+  .alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+  }
+
+  .alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+  }
+</style>
