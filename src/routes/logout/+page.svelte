@@ -6,6 +6,7 @@
   onMount(async () => {
     document.cookie = `auth=; path=/; max-age=0; samesite=strict`
     sessionStorage.removeItem('user')
+    document.cookie = `user=; path=/; max-age=0; samesite=strict`
   })
 </script>
 

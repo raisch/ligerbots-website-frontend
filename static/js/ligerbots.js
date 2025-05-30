@@ -21,3 +21,9 @@ if (elt && elt.nonce) {
 // setTimeout(function () {
 //   resizePanes()
 // }, 1000)
+
+function getCookie(name) {
+  const cookies = document.cookie.split(';')
+  const cookie = cookies.find(cookie => cookie.trim().startsWith(name + '='))
+  return cookie ? cookie.split('=', 2)[1] : null
+}

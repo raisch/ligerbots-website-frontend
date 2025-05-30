@@ -11,7 +11,7 @@ export async function load(page) {
   let users  
 
   try {
-    users = await User.listForDirectory()
+    users = await User.listForDirectory({type: 'coaches'})
   } catch (error) {
     console.error(error) // TODO handle error
   }

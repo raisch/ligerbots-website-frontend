@@ -40,15 +40,30 @@
     document.cookie = `auth=true; path=/; max-age=86400; samesite=strict`
 
     // save user
-    sessionStorage.setItem('user', JSON.stringify(result.user))
+
+    // sessionStorage.setItem('user', JSON.stringify(result.user))
+    document.cookie = `user=${encodeURIComponent(JSON.stringify(result.user))}; path=/; max-age=86400; samesite=strict`
+
+    const redirectUrl = new URLSearchParams(location.search).get('redirect')
 
     user.set(result.user)
     if (browser) {
-      window.location.href = '/'
+      if (redirectUrl) {
+        // if there is a redirect query parameter, redirect to that page after login
+        location.href = redirectUrl
+        return
+      }
+      location.href = '/'
     }
   }
 
   const navigateToSignup = () => {
+    const redirectUrl = new URLSearchParams(location.search).get('redirect')
+    if (redirectUrl) {
+      // if there is a redirect query parameter, redirect to that page after signup
+      goto(`/signup?redirect=${redirectUrl}`)
+      return
+    }
     goto('/signup')
   }
 </script>
@@ -62,7 +77,7 @@
   <div class="title-bar">
     <center>
       <div class="notindex-title">
-        <a href="/login" style="color: white;">LOGIN</a>
+        <span style="color: white;">LOGIN</span>
       </div>
     </center>
     <br />
@@ -73,7 +88,7 @@
         <form on:submit|preventDefault={handleSubmit}>
           <input class="form-field" bind:value={email} type="email" placeholder="Email" />
           <input class="form-field" bind:value={password} type="password" placeholder="Password" />
-          <button class="form-field"> Login </button>
+          <button class="form-field">Login</button>
         </form>
         <div id="error-msg" class="bottom-margin">Error</div>
         <br />
@@ -87,6 +102,24 @@
 </div>
 
 <style>
+  .form-field {
+    width: 300px;
+    height: 40px;
+    margin: 10px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    transition: all 0.1s ease-in-out;
+    display: block;
+  }
+  .form-field:is(:hover, :focus):not(:disabled) {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+    
+
   #error-msg {
     display: none;
     color: red;

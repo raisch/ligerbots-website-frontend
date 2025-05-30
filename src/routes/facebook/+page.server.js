@@ -11,7 +11,9 @@ import getFiles from '$lib/server/files.js'
  * @param {import('@sveltejs/kit').RequestEvent} options.fetch
  * @returns {Promise<{ users: Array<import('$lib/server/user.js').FacebookUserRecord>, photos: Array<import('$lib/server/files.js').FileRecord> }>}
  */
-export async function load({ fetch }) {
+export async function load(page) {
+  User.requireLogin(page)
+
   /** @type {Array<import('$lib/server/user.js').FacebookUserRecord>} */
   let users = []
   try {

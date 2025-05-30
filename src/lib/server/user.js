@@ -13,6 +13,7 @@
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from './client.js'
+import { error, redirect } from '@sveltejs/kit'
 
 const debug = createDebugMessages('APP:$lib/server/user')
 
@@ -77,9 +78,10 @@ export default class User {
   /**
    * List all published users for the /directory route.
    *
+   * @param {Filters=} filter 
    * @returns {Promise.<Array.<DirectoryUserRecord>>} - The list of users.
    */
-  static async listForDirectory() {
+  static async listForDirectory(filter) {
     const client = await getBackendClient()
     const query = `
       query Users {
@@ -109,7 +111,15 @@ export default class User {
       return []
     }
 
-    return result.users
+    /** @type {DirectoryUserRecord[]} */
+    let users = result.users
+
+    if (filter) {
+      if (filter.type === 'coaches') {
+        users = users.filter(user => user.groups.includes('Coach') || user.groups.includes('Mentor'))
+      }
+    }
+    return users
   }
 
   /**
@@ -246,6 +256,36 @@ export default class User {
 
     return !!result?.utils_hash_verify ? user : null
   }
+
+  static async requestAccount(/** @type {UserAccountRequest} */ request) {
+    
+  }
+  
+  /**
+   * 
+   * @param {import('@sveltejs/kit').Cookies} cookies 
+   * @returns 
+   */
+  
+  /**
+   * @param {string} name
+   */
+  static getCookie(name) {
+    if (typeof document === 'undefined') return null // only run in browser
+    const cookies = document.cookie.split(';')
+    const cookie = cookies.find(cookie => cookie.trim().startsWith(name + '='))
+    return cookie ? cookie.split('=', 2)[1] : null
+  }
+
+  /**
+   * @param {import('@sveltejs/kit').ServerLoadEvent} page
+   */
+  static requireLogin(page) {
+    const user = page.cookies.get('user')
+    if (!user) {
+      throw redirect(302, `/login?redirect=${encodeURIComponent(page.url.pathname + page.url.search)}#msg=not-logged-in`)
+    }
+  }
 }
 
 /**
@@ -299,4 +339,34 @@ export default class User {
  * @property {String} photo.id
  * @property {String} photo.filename_disk
  * @property {String} photo.filename_download
+ */
+
+/**
+ * @typedef UserAccountRequest
+ * @property {string} firstname
+ * @property {string} lastname
+ * @property {string} username
+ * @property {string} email
+ * @property {string} phonenumber
+ * @property {string} address1
+ * @property {string} address2
+ * @property {string} city
+ * @property {string} state
+ * @property {string} zip
+ * @property {string} school
+ * @property {string} category
+ * 
+ * @property {string[]?} parentNames
+ * @property {string?} parentEmail
+ * @property {string?} parentPhone
+ * @property {number?} graduationYear
+ * 
+ * @property {string[]?} roles
+ * @property {string[]?} childrenNames
+ */
+
+/**
+ * @typedef {Object} Filters
+ * @property {string=} type
+ * @property {string[]=} roles
  */

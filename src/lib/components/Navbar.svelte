@@ -19,7 +19,7 @@
    * @typedef {Object} PageData
    *
    * @property {NavbarConfig[]} config
-   * @property {import('$lib/server/user').UserRecord} [user]
+   * @property {import('$lib/server/user').UserRecord?} [user]
    */
 
   /**
@@ -32,12 +32,14 @@
   onMount(async () => {
     const res = await fetch('/api/navbar')
     const resp = await res.json()
-    // console.log('navbar resp:', resp)
     data.config = resp?.result?.navbar_config || []
 
-    const user = sessionStorage.getItem('user')
-    // console.log('user:', user)
-    data.user = user ? JSON.parse(user) : null
+    try {
+      const user = document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 2)[1] || sessionStorage.getItem('user')
+      data.user = user ? JSON.parse(decodeURIComponent(user)) : null
+    } catch (err) {
+      data.user = null
+    }
   })
 </script>
 
