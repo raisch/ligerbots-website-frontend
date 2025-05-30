@@ -414,41 +414,33 @@ const queries = {
 }`,
 
   // GraphQL mutation for adding a rider to a trip ride
-  ADD_RIDER_MUTATION: `mutation ($tripRideId: ID!, $userId: ID!) {
-    update_trip_ride_item(
-      id: $tripRideId,
+  ADD_RIDER_MUTATION: `mutation ($tripRideId: ID!, $userId: String!) {
+    create_trip_ride_riders_item(
       data: {
-        riders: {
-          create: [{
-            item: {
-              id: $userId,
-              collection: "users"
-            }
-          }]
-        }
+        trip_ride_id: { id: $tripRideId },
+        item: $userId,
+        collection: "users"
       }
     ) {
       id
-      riders_func {
-        count
+      trip_ride_id {
+        id
       }
+      item {
+        ... on users {
+          id
+          firstname
+          lastname
+        }
+      }
+      collection
     }
-}`,
+  }`,
 
   // GraphQL mutation for removing a rider from a trip ride
-  REMOVE_RIDER_MUTATION: `mutation ($tripRideId: ID!, $relationshipId: ID!) {
-    update_trip_ride_item(
-      id: $tripRideId,
-      data: {
-        riders: {
-          delete: [$relationshipId]
-        }
-      }
-    ) {
+  REMOVE_RIDER_MUTATION: `mutation ($relationshipId: ID!) {
+    delete_trip_ride_riders_item(id: $relationshipId) {
       id
-      riders_func {
-        count
-      }
     }
   }`,
 

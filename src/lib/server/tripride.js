@@ -224,13 +224,14 @@ export default class TripRide {
             userId: userId
         }
 
+        console.log(`addRider(tripRideId=${tripRideId}, userId=${userId}) variables: ${JSON.stringify(variables)}`) 
         debug(`addRider(tripRideId=${tripRideId}, userId=${userId}) variables: ${JSON.stringify(variables)}`)
 
         let result
         try {
             result = await client.query(Queries.ADD_RIDER_MUTATION, variables)
             debug(`addRider(tripRideId=${tripRideId}, userId=${userId}) resp: ${JSON.stringify(result)}`)
-            result = result?.update_trip_ride_item || {}
+            result = result?.create_trip_ride_riders_item || {}
         } catch (/** @type {any} */ err) {
             throw new Error(`Failed to add rider: ${JSON.stringify(err)}`)
         }
@@ -242,17 +243,14 @@ export default class TripRide {
     /**
      * Remove a rider from a trip ride.
      *
-     * @param {string} tripRideId - The ID of the trip ride.
+     * @param {string} tripRideId - The ID of the trip ride (not used in new implementation).
      * @param {string} relationshipId - The ID of the rider relationship to remove.
      *
-     * @returns {Promise<Object>} - The updated trip ride record.
+     * @returns {Promise<Object>} - The deletion result.
      *
      * @throws {Error} if failed to remove the rider.
      */
     static async removeRider(tripRideId, relationshipId) {
-        if (!tripRideId) {
-            throw new Error('Trip ride ID is required')
-        }
         if (!relationshipId) {
             throw new Error('Relationship ID is required')
         }
@@ -260,22 +258,21 @@ export default class TripRide {
         const client = await getBackendClient()
 
         const variables = {
-            tripRideId: tripRideId,
             relationshipId: relationshipId
         }
 
-        debug(`removeRider(tripRideId=${tripRideId}, relationshipId=${relationshipId}) variables: ${JSON.stringify(variables)}`)
+        debug(`removeRider(relationshipId=${relationshipId}) variables: ${JSON.stringify(variables)}`)
 
         let result
         try {
             result = await client.query(Queries.REMOVE_RIDER_MUTATION, variables)
-            debug(`removeRider(tripRideId=${tripRideId}, relationshipId=${relationshipId}) resp: ${JSON.stringify(result)}`)
-            result = result?.update_trip_ride_item || {}
+            debug(`removeRider(relationshipId=${relationshipId}) resp: ${JSON.stringify(result)}`)
+            result = result?.delete_trip_ride_riders_item || {}
         } catch (/** @type {any} */ err) {
             throw new Error(`Failed to remove rider: ${JSON.stringify(err)}`)
         }
 
-        debug(`removeRider(tripRideId=${tripRideId}, relationshipId=${relationshipId}) result: ${JSON.stringify(result)}`)
+        debug(`removeRider(relationshipId=${relationshipId}) result: ${JSON.stringify(result)}`)
         return result
     }
 }

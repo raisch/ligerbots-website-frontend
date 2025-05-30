@@ -66,15 +66,6 @@
     return 'badge-secondary';
   }
 
-  /**
-   * @param {any} rideId
-   */
-  function handleViewRide(rideId) {
-    if (rideId) {
-      goto(`/carpool/trip/ride/${rideId}`);
-    }
-  }
-
   function handleEditTrip() {
     goto(`/carpool/trip/ride/${id}/${tripType}/edit`);
   }
@@ -164,7 +155,7 @@
                   {/if}
 
                   <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-primary btn-sm" on:click={() => handleViewRide(ride.item?.id)}>
+                    <button class="btn btn-primary btn-sm" on:click={() => goto(`/carpool/tripride/${ride.item?.id}`)}>
                       View Details
                     </button>
                   </div>
