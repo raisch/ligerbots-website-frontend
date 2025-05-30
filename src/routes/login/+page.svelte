@@ -42,15 +42,28 @@
     // save user
 
     // sessionStorage.setItem('user', JSON.stringify(result.user))
-    document.cookie = `user=${JSON.stringify(result.user)}; path=/; max-age=86400; samesite=strict`
+    document.cookie = `user=${encodeURIComponent(JSON.stringify(result.user))}; path=/; max-age=86400; samesite=strict`
+
+    const redirectUrl = new URLSearchParams(location.search).get('redirect')
 
     user.set(result.user)
     if (browser) {
-      window.location.href = '/'
+      if (redirectUrl) {
+        // if there is a redirect query parameter, redirect to that page after login
+        location.href = redirectUrl
+        return
+      }
+      location.href = '/'
     }
   }
 
   const navigateToSignup = () => {
+    const redirectUrl = new URLSearchParams(location.search).get('redirect')
+    if (redirectUrl) {
+      // if there is a redirect query parameter, redirect to that page after signup
+      goto(`/signup?redirect=${redirectUrl}`)
+      return
+    }
     goto('/signup')
   }
 </script>
