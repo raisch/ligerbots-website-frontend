@@ -386,12 +386,8 @@ const queries = {
         name
         seats
       }
-      trip {
-        id
-        collection
-      }
     }
-}`,
+  }`,
 
   // GraphQL mutation for updating a trip ride
   UPDATE_TRIP_RIDE_MUTATION: `mutation ($id: ID!, $tripRide: update_trip_ride_input!) {

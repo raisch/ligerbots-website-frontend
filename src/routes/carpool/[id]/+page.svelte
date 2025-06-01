@@ -1,6 +1,7 @@
 <script>
   // List Carpool Event Details
   // path: /carpool/[id]
+  import { goto } from '$app/navigation';
 
   /**
    * @typedef {Object} EventRecord
@@ -22,6 +23,7 @@
    * @typedef {Object} Trip
    * @property {string} collection - The type of trip (e.g., 'destination_trip', 'return_trip')
    * @property {Object} item - The trip details
+   * @property {string} item.id - The unique identifier for the trip
    * @property {string} item.departs_from - The location the trip departs from
    * @property {string} item.departs_on - The date the trip departs
    * @property {string} item.departs_at - The time the trip departs
@@ -75,7 +77,7 @@
                   <strong>Destination:</strong>
                   {trip?.item.destination}<br />
 
-                  <button class="btn btn-primary" on:click={() => alert('TBD')}>View Trip Detail</button>
+                  <button class="btn btn-primary" on:click={() => trip?.item?.id && trip?.collection && goto(`/carpool/trip/ride/${trip.item.id}/${trip.collection}`)}>View Trip Detail</button>
                 </li>
               {/each}
             </ul>

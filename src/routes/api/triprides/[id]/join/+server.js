@@ -2,7 +2,8 @@ import TripRide from '$lib/server/tripride.js'
 
 export async function POST({ params, request }) {
     try {
-        const { userId } = await request.json()
+        const data = await request.json()
+        const { userId } = data
         
         if (!userId) {
             return new Response(JSON.stringify({ error: 'User ID is required' }), {
@@ -12,7 +13,7 @@ export async function POST({ params, request }) {
                 }
             })
         }
-
+        
         const result = await TripRide.addRider(params.id, userId)
         
         return new Response(JSON.stringify(result), {

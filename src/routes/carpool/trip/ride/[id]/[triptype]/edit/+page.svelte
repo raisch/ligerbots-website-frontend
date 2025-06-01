@@ -1,7 +1,6 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
-    import type { Trip } from '$lib/types';
     import { page } from '$app/stores';
 
     export let data;
@@ -10,9 +9,12 @@
         throw new Error('Event data is not available');
     }
 
-    let isAdmin = undefined;
+    let isAdmin: boolean | undefined = undefined;
     let trip = data.event[0]; // Access trip data from the data prop
     let formData = { ...trip.item };
+    let availableRides = data.availableRides || [];
+    let selectedRideId = '';
+    let showAddCarForm = false;
 
     onMount(() => {
         const user = sessionStorage.getItem('user');
@@ -62,13 +64,13 @@
         }
     }
 
-    function handleViewRide(rideId) {
+    function handleViewRide(rideId: any) {
         if (rideId) {
             goto(`/carpool/tripride/${rideId}`);
         }
     }
 
-    async function removeRide(rideId) {
+    async function removeRide(rideId: any) {
         if (!confirm('Are you sure you want to remove this ride?')) {
             return;
         }
@@ -90,15 +92,77 @@
         }
     }
 
-    function getAvailableSeats(ride) {
+    function getAvailableSeats(ride: any) {
         if (!ride?.item?.ride?.seats) return 0;
         const totalSeats = ride.item.ride.seats;
         const riderCount = ride.item.riders?.length || 0;
         return totalSeats - riderCount;
     }
 
-    function getRiderCount(ride) {
+    function getRiderCount(ride: any) {
         return ride?.item?.riders?.length || 0;
+    }
+
+    function toggleAddCarForm() {
+        showAddCarForm = !showAddCarForm;
+        if (!showAddCarForm) {
+            selectedRideId = '';
+        }
+    }
+
+    async function addCarToTrip() {
+        if (!selectedRideId) {
+            alert('Please select a car to add.');
+            return;
+        }
+
+        try {
+            const tripRideData = {
+                ride: selectedRideId,
+                trip: formData.id,
+                tripType: $page.params.triptype
+            };
+
+            console.log('Sending trip ride data:', tripRideData);
+
+            const response = await fetch('/api/triprides', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(tripRideData),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server response error:', errorText);
+                
+                // Try to parse as JSON for better error details
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    throw new Error(`Failed to add car: ${response.status} - ${errorJson.error || errorText}`);
+                } catch (parseError) {
+                    throw new Error(`Failed to add car: ${response.status} - ${errorText}`);
+                }
+            }
+
+            const result = await response.json();
+            console.log('Trip ride created successfully:', result);
+
+            alert('Car added successfully!');
+            showAddCarForm = false;
+            selectedRideId = '';
+            window.location.reload(); // Refresh to show the new car
+        } catch (error) {
+            console.error('Error adding car:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            alert(`Failed to add car: ${errorMessage}`);
+        }
+    }
+
+    function getSelectedCarInfo() {
+        if (!selectedRideId) return null;
+        return availableRides.find(ride => ride.id === selectedRideId);
     }
 </script>
 
@@ -134,7 +198,61 @@
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 
-    <h2>Rides for this Trip</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Rides for this Trip</h2>
+        <button class="btn btn-success" on:click={toggleAddCarForm}>
+            {showAddCarForm ? 'Cancel' : 'Add Car'}
+        </button>
+    </div>
+
+    {#if showAddCarForm}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Add Car to Trip</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <label for="car-select" class="form-label">Select a Car:</label>
+                        <select bind:value={selectedRideId} id="car-select" class="form-control mb-3">
+                            <option value="">-- Select a car --</option>
+                            {#each availableRides as ride}
+                                <option value={ride.id}>
+                                    {ride.name} ({ride.vehicle_type}) - {ride.seats} seats
+                                    {#if ride.driver?.item}
+                                        - Driver: {ride.driver.item.firstname} {ride.driver.item.lastname}
+                                    {/if}
+                                </option>
+                            {/each}
+                        </select>
+                        
+                        {#if getSelectedCarInfo()}
+                            <div class="alert alert-info">
+                                <strong>Selected Car Details:</strong><br>
+                                <strong>Name:</strong> {getSelectedCarInfo().name}<br>
+                                <strong>Type:</strong> {getSelectedCarInfo().vehicle_type}<br>
+                                <strong>Seats:</strong> {getSelectedCarInfo().seats}<br>
+                                {#if getSelectedCarInfo().driver?.item}
+                                    <strong>Driver:</strong> {getSelectedCarInfo().driver.item.firstname} {getSelectedCarInfo().driver.item.lastname}
+                                {/if}
+                            </div>
+                        {/if}
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex flex-column gap-2">
+                            <button class="btn btn-primary" on:click={addCarToTrip} disabled={!selectedRideId}>
+                                Add Selected Car
+                            </button>
+                            <button class="btn btn-secondary" on:click={toggleAddCarForm}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
+
     {#if formData.rides && formData.rides.length > 0}
         <div class="row">
             {#each formData.rides as ride}
@@ -232,5 +350,59 @@
     background-color: #f8d7da;
     border-color: #f5c6cb;
     color: #721c24;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+
+  .form-control {
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .form-label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  #car-select {
+    width: 100%;
+  }
+
+  .d-flex {
+    display: flex;
+  }
+
+  .justify-content-between {
+    justify-content: space-between;
+  }
+
+  .align-items-center {
+    align-items: center;
+  }
+
+  .flex-column {
+    flex-direction: column;
+  }
+
+  .gap-2 > * + * {
+    margin-top: 0.5rem;
+  }
+
+  .mb-3 {
+    margin-bottom: 1rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 1.5rem;
   }
 </style>

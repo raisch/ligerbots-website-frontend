@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // List Active Carpool Events
   // path: /carpool
 
@@ -8,7 +8,7 @@
    * Navigate to the event details page when an event is clicked
    * @param {string} eventId - The unique identifier for the event
    */
-  function goToDetails(eventId) {
+  function goToDetails(eventId: any) {
     goto(`/carpool/${eventId}`)
   }
 
@@ -29,17 +29,29 @@
   export let data
   export let events = data?.events || []
 
-  function deleteEvent(eventId) {
+  function deleteEvent(eventId: any) {
     alert("havent implemented yet cuz im lazy - ray")
   }
 </script>
 
 <div class="container mt-4">
-  <h1>Carpool Events</h1>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Carpool Events</h1>
+    {#if isAdmin}
+      <div class="admin-actions">
+        <button class="btn btn-success me-2" on:click={() => goto('/carpool/admin')}>
+          Manage Cars
+        </button>
+        <button class="btn btn-primary" on:click={() => goto('/carpool/create')}>
+          Create Event
+        </button>
+      </div>
+    {/if}
+  </div>
 
   {#if isAdmin}
     <div class="alert alert-info">
-      <strong>Admin Access:</strong> You have admin access to manage carpool events.
+      <strong>Admin Access:</strong> You have admin access to manage carpool events and cars.
     </div>
   {/if}
 
@@ -99,5 +111,52 @@
   }
   .btn {
     margin-top: 10px;
+  }
+  
+  .d-flex {
+    display: flex;
+  }
+  
+  .justify-content-between {
+    justify-content: space-between;
+  }
+  
+  .align-items-center {
+    align-items: center;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .admin-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .me-2 {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
   }
 </style>

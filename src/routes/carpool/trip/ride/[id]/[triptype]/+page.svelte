@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   // Display Carpool Trip Detail
   // path: /carpool/trip/ride/[id]/[triptype]
   import { page } from '$app/stores';
@@ -23,17 +23,17 @@
     console.log('Trip data:', trip);
   });
 
-  function formatDate(dateString) {
+  function formatDate(dateString: any) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   }
 
-  function formatTime(timeString) {
+  function formatTime(timeString: any) {
     if (!timeString) return 'N/A';
     return timeString;
   }
@@ -89,7 +89,7 @@
                         <div>
                           <strong>Ride ID:</strong> {ride.id || 'Unknown'}
                         </div>
-                        <button class="btn btn-sm btn-primary" on:click={() => goto(`/carpool/trip/ride/${ride.id}/${tripType}/tripride`)}>View Details</button>
+                        <button class="btn btn-sm btn-primary" on:click={() => goto(`/carpool/trip/ride/${id}/${tripType}/tripride`)}>Manage Rides</button>
                       </div>
                     </li>
                   {/each}
@@ -99,7 +99,7 @@
               <div class="mt-4">
                 <p>No rides have been created for this trip yet.</p>
                 {#if isAdmin}
-                  <button class="btn btn-success">Add Ride</button>
+                  <button class="btn btn-success" on:click={handleEdit}>Add Ride</button>
                 {/if}
               </div>
             {/if}

@@ -131,7 +131,14 @@
   <!-- Trip Rides List -->
   <div class="row">
     <div class="col-12">
-      <h3>Rides for this Trip</h3>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Rides for this Trip</h3>
+        {#if isAdmin}
+          <button class="btn btn-success" on:click={handleEditTrip}>
+            Add Ride
+          </button>
+        {/if}
+      </div>
       {#if tripRides && tripRides.length > 0}
         <div class="row">
           {#each tripRides as ride}

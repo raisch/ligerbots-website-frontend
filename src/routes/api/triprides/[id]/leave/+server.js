@@ -2,7 +2,8 @@ import TripRide from '$lib/server/tripride.js'
 
 export async function POST({ params, request }) {
     try {
-        const { relationshipId } = await request.json()
+        const data = await request.json()
+        const { relationshipId } = data
         
         if (!relationshipId) {
             return new Response(JSON.stringify({ error: 'Relationship ID is required' }), {
@@ -12,7 +13,7 @@ export async function POST({ params, request }) {
                 }
             })
         }
-
+        
         const result = await TripRide.removeRider(params.id, relationshipId)
         
         return new Response(JSON.stringify(result), {
