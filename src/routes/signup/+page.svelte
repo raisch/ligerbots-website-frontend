@@ -106,26 +106,34 @@
   <div class="row bottom-margin row-margins">
     <div class="col-xs-12">
       <center>
-        <div>This is the SIGNUP page.</div>
         <form on:submit|preventDefault={handleSubmit} id="signup-form">
           <h3>Name</h3>
+          <span class="form-label">Your Name</span>
           <div id="name-fields">
             <input class="form-field" bind:value={firstname} type="email" placeholder="First Name" />
             <input class="form-field" bind:value={lastname} type="email" placeholder="Last Name" />
           </div>
 
-          <h3>Username</h3>
+          <span class="form-label">Username</span>
           <input class="form-field" bind:value={username} type="text" placeholder="Username" required pattern="^[^\s]+$"/>
 
           <h3>Contact Information</h3>
-          <input class="form-field" bind:value={email} type="email" placeholder="Email" required/>
-          <input class="form-field" bind:value={phonenumber} type="text" placeholder="Phone Number" pattern="^[\d()+- ]*$"/>
+          <span class="form-label">Email</span>
+          <input class="form-field" bind:value={email} type="email" placeholder="email@example.com" required/>
+          <span class="form-label">Phone Number</span>
+          <input class="form-field" bind:value={phonenumber} type="text" placeholder="800-555-0123" pattern="^[\d()+- ]*$"/>
 
           <h3>Address</h3>
+          <span class="form-label">Address</span>
           <input class="form-field" bind:value={address1} type="text" placeholder="Address" required/>
           <input class="form-field" bind:value={address2} type="text" placeholder="Address Line 2" required/>
+          <span class="form-label">City, State, Zip</span>
           <div id="address-city">
-            <input class="form-field" bind:value={city} type="text" placeholder="City" required/>
+            <input class="form-field" list="address-cities" bind:value={city} type="text" placeholder="City" required/>
+            <datalist id="address-cities">
+              <option value="Newton"></option>
+              <option value="Boston"></option>
+            </datalist>
             <select class="form-field" bind:value={state} placeholder="State" required>
               <option value="MA">Massachusetts</option>
               <option value="NH" disabled>New Hampshire</option>
@@ -145,24 +153,31 @@
             <option value="none">None</option>
           </select>
 
-          <h3>Role</h3>
+          <h3>Member Type</h3>
           <select class="form-field" bind:value={category}>
             <option value="" disabled selected>Role</option>
             <option value="student">Student</option>
             <option value="adult">Adult</option>
           </select>
 
-          <div id="fields-student">
-            <input class="form-field" type="text" bind:value={parentNames} placeholder="Parent/Guardian Name(s)" /> <!-- PLACEHOLDER - Replace with list -->
-            <input class="form-field" type="email" bind:value={parentEmail} />
-            <input class="form-field" type="text" bind:value={parentPhone} />
-            <input class="form-field" type="nubmer" bind:value={graduationYear} placeholder="Graduation Year" />
-          </div>
-          <div id="fields-adult">
+          {#if category === 'student'}
+            <h3>Parent/Guardian Information</h3>
+            <span class="form-label">Name(s)</span>
+            <input class="form-field" type="text" bind:value={parentNames} placeholder="" /> <!-- PLACEHOLDER - Replace with list -->
+            <span class="form-label">Email</span>
+            <input class="form-field" type="email" bind:value={parentEmail} placeholder="parent@example.com" />
+            <span class="form-label">Phone</span>
+            <input class="form-field" type="text" bind:value={parentPhone} placeholder="800-555-1234" pattern="^[\d()+- ]*$" />
+            <h3>Other Information</h3>
+            <span class="form-label">Graduation Year</span>
+            <input class="form-field" type="number" bind:value={graduationYear} />
+          {:else if category === 'adult'}
+            <span class="form-label">Roles</span>
             <input class="form-field" type="text" bind:value={roles} placeholder="Roles" />
+            <span class="form-label">Children</span>
             <input class="form-field" type="text" bind:value={childrenNames} placeholder="Children's Name(s)" /> <!-- PLACEHOLDER - Replace with list -->
-          </div>
-
+          {/if}
+          <hr>
           <!-- <input class="form-field" bind:value={password1} type="password" placeholder="Password" required/>
           <input class="form-field" bind:value={password2} type="password" placeholder="Confirm Password" required/> -->
           <button class="form-field">Sign Up</button>
@@ -194,6 +209,11 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     transition: all 0.1s ease-in-out;
+  }
+  .form-label {
+    text-align: left;
+    margin-bottom: -10px;
+
   }
   #signup-form > div {
     display: flex;
