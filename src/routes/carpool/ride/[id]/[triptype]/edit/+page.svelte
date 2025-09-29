@@ -56,7 +56,7 @@
             const result = await response.json();
 
             alert('Trip updated successfully!');
-            goto(`/carpool/trip/ride/${formData.id}/${$page.params.triptype}`);
+            goto(`/carpool/ride/${formData.id}/${$page.params.triptype}`);
         } catch (error) {
             console.error('Error updating trip:', error);
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -66,7 +66,7 @@
 
     function handleViewRide(rideId: any) {
         if (rideId) {
-            goto(`/carpool/tripride/${rideId}`);
+            goto(`/carpool/vehicle/${rideId}`);
         }
     }
 

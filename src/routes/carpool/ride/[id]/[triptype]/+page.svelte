@@ -39,7 +39,7 @@
   }
 
   function handleEdit() {
-    goto(`/carpool/trip/ride/${id}/${tripType}/edit`);
+    goto(`/carpool/ride/${id}/${tripType}/edit`);
   }
 </script>
 
@@ -89,7 +89,7 @@
                         <div>
                           <strong>Ride ID:</strong> {ride.id || 'Unknown'}
                         </div>
-                        <button class="btn btn-sm btn-primary" on:click={() => goto(`/carpool/trip/ride/${id}/${tripType}/tripride`)}>Manage Rides</button>
+                        <button class="btn btn-sm btn-primary" on:click={() => goto(`/carpool/ride/${id}/${tripType}/tripride`)}>Manage Rides</button>
                       </div>
                     </li>
                   {/each}

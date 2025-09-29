@@ -67,7 +67,7 @@
   }
 
   function handleEditTrip() {
-    goto(`/carpool/trip/ride/${id}/${tripType}/edit`);
+    goto(`/carpool/ride/${id}/${tripType}/edit`);
   }
 
 
@@ -162,7 +162,7 @@
                   {/if}
 
                   <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-primary btn-sm" on:click={() => goto(`/carpool/tripride/${ride.item?.id}`)}>
+                    <button class="btn btn-primary btn-sm" on:click={() => goto(`/carpool/vehicle/${ride.item?.id}`)}>
                       View Details
                     </button>
                   </div>
@@ -182,7 +182,7 @@
   <!-- Navigation -->
   <div class="row mt-4">
     <div class="col-12">
-      <button class="btn btn-secondary" on:click={() => goto(`/carpool/trip/ride/${id}/${tripType}`)}>
+      <button class="btn btn-secondary" on:click={() => goto(`/carpool/ride/${id}/${tripType}`)}>
         Back to Trip Details
       </button>
       <button class="btn btn-info" on:click={() => goto('/carpool')}>
