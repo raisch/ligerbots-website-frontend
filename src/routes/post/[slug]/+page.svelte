@@ -1,5 +1,5 @@
 <script>
-  export let data
+  let { data } = $props();
 </script>
 
 <div class="col-md-10 col-md-offset-1 col-sm-12">

@@ -1,11 +1,23 @@
 <script>
-  /** @type {import('./$types').PageData} */
-  export let data
+  
 
-  export let title = data?.page?.title
-  export let script = data?.page?.script
-  export let style = data?.page?.style
-  export let content = data?.page?.content
+  /**
+   * @typedef {Object} Props
+   * @property {import('./$types').PageData} data
+   * @property {any} [title]
+   * @property {any} [script]
+   * @property {any} [style]
+   * @property {any} [content]
+   */
+
+  /** @type {Props} */
+  let {
+    data,
+    title = data?.page?.title,
+    script = data?.page?.script,
+    style = data?.page?.style,
+    content = data?.page?.content
+  } = $props();
 </script>
 
 <svelte:head>

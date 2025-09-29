@@ -32,16 +32,22 @@
    * @typedef {Array<Trip>} Trips
    */
 
-  /** @type {EventRecord|undefined} */
-  export let data // { event }
+  
 
-  /** @type {Event|undefined} */
-  export let event = data?.event // Fallback to empty object if data is not available
+  
 
-  /** @type {Trips|Array<undefined>} */
-  export let trips = event?.trips || []
+  
+  /**
+   * @typedef {Object} Props
+   * @property {EventRecord|undefined} data - { event }
+   * @property {Event|undefined} [event] - Fallback to empty object if data is not available
+   * @property {Trips|Array<undefined>} [trips] - console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
+   */
 
-  // console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
+  /** @type {Props} */
+  let { data, event = data?.event, trips = event?.trips || [] } = $props();
+
+  
 </script>
 
 <div class="container mt-4">
@@ -75,7 +81,7 @@
                   <strong>Destination:</strong>
                   {trip?.item.destination}<br />
 
-                  <button class="btn btn-primary" on:click={() => alert('TBD')}>View Trip Detail</button>
+                  <button class="btn btn-primary" onclick={() => alert('TBD')}>View Trip Detail</button>
                 </li>
               {/each}
             </ul>

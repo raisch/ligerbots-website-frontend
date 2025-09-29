@@ -25,9 +25,9 @@
   /**
    * @type {PageData}
    */
-  let data = {
+  let data = $state({
     config: []
-  }
+  })
 
   onMount(async () => {
     const res = await fetch('/api/navbar')

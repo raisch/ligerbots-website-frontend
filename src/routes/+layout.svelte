@@ -4,9 +4,16 @@
   import Navbar from '$lib/components/Navbar.svelte'
   import MainPane from '$lib/components/MainPane.svelte'
   import Footer from '$lib/components/Footer.svelte'
+  /**
+   * @typedef {Object} Props
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props} */
+  let { children } = $props();
 
   /** @type {Object|null} */
-  $: user = {}
+  let user = $derived({})
 
   onMount(async () => {
     user = document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 1)[1] || sessionStorage.getItem('user')
@@ -22,7 +29,7 @@
       <Navbar />
     {/key}
     <MainPane>
-      <slot />
+      {@render children?.()}
     </MainPane>
     <Footer />
   </div>

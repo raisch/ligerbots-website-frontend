@@ -1,5 +1,5 @@
 <div class="panel panel-brag">
-  <!-- svelte-ignore a11y-img-redundant-alt -->
+  <!-- svelte-ignore a11y_img_redundant_alt -->
   <img src="/assets/2eb80fd3-8541-415d-9333-6b98f5fa1fb5" alt="LigerBots Team Photo 2022" />
 </div>
 <div style="text-align:center;">
