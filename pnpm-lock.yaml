@@ -23,6 +23,9 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      flickr-sdk:
+        specifier: ^7.1.0
+        version: 7.1.0
       tailwindcss:
         specifier: ^4.0.14
         version: 4.0.14
@@ -344,6 +347,10 @@ packages:
 
   '@polka/url@1.0.0-next.28':
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
+
+  '@rgrove/parse-xml@4.2.0':
+    resolution: {integrity: sha512-UuBOt7BOsKVOkFXRe4Ypd/lADuNIfqJXv8GvHqtXaTYXPPKkj2nS2zPllVsrtRjcomDhIJVBnZwfmlI222WH8g==}
+    engines: {node: '>=14.0.0'}
 
   '@rollup/plugin-commonjs@28.0.0':
     resolution: {integrity: sha512-BJcu+a+Mpq476DMXG+hevgPSl56bkUoi88dKT8t3RyUp8kGuOh+2bU8Gs7zXDlu+fyZggnJ+iOBGrb/O1SorYg==}
@@ -1123,6 +1130,10 @@ packages:
 
   flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
+
+  flickr-sdk@7.1.0:
+    resolution: {integrity: sha512-a348WbBNOangaFZHHmr4papWpScVoDEyKz8lhWUUcg7jGlpz7lvQmHx3qhM5ROLt4N+B10Vd+RivlxZQUmKOgA==}
+    engines: {node: '>= 18'}
 
   follow-redirects@1.15.9:
     resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
@@ -2160,6 +2171,8 @@ snapshots:
 
   '@polka/url@1.0.0-next.28': {}
 
+  '@rgrove/parse-xml@4.2.0': {}
+
   '@rollup/plugin-commonjs@28.0.0(rollup@4.23.0)':
     dependencies:
       '@rollup/pluginutils': 5.1.2(rollup@4.23.0)
@@ -3013,6 +3026,10 @@ snapshots:
       rimraf: 3.0.2
 
   flatted@3.3.1: {}
+
+  flickr-sdk@7.1.0:
+    dependencies:
+      '@rgrove/parse-xml': 4.2.0
 
   follow-redirects@1.15.9(debug@4.3.7):
     optionalDependencies:

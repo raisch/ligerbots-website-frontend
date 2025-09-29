@@ -1,5 +1,5 @@
 <script>
-  import PhotoAlbumPreview from "$lib/components/PhotoAlbumPreview.svelte";
+  import Photo from "$lib/components/Photo.svelte";
 
     export let data;
     const { albums } = data;
@@ -81,7 +81,7 @@
 
     <div class="gallery-content">
       {#each albums as album}
-        <PhotoAlbumPreview title={album.title} url={album.url} imageUrl={album.imageUrl} />
+        <Photo title={album.title} url={album.url} imageUrl={album.imageUrl} />
       {/each}
     </div>
     <div class="row gallery-buttons-bar-container-bottom">

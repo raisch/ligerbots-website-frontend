@@ -49,6 +49,7 @@
     "@types/debug": "^4.1.12",
     "debug": "^4.3.7",
     "dotenv": "^16.4.5",
+    "flickr-sdk": "^7.1.0",
     "tailwindcss": "^4.0.14"
   }
 }
