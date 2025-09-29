@@ -13,8 +13,14 @@
   config.maintenance_page_title = config.maintenance_page_title || DEFAULT_MAINTENANCE_PAGE_TITLE
   config.maintenance_page_body = config.maintenance_page_body || DEFAULT_MAINTENANCE_PAGE_BODY
 
-  // /** @type {import('../../routes/$types').PageData} */
-  export let data = config
+  
+  /**
+   * @typedef {Object} Props
+   * @property {import('../../routes/$types').PageData} [data]
+   */
+
+  /** @type {Props} */
+  let { data = config } = $props();
 </script>
 
 <div class="row row-margins">

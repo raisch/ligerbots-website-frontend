@@ -12,11 +12,17 @@
    * @property {DirectoryUserList} users
    */
   
-  /** @type {PageData}*/
-  export let data
+  
 
-  /** @type {DirectoryUserList}*/
-  export let users = data.users
+  
+  /**
+   * @typedef {Object} Props
+   * @property {PageData} data
+   * @property {DirectoryUserList} [users]
+   */
+
+  /** @type {Props} */
+  let { data, users = data.users } = $props();
 </script>
 
 <svelte:head>

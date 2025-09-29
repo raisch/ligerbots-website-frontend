@@ -7,8 +7,14 @@
   import TwitterBlock from '$lib/components/TwitterBlock.svelte'
   import BottomRowBlock from '$lib/components/BottomRowBlock.svelte'
 
-  /** @type {import('./$types').PageData} */
-  export let data
+  
+  /**
+   * @typedef {Object} Props
+   * @property {import('./$types').PageData} data
+   */
+
+  /** @type {Props} */
+  let { data } = $props();
 
   // @ts-ignore
   const { title } = data.site || { title: 'UNKNOWN TITLE' }

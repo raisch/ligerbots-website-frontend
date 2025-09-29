@@ -43,7 +43,7 @@
                   <strong>Riders:</strong> {ride.riders.join(", ")}
                   
                   <br>
-                  <button class="btn btn-primary" on:click={() => alert('View Details not implemented yet')}>View Details</button>
+                  <button class="btn btn-primary" onclick={() => alert('View Details not implemented yet')}>View Details</button>
                 </li>
               {/each}
             </ul>

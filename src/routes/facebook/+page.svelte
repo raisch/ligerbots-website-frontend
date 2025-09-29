@@ -4,8 +4,14 @@
   const DEFAULT_PHOTO_FILENAME_DOWNLOAD = 'default_user.jpg'
   const DEFAULT_PHOTO_FILENAME_DISK = '9382f638-b807-409c-8cdf-88a93f797597.jpg'
 
-  /** @type {import('./$types')}.PageData */
-  export let data
+  
+  /**
+   * @typedef {Object} Props
+   * @property {import('./$types')} data
+   */
+
+  /** @type {Props} */
+  let { data } = $props();
 
   // console.log('data', data)
 

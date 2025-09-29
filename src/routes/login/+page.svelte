@@ -1,18 +1,20 @@
 <script>
+  import { preventDefault } from 'svelte/legacy';
+
   import { setContext } from 'svelte'
   import { writable } from 'svelte/store'
   import { goto } from '$app/navigation'
   import { redirect } from '@sveltejs/kit'
   import { browser } from '$app/environment'
 
-  $: user = writable()
+  let user = $derived(writable())
   setContext('user', user)
 
   /** @type {String}*/
-  let email
+  let email = $state()
 
   /** @type {String}*/
-  let password
+  let password = $state()
 
   async function handleSubmit(/** @type {Event} */ evt) {
     let loginFields = { email, password }
@@ -85,7 +87,7 @@
   <div class="row bottom-margin row-margins">
     <div class="col-xs-12">
       <center>
-        <form on:submit|preventDefault={handleSubmit}>
+        <form onsubmit={preventDefault(handleSubmit)}>
           <input class="form-field" bind:value={email} type="email" placeholder="Email" />
           <input class="form-field" bind:value={password} type="password" placeholder="Password" />
           <button class="form-field">Login</button>
@@ -94,7 +96,7 @@
         <br />
         <p>
           Don't have an account?
-          <a href="#none" on:click={navigateToSignup}><strong>Sign up</strong></a>
+          <a href="#none" onclick={navigateToSignup}><strong>Sign up</strong></a>
         </p>
       </center>
     </div>
@@ -113,7 +115,7 @@
     transition: all 0.1s ease-in-out;
     display: block;
   }
-  .form-field:is(:hover, :focus):not(:disabled) {
+  .form-field:is(:global(:hover, :focus)):not(:disabled) {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     outline: none;

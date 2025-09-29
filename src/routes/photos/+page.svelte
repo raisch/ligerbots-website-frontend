@@ -11,8 +11,14 @@
    * @property {string} videos_link
    */
 
-  /** @type {PageData} */
-  export let data
+  
+  /**
+   * @typedef {Object} Props
+   * @property {PageData} data
+   */
+
+  /** @type {Props} */
+  let { data = $bindable() } = $props();
 
   // Debug.on().log('Photos.+page data:', data)
 
@@ -70,7 +76,7 @@
             >2024/25 Reefscape &nbsp;<span class="down-arrow">&#x25BC;</span>
           </button>
           <ul class="dropdown-menu gallery-dropdown-content">
-            <!-- svelte-ignore a11y-missing-attribute -->
+            <!-- svelte-ignore a11y_missing_attribute -->
             <li><a class="gallery-dropdown-item-active active"> 2024/25 Reefscape </a></li>
             <li><a href="/gallery?year=1" class="gallery-dropdown-item"> 2023/24 Crescendo </a></li>
             <li><a href="/gallery?year=2" class="gallery-dropdown-item"> 2022/23 Charged Up </a></li>
