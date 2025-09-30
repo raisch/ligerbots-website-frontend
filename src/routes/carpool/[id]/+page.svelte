@@ -54,7 +54,7 @@
   <h1>Carpool Event Detail Page</h1>
 
   <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-    <div class="col-md-8">
+    <div class="">
       <div class="card mb-6">
         <div class="card-body">
           <h2 class="card-title">{event?.name}</h2>
@@ -64,27 +64,31 @@
           <p class="card-text"><strong>Location:</strong> {event?.location}</p>
           <p class="card-text"><strong>Trips:</strong></p>
           {#if trips.length > 0}
-            <ul>
-              {#each trips as trip}
-                <li class="mb-2" style="background-color: #ddd; padding: 10px; border-radius: 10px;">
-                  <strong>Type:</strong>
-                  {#if trip?.collection === 'destination_trip'}
-                    <span class="badge badge-success">To Event</span>
-                  {:else if trip?.collection === 'return_trip'}
-                    <span class="badge badge-danger">From Event</span>
-                  {:else}
-                    <span class="badge badge-secondary">Unknown</span>
-                  {/if}
-                  <br />
-                  <strong>Departs From:</strong>
-                  {trip?.item.departs_from} on {trip?.item.departs_on} at {trip?.item.departs_at}<br />
-                  <strong>Destination:</strong>
-                  {trip?.item.destination}<br />
+            <div class="flex gap-4" style="display: flex; gap: 1rem;">
+              <!-- Column for Destination Trips -->
+              <div class="flex flex-col gap-2 flex-1" style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
+                <h3>Destination Trips</h3>
+                {#each trips.filter(trip => trip?.collection === 'destination_trip') as trip}
+                  <div class="bg-gray-200 p-4 rounded" style="background-color: rgb(220,220,220); padding: 1rem; border-radius: 10px;">
+                    <strong>Departs From:</strong> {trip?.item.departs_from} on {trip?.item.departs_on} at {trip?.item.departs_at}<br />
+                    <strong>Destination:</strong> {trip?.item.destination}<br />
+                    <button class="btn btn-primary" on:click={() => alert('View Destination Trip')}>View Trip Detail</button>
+                  </div>
+                {/each}
+              </div>
 
-                  <button class="btn btn-primary" on:click={() => alert('TBD')}>View Trip Detail</button>
-                </li>
-              {/each}
-            </ul>
+              <!-- Column for Return Trips -->
+              <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
+                <h3>Return Trips</h3>
+                {#each trips.filter(trip => trip?.collection === 'return_trip') as trip}
+                  <div class="bg-gray-200 p-4 rounded" style="background-color: rgb(220,220,220); padding: 1rem; border-radius: 10px;">
+                    <strong>Departs From:</strong> {trip?.item.departs_from} on {trip?.item.departs_on} at {trip?.item.departs_at}<br />
+                    <strong>Destination:</strong> {trip?.item.destination}<br />
+                    <button class="btn btn-primary" on:click={() => alert('View Return Trip')}>View Trip Detail</button>
+                  </div>
+                {/each}
+              </div>
+            </div>
           {:else}
             <p>No trips available for this event.</p>
           {/if}
