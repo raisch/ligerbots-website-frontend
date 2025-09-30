@@ -48,7 +48,7 @@
 
   
 
-  let { data, event = data?.event, trips = event?.trips || [], admin = 1 } = $props();
+  let { data, event = data?.event, trips = event?.trips || [], admin = 0 } = $props();
 
   import { goto } from '$app/navigation';
   
