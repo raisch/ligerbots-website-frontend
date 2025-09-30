@@ -2,6 +2,8 @@
   // List Carpool Event Details
   // path: /carpool/[id]
 
+  import { goto } from '$app/navigation';
+
   /**
    * @typedef {Object} EventRecord
    * @property {Event} event - The event details
@@ -32,25 +34,33 @@
   /**
    * @typedef {Array<Trip>} Trips
    */
-
   
-
+   
   
   /**
    * @typedef {Object} Props
    * @property {EventRecord|undefined} data - { event }
    * @property {Event|undefined} [event] - Fallback to empty object if data is not available
    * @property {Trips|Array<undefined>} [trips] - console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
-   * @property {object|Number} [admin] - console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
+   * @property {object|Number} [admin]
    */
 
   /** @type {Props} */
 
-  
 
-  let { data, event = data?.event, trips = event?.trips || [], admin = 0 } = $props();
+  let { data, event = data?.event, trips = event?.trips || [], admin = 0} = $props();
 
-  import { goto } from '$app/navigation';
+  let return_trip = $state();
+  let destination_trip = $state();
+
+  //@ts-ignore
+  function setReturnTrip(tripId) {
+    return_trip = return_trip === tripId ? null : tripId; // toggle selection, if trip already selected, then deselect on click
+  }
+ //@ts-ignore
+  function setDestinationTrip(tripId) {
+    destination_trip = destination_trip === tripId ? null : tripId; // toggle selection, if trip already selected, then deselect on click
+  }
   
   //@ts-ignore
   function goToTrip(tripId) {
@@ -86,8 +96,8 @@
                     <strong>Destination:</strong> {trip?.item.destination}<br />
                     {#if admin} 
                       <button class="btn btn-primary" on:click={() => goToTrip(trip?.id)}>View Trip Detail</button>
-                    {:else}
-                      <button class="btn btn-primary" on:click={() => alert('View Destination Trip')}>Select</button>
+                    {:else if !destination_trip || destination_trip === trip?.id}
+                      <button class="btn btn-primary" on:click={() => setDestinationTrip(trip?.id)}>{!destination_trip ? "Select" : "Selected"}</button>
                     {/if}
                   </div>
                 {/each}
@@ -102,8 +112,8 @@
                     <strong>Destination:</strong> {trip?.item.destination}<br />
                     {#if admin} 
                       <button class="btn btn-primary" on:click={() => goToTrip(trip?.id)}>View Trip Detail</button>
-                    {:else}
-                      <button class="btn btn-primary" on:click={() => alert('View Return Trip')}>Select</button>
+                    {:else if !return_trip || return_trip === trip?.id}
+                      <button class="btn btn-primary" on:click={() => setReturnTrip(trip?.id)}>{!return_trip ? "Select" : "Selected"}</button>
                     {/if}
                   </div>
                 {/each}
