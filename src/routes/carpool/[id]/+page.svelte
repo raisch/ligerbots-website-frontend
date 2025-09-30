@@ -20,6 +20,7 @@
 
   /**
    * @typedef {Object} Trip
+   * @property {number} id - The unique identifier for the trip
    * @property {string} collection - The type of trip (e.g., 'destination_trip', 'return_trip')
    * @property {Object} item - The trip details
    * @property {string} item.departs_from - The location the trip departs from
@@ -35,17 +36,28 @@
   
 
   
-
-  
   /**
    * @typedef {Object} Props
    * @property {EventRecord|undefined} data - { event }
    * @property {Event|undefined} [event] - Fallback to empty object if data is not available
    * @property {Trips|Array<undefined>} [trips] - console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
+   * @property {object|Number} [admin] - console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
    */
 
   /** @type {Props} */
-  let { data, event = data?.event, trips = event?.trips || [] } = $props();
+
+  
+
+  let { data, event = data?.event, trips = event?.trips || [], admin = 1 } = $props();
+
+  import { goto } from '$app/navigation';
+  
+  //@ts-ignore
+  function goToTrip(tripId) {
+    goto(`/carpool/trip/${tripId}`)
+  }
+
+  console.log(data)
 
   
 </script>
@@ -72,7 +84,11 @@
                   <div class="bg-gray-200 p-4 rounded" style="background-color: rgb(220,220,220); padding: 1rem; border-radius: 10px;">
                     <strong>Departs From:</strong> {trip?.item.departs_from} on {trip?.item.departs_on} at {trip?.item.departs_at}<br />
                     <strong>Destination:</strong> {trip?.item.destination}<br />
-                    <button class="btn btn-primary" on:click={() => alert('View Destination Trip')}>View Trip Detail</button>
+                    {#if admin} 
+                      <button class="btn btn-primary" on:click={() => goToTrip(trip?.id)}>View Trip Detail</button>
+                    {:else}
+                      <button class="btn btn-primary" on:click={() => alert('View Destination Trip')}>Select</button>
+                    {/if}
                   </div>
                 {/each}
               </div>
@@ -84,7 +100,11 @@
                   <div class="bg-gray-200 p-4 rounded" style="background-color: rgb(220,220,220); padding: 1rem; border-radius: 10px;">
                     <strong>Departs From:</strong> {trip?.item.departs_from} on {trip?.item.departs_on} at {trip?.item.departs_at}<br />
                     <strong>Destination:</strong> {trip?.item.destination}<br />
-                    <button class="btn btn-primary" on:click={() => alert('View Return Trip')}>View Trip Detail</button>
+                    {#if admin} 
+                      <button class="btn btn-primary" on:click={() => goToTrip(trip?.id)}>View Trip Detail</button>
+                    {:else}
+                      <button class="btn btn-primary" on:click={() => alert('View Return Trip')}>Select</button>
+                    {/if}
                   </div>
                 {/each}
               </div>
