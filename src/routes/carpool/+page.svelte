@@ -12,6 +12,7 @@
     goto(`/carpool/${eventId}`)
   }
 
+  //@ts-ignore
   let { data, events = data?.events || [] } = $props();
 </script>
 
@@ -29,7 +30,7 @@
               <p class="card-text"><strong>Start Date:</strong> {event.start_date}</p>
               <p class="card-text"><strong>End Date:</strong> {event.end_date}</p>
               <p class="card-text"><strong>Location:</strong> {event.location}</p>
-              <button class="btn btn-primary" onclick={() => goToDetails(event.id)}>View Trips</button>
+              <button class="btn btn-primary" on:click={() => goToDetails(event.id)}>View Trips</button>
             </div>
           </div>
         </div>

@@ -81,7 +81,7 @@
                   <strong>Destination:</strong>
                   {trip?.item.destination}<br />
 
-                  <button class="btn btn-primary" onclick={() => alert('TBD')}>View Trip Detail</button>
+                  <button class="btn btn-primary" on:click={() => alert('TBD')}>View Trip Detail</button>
                 </li>
               {/each}
             </ul>
