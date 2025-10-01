@@ -2,7 +2,7 @@
   import LinkIcon from './icons/LinkIcon.svelte'
 </script>
 
-<div class="col-md-6 col-sm-12">
+<!-- <div class="col-md-6 col-sm-12"> -->
   <div class="panel panel-blue">
     <div class="panel-heading index-heading">
       <a style="color:white;" href="/calendar.php">UPCOMING EVENTS&nbsp;<LinkIcon /></a>
@@ -21,4 +21,4 @@
       </iframe>
     </div>
   </div>
-</div>
+<!-- </div> -->

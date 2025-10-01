@@ -14,6 +14,7 @@
   const { title } = data.site || { title: 'UNKNOWN TITLE' }
 </script>
 
+
 <svelte:head>
   <title>{title}</title>
   <meta property="og:title" content={title} />
@@ -22,19 +23,29 @@
 {#if data.site.service_mode === 'maintenance'}
   <MaintenancePane />
 {:else}
-  <div class="row bottom-margin row-margins">
-    <BlogBlock />
-    <UpcomingEventsBlock />
-  </div>
+  <!-- <div class="flex flex-row bottom-margin row-margins"> -->
+  <!--   <BlogBlock /> -->
+  <!--   <UpcomingEventsBlock /> -->
+  <!-- </div> -->
+  <!---->
+  <!-- <div class="row bottom-margin row-margins"> -->
+  <!--   <AnnouncementsBlock /> -->
+  <!--   <TwitterBlock /> -->
+  <!-- </div> -->
+  <!---->
+  <!-- <div class="flex flex-col"> -->
+  <!--   <BottomRowBlock /> -->
+  <!-- </div> -->
 
-  <div class="row bottom-margin row-margins">
-    <AnnouncementsBlock />
-    <TwitterBlock />
-  </div>
-
-  <div class="row row-margins">
-    <div class="col-xs-12">
-      <BottomRowBlock />
+  <div class="ligerbots-blue-background w-full px-[5px] -translate-x-[5px]"> <!-- I have the translation because for some reason the padding was only showing up on the right side-->
+    <div class="grid grid-cols-2 gap-6">
+      <BlogBlock />
+      <UpcomingEventsBlock />
+      <AnnouncementsBlock />
+      <TwitterBlock />
+      <div class="col-span-full">
+        <BottomRowBlock />
+      </div>
     </div>
-  </div>
+</div>
 {/if}

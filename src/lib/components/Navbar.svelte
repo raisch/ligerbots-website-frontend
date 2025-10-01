@@ -1,4 +1,7 @@
+
 <script>
+  import * as DropdownMenu from '$components/components/ui/dropdown-menu'
+  import { Button } from '$components/components/ui/button/index.js'
   import LoginIcon from './icons/LoginIcon.svelte'
   import LogoutIcon from './icons/LogoutIcon.svelte'
   import DropDownIcon from './icons/DropDownIcon.svelte'
@@ -7,30 +10,6 @@
 
   import { writable } from "svelte/store";
 
-  let items = [
-    { name: "Item 1", count: 0 },
-    { name: "Item 2", count: 0 },
-    { name: "Item 3", count: 0 }
-  ];
-
-  // Make `openDropdown` reactive using Svelte store
-  let openDropdown = writable(new Array(items.length).fill(false));
-
-  const handleDropdownClick = (index) => {
-    openDropdown.update((state) => {
-      state[index] = !state[index]; // Toggle dropdown
-      return [...state]; // Return a new array for reactivity
-    });
-  };
-
-  const handleDropdownFocusLoss = (index) => {
-    setTimeout(() => {
-      openDropdown.update((state) => {
-        state[index] = false;
-        return [...state];
-      });
-    }, 100);
-  };
   /**
    * @typedef {Object} NavbarConfig
    *
@@ -113,22 +92,58 @@
 <!--   </div> -->
 <!-- </nav> -->
 
-<div class="flex">
+<div class="flex flex-row w-3/5 mx-auto justify-around ligerbots-blue-background pl-[10px] h-full rounded-t-[8px]"> 
   {#each data.config as item, index}
-    {#if item.children} 
-      <div on:focusout={() => handleDropdownFocusLoss(index)}>
-      <button on:click={() => handleDropdownClick(index)}>
-        {item.title}
-      </button>
-      {#if $openDropdown[index]}
-        {#each item.children as child}
-            <a href={child.url}>{child.title}</a>
-        {/each}
-    {/if}
-    </div>
-    {:else} 
-      <a href=item.url>{item.title}</a>
-    {/if}
-  {/each}
-</div>
+    <div class="basis-1/12 h-full py-[16px] group transition transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] ">
+      {#if item.children} 
+      <DropdownMenu.Root >
+      <!--     <DropdownMenu.Trigger class="bg-[#2864ad] hover:bg-white">{item.title}</DropdownMenu.Triggerm -->
+        <DropdownMenu.Trigger asChild let:builder>
+          <Button variant="navBar" class="text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000] h-full" builders={[builder]}>
+              {item.title} <DropDownIcon /></Button>
+        </DropdownMenu.Trigger>
 
+        <DropdownMenu.Content class="border-0 translate-y-[15px] w-[10%]">
+          <DropdownMenu.Group class="rounded-b-xl outline-1 outline-[#C7C7C7]">
+            <!-- <div class="flex flex-col"> -->
+              {#each item.children as child}
+                {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
+                  <DropdownMenu.Item class="bg-[#FFFFFF] py-[5px] transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#D6D6D6]">
+                      <a href={child.url} class="w-full h-full">
+                        <Button variant="dropdown" class="w-full text-[16px] font-[Open_Sans]">{child.title}</Button>
+                      </a>
+                    </DropdownMenu.Item>
+                  {#if child.divider_after == true}
+                    <DropdownMenu.Separator class="w-full h-5px my-2 flex-none" style="background-color: #FFFFFF" />
+                    <DropdownMenu.Separator class="w-full h-2px my-2 flex-none" style="background-color: #D6D6D6" />
+                    <DropdownMenu.Separator class="w-full h-5px my-2 flex-none" style="background-color: #FFFFFF" />
+                  {/if}
+                {/if}
+              {/each}
+            <!-- </div> -->
+          </DropdownMenu.Group>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+      {:else} 
+        <a href={item.url} class="w-full py-[16px] h-full">
+          <Button variant="navBar" class="h-full text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000]">{item.title}</Button>
+        </a>
+      {/if}
+    </div>
+  {/each}
+  {#if data.user}
+    <a href="/logout" data-sveltekit-reload class="w-1/8 flex-initial py-[16px] group hover:bg-[#FFFFFF]">
+      <Button variant="navBar" class="w-1/2 text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000]">
+        <LogoutIcon /> Logout 
+      </Button>
+    </a>
+    {:else}
+    <a href="/login" data-sveltekit-reload class="basis-1/12 shrink flex-initial py-[16px] group hover:bg-[#FFFFFF]">
+      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000]">
+
+      <LoginIcon /> Login
+    </Button>
+  </a>
+
+  {/if}
+</div>

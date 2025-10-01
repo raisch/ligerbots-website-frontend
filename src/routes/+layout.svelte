@@ -16,16 +16,18 @@
 </script>
 
 <div id="header-ghost"></div>
-<div class="w-full overflow-x-hidden px-0" id="page-container">
-  <div class="col-xs-12 w-full px-0" id="main-column">
-    <Masthead />
-    <IconList />
-    {#key user}
-      <Navbar />
-    {/key}
-    <MainPane>
-      <slot />
-    </MainPane>
-    <Footer />
-  </div>
+  <div class="w-full overflow-x-hidden px-0" id="page-container">
+    <div class="col-xs-12 w-full px-0" id="main-column">
+      <Masthead />
+      <IconList />
+      {#key user}
+        <Navbar />
+      {/key}
+      <div class="w-full">
+        <MainPane>
+          <slot />
+        </MainPane>
+      </div>
+      <Footer />
+    </div>
 </div>
