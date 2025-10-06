@@ -46,7 +46,7 @@
   })
 </script>
 
-<!-- <nav class="text-white font-sans font-bold tracking-[0.03em] text-[13.5pt] navbar-expand-lg navbar-ligerbots bg-[#0066B3] rounded-sm mb-0 min-h-32 shadow-sm relative"> -->
+<!-- <nav class="text-white font-sans font-bold tracking-[0.03em] text-[13.5pt] navbar-expand-lg navbar-ligerbots bg-[#0066B3] rounded-sm mb-0 min-h-32"> -->
 <!--   <div class="max-w-[1200px]" id="navbar-container"> -->
 <!--     <div class="navbar-header"> -->
 <!--       <button type="button" class="navbar-toggle navbar-toggle-ligerbots" data-target="#myNavbar"> -->
@@ -92,7 +92,12 @@
 <!--   </div> -->
 <!-- </nav> -->
 
-<div class="flex flex-row w-3/5 mx-auto justify-around ligerbots-blue-background pl-[10px] h-full rounded-t-[8px]"> 
+<!--
+  I have absolutely no clue why, but the shadow just refused to show up when using Tailwind. So I just put some actual CSS in. 
+  I have some choice words for the person who wrote the code for Tailwind's shadows. 
+-->
+
+<div class="flex flex-row w-2/3 mx-auto justify-around ligerbots-blue-background h-full pl-[10px] rounded-t-[8px] relative z-50" style="box-shadow: 0 10px 15px -15px #000000"> 
   {#each data.config as item, index}
     <div class="basis-1/12 h-full py-[16px] group transition transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] ">
       {#if item.children} 

@@ -1,3 +1,7 @@
+<!--
+  TODO: Add a Team Links Page 
+-->
+
 <script>
   import { getContext, onMount } from 'svelte'
   import Masthead from '$lib/components/Masthead.svelte'
@@ -16,18 +20,23 @@
 </script>
 
 <div id="header-ghost"></div>
-  <div class="w-full overflow-x-hidden px-0" id="page-container">
-    <div class="col-xs-12 w-full px-0" id="main-column">
-      <Masthead />
-      <IconList />
-      {#key user}
-        <Navbar />
-      {/key}
-      <div class="w-full">
+
+<div class="w-full h-full overflow-visible px-0" id="page-container">
+  <div class="col-xs-12 w-full px-0 overflow-visible" id="main-column">
+    <Masthead />
+    <div class="flex justify-center">
+    <IconList />
+</div>
+    {#key user}
+      <Navbar />
+    {/key}
+    <div class="justify-center">
+      <div class="w-full overflow-visible">
         <MainPane>
           <slot />
         </MainPane>
       </div>
       <Footer />
     </div>
+  </div>
 </div>

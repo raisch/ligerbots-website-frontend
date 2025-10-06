@@ -1,3 +1,7 @@
+<!-- 
+  TODO: Get the Twitter embed working; I'm not familiar enough with it
+-->
+
 <script>
   import LinkIcon from './icons/LinkIcon.svelte'
 
@@ -20,8 +24,7 @@
       js.src = p + '://platform.twitter.com/widgets.js'
       js.nonce = '%sveltekit.nonce%'
       console.log(js.toString())
-      if (fjs.parentNode) {
-        fjs.parentNode.insertBefore(js, fjs)
+      if (fjs.parentNode) { fjs.parentNode.insertBefore(js, fjs)
       } else {
         document.head.appendChild(js)
       }
@@ -29,14 +32,14 @@
   }
 </script>
 
-<div class="col-md-6 col-sm-12">
-  <div class="panel panel-blue">
-    <div class="panel-heading index-heading">
+<!-- <div class="col-md-6 col-sm-12"> -->
+  <div class="rounded-[0.1vw] shadow-lg border-1 border-[#939598] h-full shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)]">
+    <div class="ligerbots-blue-background rounded-t-[0.1vw] text-center h-1/15 align-middle flex justify-center items-center">
       <a
-        style="color:white;"
         target="_blank"
         href="https://twitter.com/search?q=ligerbots&amp;src=typd"
-        data-svelte-h="svelte-kc9igs">TWITTER&nbsp;<LinkIcon /></a
+        class="text-[#FFFFFF] text-[17pt] no-underline font-[700] hover:underline"
+        data-svelte-h="svelte-kc9igs">TWITTER</a
       >
     </div>
     <div class="panel-body">
@@ -76,4 +79,4 @@
       </script-->
     </div>
   </div>
-</div>
+<!-- </div> -->

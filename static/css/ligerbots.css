@@ -123,9 +123,9 @@ body {
   background-color: white;
 }
 
-.panel-blue {
-  border-radius: var(--box-radius);
-}
+/* .panel-blue { */
+/*   border-radius: var(--box-radius); */
+/* } */
 
 .panel-blue > .panel-heading {
   background-color: rgb(0, 102, 179);
