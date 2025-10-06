@@ -8,7 +8,7 @@
         throw new Error('Event data is not available');
     }
 
-    let isAdmin: boolean|undefined = undefined;
+    let isAdmin = false;
     let event = data.event; // Access event data from the data prop
     let formData = { ...event };
 

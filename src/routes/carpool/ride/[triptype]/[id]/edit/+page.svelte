@@ -9,7 +9,7 @@
         throw new Error('Event data is not available');
     }
 
-    let isAdmin: boolean | undefined = undefined;
+    let isAdmin = false;
     let trip = data.event[0]; // Access trip data from the data prop
     let formData = { ...trip.item };
     let availableRides = data.availableRides || [];
