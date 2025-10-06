@@ -1,6 +1,5 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import type { Event } from '$lib/types';
     import { onMount } from 'svelte';
 
     export let data;
@@ -9,7 +8,7 @@
         throw new Error('Event data is not available');
     }
 
-    let isAdmin = undefined;
+    let isAdmin: boolean|undefined = undefined;
     let event = data.event; // Access event data from the data prop
     let formData = { ...event };
 
@@ -24,7 +23,7 @@
 
     async function saveEvent() {
         try {
-            const response = await fetch(`/api/events/${data.event.id}`, {
+            const response = await fetch(`/api/events/${event.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,7 +45,7 @@
 
     async function archiveEvent() {
         try {
-            const response = await fetch(`/api/events/${data.event.id}/archive`, {
+            const response = await fetch(`/api/events/${event.id}/archive`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,26 +107,26 @@
 
     <h2>Trips</h2>
 
-    {#if data.event.trips.length > 0}
+    {#if event.trips && event.trips?.length > 0}
         <div class="row events-list">
-            {#each data.event.trips as trip}
+            {#each event.trips as trip}
                 <div class="col-md-6">
                     <div class="card mb-6">
                         <div class="card-body">
                             <h2 class="card-title">
-                                <a href={`/carpool/trip/ride/${trip.item.id}/${trip.collection}`}>{trip.item.destination}</a>
+                                <a href={`/carpool/ride/${trip.id}/${trip.collection}`}>{trip.destination}</a>
                             </h2>
-                            <p class="card-text"><strong>Departs From:</strong> {trip.item.departs_from}</p>
-                            <p class="card-text"><strong>Departs On:</strong> {trip.item.departs_on}</p>
-                            <p class="card-text"><strong>Departs At:</strong> {trip.item.departs_at}</p>
-                            <p class="card-text"><strong>Arrives At:</strong> {trip.item.destination}</p>
+                            <p class="card-text"><strong>Departs From:</strong> {trip.departs_from}</p>
+                            <p class="card-text"><strong>Departs On:</strong> {trip.departs_on}</p>
+                            <p class="card-text"><strong>Departs At:</strong> {trip.departs_at}</p>
+                            <p class="card-text"><strong>Arrives At:</strong> {trip.destination}</p>
 
-                            <p>trip id: {trip.item.id}</p>
+                            <p>trip id: {trip.id}</p>
 
-                            <button class="btn btn-primary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}/${trip.collection}`)}>View Trip</button>
+                            <button class="btn btn-primary" on:click={() => goto(`/carpool/ride/${trip.id}/${trip.collection}`)}>View Trip</button>
 
                             <div class="bg-light p-2 rounded">
-                                <button class="btn btn-secondary" on:click={() => goto(`/carpool/trip/ride/${trip.item.id}/${trip.collection}/edit`)}>Edit Trip</button>
+                                <button class="btn btn-secondary" on:click={() => goto(`/carpool/ride/${trip.id}/${trip.collection}/edit`)}>Edit Trip</button>
                                 <button class="btn btn-danger" on:click={() => alert("Delete trip functionality not implemented yet")}>Delete Trip</button>
                             </div>
                         </div>
