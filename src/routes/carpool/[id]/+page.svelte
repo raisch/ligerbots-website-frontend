@@ -77,7 +77,7 @@
                   <strong>Destination:</strong>
                   {trip?.item.destination}<br />
 
-                  <button class="btn btn-primary" on:click={() => trip?.item?.id && trip?.collection && goto(`/carpool/ride/${trip.item.id}/${trip.collection}`)}>View Trip Detail</button>
+                  <button class="btn btn-primary" on:click={() => trip?.item?.id && trip?.collection && goto(`/carpool/ride/${trip.collection}/${trip.item.id}`)}>View Trip Detail</button>
                 </li>
               {/each}
             </ul>

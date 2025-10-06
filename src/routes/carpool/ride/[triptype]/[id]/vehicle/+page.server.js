@@ -1,5 +1,5 @@
 import Trip from '$lib/server/trip.js';
-import TripRide from '$lib/server/tripride.js';
+import TripRide from '$lib/server/vehicle.js';
 import { error } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */

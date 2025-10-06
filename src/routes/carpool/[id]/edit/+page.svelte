@@ -114,7 +114,7 @@
                     <div class="card mb-6">
                         <div class="card-body">
                             <h2 class="card-title">
-                                <a href={`/carpool/ride/${trip.id}/${trip.collection}`}>{trip.destination}</a>
+                                <a href={`/carpool/ride/${trip.collection}/${trip.id}`}>{trip.destination}</a>
                             </h2>
                             <p class="card-text"><strong>Departs From:</strong> {trip.departs_from}</p>
                             <p class="card-text"><strong>Departs On:</strong> {trip.departs_on}</p>
@@ -123,10 +123,10 @@
 
                             <p>trip id: {trip.id}</p>
 
-                            <button class="btn btn-primary" on:click={() => goto(`/carpool/ride/${trip.id}/${trip.collection}`)}>View Trip</button>
+                            <button class="btn btn-primary" on:click={() => goto(`/carpool/ride/${trip.collection}/${trip.id}`)}>View Trip</button>
 
                             <div class="bg-light p-2 rounded">
-                                <button class="btn btn-secondary" on:click={() => goto(`/carpool/ride/${trip.id}/${trip.collection}/edit`)}>Edit Trip</button>
+                                <button class="btn btn-secondary" on:click={() => goto(`/carpool/ride/${trip.collection}/${trip.id}/edit`)}>Edit Trip</button>
                                 <button class="btn btn-danger" on:click={() => alert("Delete trip functionality not implemented yet")}>Delete Trip</button>
                             </div>
                         </div>

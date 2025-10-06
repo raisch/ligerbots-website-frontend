@@ -1,4 +1,4 @@
-import TripRide from '$lib/server/tripride.js'
+import TripRide from '$lib/server/vehicle.js'
 
 export async function POST({ params, request }) {
     try {
