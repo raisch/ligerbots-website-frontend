@@ -9,7 +9,7 @@
 <!-- <div class="col-md-6 col-sm-12"> -->
   <div class="rounded-[0.1vw] shadow-lg border-1 border-[#939598] h-14/15 shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)]">
     <div class="ligerbots-blue-background rounded-t-[0.1vw] text-center h-1/11 align-middle flex justify-center items-center">
-      <a href="/calendar.php" class="text-[#FFFFFF] text-[17pt] font-[700] no-underline hover:underline">UPCOMING EVENTS</a>
+      <a href="/calendar" class="text-[#FFFFFF] text-[17pt] font-[700] no-underline hover:underline">UPCOMING EVENTS</a>
     </div>
     <div class="h-10/11 overflow-y-scroll w-full">
       <iframe

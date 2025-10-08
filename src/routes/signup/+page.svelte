@@ -1,3 +1,7 @@
+<!-- 
+  TODO: Get signup working
+-->
+
 <script>
   import { goto } from '$app/navigation'
 

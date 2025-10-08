@@ -48,9 +48,9 @@
     }
   }
 
-  const navigateToSignup = () => {
-    goto('/signup')
-  }
+  // const navigateToSignup = () => {
+  //   goto('/signup')
+  // }
 </script>
 
 <svelte:head>
@@ -68,7 +68,7 @@
     <br />
   </div>
   <div class="row bottom-margin row-margins">
-    <div class="col-xs-12">
+    <div class="flex flex-col">
       <center>
         <form on:submit|preventDefault={handleSubmit}>
           <input class="form-field" bind:value={email} type="email" placeholder="Email" />
@@ -79,7 +79,7 @@
         <br />
         <p>
           Don't have an account?
-          <a href="#none" on:click={navigateToSignup}><strong>Sign up</strong></a>
+          <a href="/signup"><strong>Sign up</strong></a>
         </p>
       </center>
     </div>

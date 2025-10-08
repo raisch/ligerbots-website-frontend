@@ -6,7 +6,7 @@
 <!-- <div class="w-full"> -->
   <div class="rounded-[0.1vw] shadow-lg border-1 border-[#939598] h-14/15 shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)]">
     <div class="ligerbots-blue-background rounded-t-[0.1vw] text-center h-1/11 align-middle flex justify-center items-center">
-      <a href="/" data-svelte-h="svelte-i5en1z" class="font-[700] text-[#FFFFFF] text-[17pt] no-underline hover:underline">LIGERBOTS BLOG </a>
+      <a href="/blog" data-svelte-h="svelte-i5en1z" class="font-[700] text-[#FFFFFF] text-[17pt] no-underline hover:underline">LIGERBOTS BLOG </a>
     </div>
       <div class="blog-image-box justify-center">
         <img src="/images/Enabling-Engineering-2024.webp" class="h-auto w-full object-contain" alt="enabling engineering internship 2024" />

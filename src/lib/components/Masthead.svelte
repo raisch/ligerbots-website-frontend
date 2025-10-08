@@ -1,12 +1,16 @@
-<div class="row relative ml-0 mr-0 h-min-screen/10">
-  <div class="pb-[15px] flex justify-center">
-    <div class="basis-[68%] flex items-center gap-0">
-      <a href="/" class="w-4/5 flex-initial -translate-y-1/2">
-        <img src="/assets/c632dcdf-27dd-448c-950d-21ec6e97e7ce" alt="masthead text" />
-      </a>
-      <a href="/" class="w-1/5 flex-initial">
-        <img src="/assets/5579e4ad-0648-4819-b917-2ee06be2aad8" alt="logo" />
-      </a>
+<script>
+  import IconList from '$lib/components/Icon-List.svelte'
+</script>
+<div class="h-min-[10vw] w-[60vw] mx-auto items-center mt-[0.5vw]">
+  <div class="pb-[15px] grid grid-cols-10 grid-rows-2">
+    <a href="/" class="w-[40vw] col-span-8">
+      <img src="/assets/c632dcdf-27dd-448c-950d-21ec6e97e7ce" alt="masthead text" />
+    </a>
+    <a href="/" class="w-[10vw] col-span-2 row-span-2">
+      <img src="/assets/5579e4ad-0648-4819-b917-2ee06be2aad8" alt="logo" />
+    </a>
+    <div class="col-span-8">
+      <IconList />
     </div>
   </div>
 </div>

@@ -10,10 +10,14 @@ const config: Config = {
       center: true,
       padding: '2rem',
       screens: {
+        sm: '576px',
+        md: '960px',
+        lg: '1440px',
         '2xl': '1400px',
       },
     },
     extend: {
+      display: ['responsive', 'group-hover', 'focus-within', 'hover', 'focus'],
       colors: {
         border: 'hsl(var(--border) / <alpha-value>)',
         input: 'hsl(var(--input) / <alpha-value>)',
