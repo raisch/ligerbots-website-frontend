@@ -31,6 +31,7 @@
         </p>
       </div>
     </div>
+    <br />
     <div>
       <div class="font-[Open_Sans_Condensed] font-[700] text-center">
         <a href="https://ligerbots.org/2024/03/15/be-our-champion/" class="text-[#2C72AE] no-underline text-[16pt] leading-[16pt] hover:text-[#2864ad] hover:underline"
@@ -49,6 +50,7 @@
         </p>
       </div>
     </div>
+    <br />
     <div>
       <div class="font-[Open_Sans_Condensed] font-[700] text-center">
         <a href="https://ligerbots.org/2023/12/04/come-to-the-ligerbots-steam-expo-and-robot-zoo/" class="text-[#2C72AE] no-underline text-[16pt] leading-[16pt] hover:text-[#2864ad] hover:underline"
@@ -67,16 +69,16 @@
         </p>
       </div>
     </div>
+    <br />
     <div>
       <div class="font-[Open_Sans_Condensed] font-[700] text-center">
         <a href="https://ligerbots.org/2023/11/01/join-us-at-the-newton-pumpkin-smash-11-4-1-5/" class="text-[#2C72AE] no-underline text-[16pt] leading-[16pt] hover:text-[#2864ad] hover:underline"
-          >Come to the LigerBots STEAM Expo and Robot Zoo!</a>
+          >I'm too lazy to write down all of this; It won't be visible anyways</a>
       </div>
-      <div class="font-[Open_Sans] italic text-[#333]">December 4, 2023</div>
+      <div class="font-[Open_Sans] italic text-[#333]">Frostmoot 32, 2026</div>
       <div class="font-[12pt] text-[#333] font-[Open_Sans]">
         <p>
-          Watch the LigerBots smash your Halloween pumpkin with our awesome, robot-driven smasher at Newton City Hall,
-          Saturday 11/4 from 1-5. In addition to the smashing we’ll have hands-on STEAM activities for kids!
+          This isn't my problem. It's above my paygrade. That's above my wheelhouse. My current workload does not allow for me to take on additional tasks. To give this the attention it deserves, it should go to someone with the right bandwidth. I'm happy to help where I can, but this falls outside of what I can realistically commit to.
           <!-- <a -->
           <!--   href="https://ligerbots.org/2023/11/01/join-us-at-the-newton-pumpkin-smash-11-4-1-5/" -->
           <!--   class="no-underline text-[#2C72AE] hover:underline hover:text-[#2864ad]" -->
