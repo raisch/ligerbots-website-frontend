@@ -48,15 +48,15 @@
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px]"> -->
-      <a class="cursor-pointer w-[10%] flex-none overflow-contain -translate-x-[0.5vw]" target="_blank" href="https://www.flickr.com/photos/ligerbots/">
-        <img class="w-auto h-[1vw] max-h-[50px] object-contain transition delay-150 duration-150 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/cf477ab4-9c50-417f-b8b7-a30a24e843d8" alt="flickr" />
+      <a class="cursor-pointer flex-none overflow-contain -translate-x-[0.5vw]" target="_blank" href="https://www.flickr.com/photos/ligerbots/">
+        <img class="h-[1.25vw] max-h-[50px] object-contain transition delay-150 duration-150 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/cf477ab4-9c50-417f-b8b7-a30a24e843d8" alt="flickr" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px]"> -->
-      <a class="cursor-pointer w-[15%] flex-none overflow-contain lp-[1vw]" href="/sponsor-us">
-        <img class="w-auto h-[1.25vw] max-h-[50px] object-contain transition delay-150 duration-150 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets//5bb9e371-74d4-4462-ae03-de76107749e7" alt="donate" />
+      <a class="cursor-pointer flex-none overflow-contain -ml-[1.25vw]" href="/sponsor-us">
+        <img class="max-h-[50px] h-[1.5vw] object-contain transition delay-150 duration-150 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets//5bb9e371-74d4-4462-ae03-de76107749e7" alt="donate" />
       </a>
     <!-- </div> -->
 <!--   </Resizable.Pane> -->

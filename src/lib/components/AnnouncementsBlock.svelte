@@ -11,7 +11,7 @@
 
 <div class="rounded-[0.1vw] shadow-lg border-1 border-[#939598] h-full shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)]">
   <div class="ligerbots-blue-background rounded-t-[0.1vw] text-center h-1/15 align-middle flex justify-center items-center">
-    <a href="/announcement" class="text-[#FFFFFF] font-[700] text-[17pt] no-underline hover:underline">ANNOUNCEMENTS</a>
+    <a href="/announcement" class="text-[#FFFFFF] font-[700] text-[17pt] font-[PT_Serif] no-underline hover:underline">ANNOUNCEMENTS</a>
   </div>
   <div class="m-[20px] leading-[19pt]">
     <div>

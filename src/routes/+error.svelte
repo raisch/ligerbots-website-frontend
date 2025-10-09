@@ -37,7 +37,7 @@
   <h3>Relax! Rest assured that the proper authorities have been notified!</h3>
 </center>
 
-<style>
+<style>  
   h2 {
     color: red;
   }

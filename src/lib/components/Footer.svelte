@@ -28,9 +28,9 @@
 
 
 <div class="w-2/3 bg-[#FFFFFF] mx-auto pt-[20px] px-[5px] pb-[30px] flex flex-col">
-  <div class="flex justify-center">
-    <div class="w-4/5 z-11">
-      <embed class="z-11 p-[5px] border-1 border-[#939598] rounded-[0.5vw] shadow-[0_5px_5px_rgba(0,0,0,0.25)]" src="/images/sponsor_bar_full_2024a.svg" />
+  <div class="flex justify-center z-10">
+    <div class="w-4/5">
+      <embed class="p-[5px] border-1 border-[#939598] rounded-[0.5vw] shadow-[0_5px_5px_rgba(0,0,0,0.25)]" src="/images/sponsor_bar_full_2024a.svg" />
       <!-- <embed
         nonce="%sveltekit.nonce%"
         class="sprs-image"
@@ -43,7 +43,7 @@
   <!-- </div> -->
   <!-- <div style="text-align: center;"> -->
 
-  <div class="text-center font-[Open_Sans] italic">
-      <a href="/current-sponsors" class="shadow-[0px_15px_15px_rgba(0,0,0,0.15)] no-underline text-[#4678B2] z-10 p-[10px] pt-[4px] rounded-b-[0.25vw] outline-1 outline-[#939598] bg-[#FFFFFF] hover:text-[#2f5179] hover:underline">Thank you to ALL our Sponsors (click here)!</a>
+  <div class="text-center font-[Open_Sans] italic translate-y-[3px] z-0">
+      <a href="/current-sponsors" class="shadow-[0px_15px_15px_rgba(0,0,0,0.15)] no-underline text-[#4678B2] p-[10px] pt-[4px] rounded-b-[0.25vw] outline-1 outline-[#939598] bg-[#FFFFFF] hover:text-[#2f5179] hover:underline">Thank you to ALL our Sponsors (click here)!</a>
   </div>
 </div>

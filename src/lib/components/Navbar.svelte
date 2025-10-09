@@ -1,3 +1,6 @@
+<!--
+  TODO: Fix Logout Icon
+-->
 
 <script>
   import * as DropdownMenu from '$components/components/ui/dropdown-menu'
@@ -9,6 +12,8 @@
   import { onMount } from 'svelte'
 
   import { writable } from "svelte/store";
+
+  let triggerButton
 
   /**
    * @typedef {Object} NavbarConfig
@@ -97,32 +102,29 @@
   I have some choice words for the person who wrote the code for Tailwind's shadows. 
 -->
 
-<div class="flex flex-row w-2/3 mx-auto justify-around ligerbots-blue-background h-full pl-[10px] rounded-t-[8px] relative z-50" style="box-shadow: 0 10px 15px -15px #000000"> 
+<div class="flex flex-row w-2/3 mx-auto justify-around ligerbots-blue-background mx-[10vw] h-[3.25vw] pl-[10px] rounded-t-[8px] relative z-50 font-[Open_Sans]" style="box-shadow: 0 10px 15px -15px #000000"> 
   {#each data.config as item, index}
-    <div class="basis-1/12 h-full py-[16px] group transition transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] cursor-pointer">
+    <div class="basis-1/12 flex-grow max-w-[7vw] h-full group py-[16px] transition transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] cursor-pointer">
       {#if item.children} 
-      <DropdownMenu.Root >
-      <!--     <DropdownMenu.Trigger class="bg-[#2864ad] hover:bg-white">{item.title}</DropdownMenu.Trigger -->
-        <DropdownMenu.Trigger asChild let:builder class="h-full -my-[16px]">
-          <Button variant="navBar" class="text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000] h-full cursor-pointer -my-[16px]" builders={[builder]}>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild let:builder class="h-full">
+          <Button variant="navBar" class="text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] h-full cursor-pointer " builders={[builder]}>
               {item.title} <DropDownIcon /></Button>
         </DropdownMenu.Trigger>
 
-        <DropdownMenu.Content class="border-0 translate-y-[15px] w-[10%]" align="start">
-          <DropdownMenu.Group class="rounded-b-xl outline-1 outline-[#C7C7C7]">
+        <DropdownMenu.Content class="border-0 translate-y-[8px] w-[10%] shadow-none" align="start">
+          <DropdownMenu.Group>
             <!-- <div class="flex flex-col"> -->
               {#each item.children as child}
                 {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
-                  <div class="text-left">
-                    <a href={child.url} class="w-full h-full no-underline text-left">
-                      <DropdownMenu.Item class="bg-[#FFFFFF] py-[5px] transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#D6D6D6] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer">{child.title}</DropdownMenu.Item>
-                    </a>
-                    {#if child.divider_after == true}
-                      <DropdownMenu.Separator class="w-full h-5px my-2 flex-none" style="background-color: #FFFFFF" />
-                      <DropdownMenu.Separator class="w-full h-2px my-2 flex-none" style="background-color: #D6D6D6" />
-                      <DropdownMenu.Separator class="w-full h-5px my-2 flex-none" style="background-color: #FFFFFF" />
-                    {/if}
-                  </div>
+                  <a href={child.url} class="w-full h-full no-underline text-left">
+                    <DropdownMenu.Item class="z-10 relative bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#D6D6D6] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer rounded-[0px] last:rounded-b-[0.25vw]">{child.title}</DropdownMenu.Item>
+                  </a>
+                  {#if child.divider_after == true}
+                    <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px]" style="background-color: #FFFFFF" />
+                    <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px]" style="background-color: #D6D6D6" />
+                    <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px]" style="background-color: #FFFFFF" />
+                  {/if}
                 {/if}
               {/each}
             <!-- </div> -->
@@ -131,20 +133,20 @@
       </DropdownMenu.Root>
       {:else} 
         <a href={item.url} class="w-full py-[16px] h-full">
-          <Button variant="navBar" class="cursor-pointer h-full text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000]">{item.title}</Button>
+          <Button variant="navBar" class="cursor-pointer h-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000]">{item.title}</Button>
         </a>
       {/if}
     </div>
   {/each}
   {#if data.user}
-    <a href="/logout" data-sveltekit-reload class="w-1/8 flex-initial py-[16px] group hover:bg-[#FFFFFF]">
-      <Button variant="navBar" class="w-1/2 text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000] cursor-pointer">
+    <a href="/logout" data-sveltekit-reload class="w-1/8 flex-initial pt-[10px] pb-[6px] group hover:bg-[#FFFFFF]">
+      <Button variant="navBar" class="w-1/2 text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer">
         <LogoutIcon /> Logout 
       </Button>
     </a>
     {:else}
-    <a href="/login" data-sveltekit-reload class="basis-1/12 shrink flex-initial py-[16px] group hover:bg-[#FFFFFF]">
-      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[16px] font-[1000] group-hover:text-[#000000] cursor-pointer">
+    <a href="/login" data-sveltekit-reload class="basis-1/12 shrink flex-initial pt-[10px] pb-[6px] group hover:bg-[#FFFFFF]">
+      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer">
 
       <LoginIcon /> Login
     </Button>
