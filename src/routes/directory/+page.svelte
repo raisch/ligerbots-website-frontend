@@ -62,7 +62,9 @@
     </table>
 
     <form class="form-inline" action="/" method="post">
-      <!-- TODO make this work! -->
+      <!--
+        TODO: Double check if this matters!
+      -->
       <button type="submit" name="download_users" class="btn btn-default">Download Userlist</button>
     </form>
   </div>

@@ -78,12 +78,13 @@
       <div class="font-[Open_Sans] italic text-[#333]">Frostmoot 32, 2026</div>
       <div class="font-[12pt] text-[#333] font-[Open_Sans]">
         <p>
-          This isn't my problem. It's above my paygrade. That's above my wheelhouse. My current workload does not allow for me to take on additional tasks. To give this the attention it deserves, it should go to someone with the right bandwidth. I'm happy to help where I can, but this falls outside of what I can realistically commit to.
-          <!-- <a -->
-          <!--   href="https://ligerbots.org/2023/11/01/join-us-at-the-newton-pumpkin-smash-11-4-1-5/" -->
-          <!--   class="no-underline text-[#2C72AE] hover:underline hover:text-[#2864ad]" -->
-          <!--   >Continue reading <span class="screen-reader-text"> “Come to the LigerBots STEAM Expo and Robot Zoo!”</span></a -->
-          <!-- > -->
+          This isn't my problem. It's above my paygrade. That's outside of my wheelhouse. My current workload does not allow for me to take on additional tasks. To give this the attention it deserves, it should go to someone with the right bandwidth. I'm happy to help where I can, but this falls outside of what I can realistically commit to.
+          <a
+            href="https://ligerbots.org/2026/13/32/nope-not-my-problem/"
+            class="no-underline text-[#2C72AE] hover:underline hover:text-[#2864ad]"
+            >Continue reading <span class="screen-reader-text"> “Nope. Not my problem.”</span></a
+          >
+          <!-- All jokes aside: the actual text is right beneath this. I just didn't feel like writing it all down.-->
         </p>
       </div>
     </div>

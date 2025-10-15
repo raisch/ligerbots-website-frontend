@@ -21,8 +21,8 @@
 
 <div id="header-ghost"></div>
 
-<div class="w-[100vw] mx-auto h-full overflow-visible px-0" id="page-container">
-  <div class="col-xs-12 w-full px-0 overflow-visible" id="main-column">
+<div class="w-[100vw] mx-auto h-full overflow-visible px-0">
+  <div class="w-full px-0 overflow-visible">
     <Masthead />
     <!-- <IconList /> -->
     {#key user}

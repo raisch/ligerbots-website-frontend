@@ -31,17 +31,13 @@
   <meta property="og:title" content={title} />
 </svelte:head>
 
-<center>
-  <h1>Status: {status}</h1>
-  <h2>{title}</h2>
-  <h3>Relax! Rest assured that the proper authorities have been notified!</h3>
-</center>
-
-<style>  
-  h2 {
-    color: red;
-  }
-  h3 {
-    margin: 3em;
-  }
-</style>
+<div class="flex flex-col items-center">
+  <h1 class="text-red-600">Status: {status}</h1>
+  <h2 class="mb-[3em]">{title}</h2>
+  {#if title == "Page not found"}
+    <h3>Whoopsie daisy! It seems that you went somewhere that doesn't exist! That sucks, doesn't it?</h3>
+  {:else}
+    <h3>Relax! Rest assured that the proper authorities have been notified!</h3>
+  {/if}
+  <br />
+</div>
