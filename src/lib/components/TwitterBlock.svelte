@@ -33,8 +33,8 @@
 </script>
 
 <!-- <div class="col-md-6 col-sm-12"> -->
-  <div class="rounded-[0.1vw] shadow-lg border-1 border-[#939598] h-full shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)] overflow-auto">
-    <div class="ligerbots-blue-background rounded-t-[0.1vw] text-center h-1/15 align-middle flex justify-center items-center">
+  <div class="rounded-[0.1vw] border-1 border-[#939598] h-full shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)] overflow-hidden">
+    <div class="ligerbots-blue-background rounded-t-[0.1vw] text-center h-[60px] align-middle flex justify-center items-center">
       <a
         target="_blank"
         href="https://twitter.com/search?q=ligerbots&amp;src=typd"
