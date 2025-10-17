@@ -6,8 +6,21 @@ import Queries from '$lib/server/graphql/event'
 
 const debug = createDebugMessages('APP:lib/server/event')
 
-export default class Trip {
-    static async getTrips(eventId, mutation = "destination_trip") {
+/**
+ * @typedef {Object} Trip
+ * @prop {string} collection - The type of trip (e.g., 'destination_trip', 'return_trip')
+ * @prop {Object} item - The trip details
+ * @prop {string} item.id - The unique identifier for the trip
+ * @prop {string} item.departs_from - The location the trip departs from
+ * @prop {string} item.departs_on - The date the trip departs
+ * @prop {string} item.departs_at - The time the trip departs
+ * @prop {string} item.destination - The destination of the trip
+ * @prop {string} item.arrives_at
+ */
+
+
+export default {
+    async getTrips(eventId, mutation = "destination_trip") {
         if (!eventId) {
             throw new Error('Event ID is required')
         }
@@ -39,9 +52,9 @@ export default class Trip {
 
         debug(`getTrips(eventId=${eventId}) result: ${JSON.stringify(result)}`)
         return result
-    }
+    },
 
-    static async updateTrip(tripData, mutation = "destination_trip") {
+    async updateTrip(tripData, mutation = "destination_trip") {
         if (!tripData || !tripData.id) {
             throw new Error('Trip data with valid id is required')
         }
