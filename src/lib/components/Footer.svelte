@@ -27,7 +27,7 @@
 <!-- #myFooter -->
 
 
-<div class="w-2/3 lg:min-w-[1024px] bg-[#FFFFFF] mx-auto pt-[20px] px-[5px] pb-[30px] flex flex-col">
+<div class="w-2/3 xs:min-w-[0px] sm:min-w-[640px] lg:min-w-[1024px] bg-[#FFFFFF] mx-auto pt-[20px] px-[5px] pb-[30px] flex flex-col">
   <div class="flex justify-center z-10">
     <div class="w-4/5">
       <embed class="p-[5px] border-1 border-[#939598] rounded-[0.5vw] shadow-[0_5px_5px_rgba(0,0,0,0.25)]" src="/images/sponsor_bar_full_2024a.svg" />

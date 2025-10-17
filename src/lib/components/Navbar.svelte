@@ -5,6 +5,7 @@
 <script>
   import * as DropdownMenu from '$components/components/ui/dropdown-menu'
   import * as Collapsible from '$components/components/ui/collapsible'
+  import * as Accordion from '$components/components/ui/accordion'
   import { Button } from '$components/components/ui/button/index.js'
   import LoginIcon from './icons/LoginIcon.svelte'
   import LogoutIcon from './icons/LogoutIcon.svelte'
@@ -159,46 +160,74 @@
 </div>
 
 <!-- Mobile NavBar -->
-<div class="lg:hidden w-2/3 mx-auto justify-around ligerbots-blue-background min-h-[50px] pl-[10px] rounded-t-[8px] font-[Open_Sans]" style="box-shadow: 0 10px 15px -15px #000000"> 
+<div class="lg:hidden w-2/3 xs:min-w-[0px] sm:min-w-[640px] mx-auto justify-around ligerbots-blue-background min-h-[50px] pl-[10px] rounded-t-[8px] font-[Open_Sans]" style="box-shadow: 0 10px 15px -15px #000000"> 
   <Collapsible.Root>
     <Collapsible.Trigger class="mr-auto pl-[1vw] text-white">Test</Collapsible.Trigger>
     <Collapsible.Content class="lg:hidden ligerbots-blue-background overflow-visible">
-      {#each data.config as item, index}
-        <div class="basis-1/12 max-w-[7vw] h-full mr-auto pl-[1vw] group py-[16px] transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] cursor-pointer">
-          {#if item.children} 
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild class="h-full">
-                <Button variant="navBar" class="text-[#000000] text-[13.5pt] font-[1000] group-hover:text-[#000000] h-full cursor-pointer">
-                    {item.title}
-                </Button>
-              </DropdownMenu.Trigger>
+      <Accordion.Root type="single" collapsible>
+        <div class="flex flex-col justify-left">
+          {#each data.config as item, index}
+            <div class="basis-1/12 mr-auto pl-[1vw] group py-[16px] transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] cursor-pointer group">
+              {#if item.children} 
+                <Accordion.Item value={`item-${index}`} class="py-0 my-0">
+                  <Accordion.Trigger class="w-full">
+                    <Button variant="navBar" class="text-white w-full mr-auto text-left text-[13.5pt] font-[1000] cursor-pointer group-hover:bg-white">
+                        {item.title} <DropDownIcon />
+                    </Button>
+                  </Accordion.Trigger>
 
-              <DropdownMenu.Content class="border-0 translate-y-[7px] w-[10%] shadow-none absolute z-10" align="start">
-                <!-- <DropdownMenu.Group class="shadow-xs shadow-black/30"> -->
-                  <!-- <div class="flex flex-col"> -->
-                    {#each item.children as child, i (child.url)}
-                      {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
-                        <a href={child.url} class="w-full h-full no-underline text-left">
-                          <DropdownMenu.Item class="bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#D6D6D6] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer rounded-[0px] {i === item.children.length - 1 ? 'rounded-b-[0.25vw]' : ''}">{child.title}</DropdownMenu.Item>
-                        </a>
-                        {#if child.divider_after == true}
-                          <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-white" />
-                          <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-[#D6D6D6]" />
-                          <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-white" />
-                        {/if}
-                      {/if}
-                    {/each}
-                  <!-- </div> -->
-                <!-- </DropdownMenu.Group> -->
-              </DropdownMenu.Content>
-            </DropdownMenu.Root>
-          {:else} 
-            <a href={item.url} class="w-full py-[16px] h-full">
-              <Button variant="navBar" class="cursor-pointer h-full text-[#000000] text-[13.5pt] font-[1000] group-hover:text-[#000000]">{item.title}</Button>
-            </a>
-          {/if}
+                  <Accordion.Content class="border-0 shadow-none z-10 text-black bg-white rounded absolute">
+                    <div class="flex flex-col justify-evenly">
+                      <!-- <DropdownMenu.Group class="shadow-xs shadow-black/30"> -->
+                        <!-- <div class="flex flex-col"> -->
+                          {#each item.children as child, i (child.url)}
+                            {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
+                              <a href={child.url} class="w-full no-underline" class:border-b={child.divider_after}>
+                                <!-- <DropdownMenu.Item class="bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#D6D6D6] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer rounded-[0px] {i === item.children.length - 1 ? 'rounded-b-[0.25vw]' : ''}">{child.title}</DropdownMenu.Item> -->
+                                {child.title}
+                              </a>
+                              {#if child.divider_after == true}
+                                <!-- <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-white" /> -->
+                                <!-- <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-[#D6D6D6]" /> -->
+                                <!-- <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-white" /> -->
+                              {/if}
+                            {/if}
+                          {/each}
+                        <!-- </div> -->
+                      <!-- </DropdownMenu.Group> -->
+                    </div>
+                  </Accordion.Content>
+                </Accordion.Item>
+              {:else} 
+                <a href={item.url} class="w-full py-[16px] h-full">
+                  <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:text-[#000000]">{item.title}</Button>
+                </a>
+              {/if}
+            </div>
+          {/each}
         </div>
-      {/each}
+      </Accordion.Root>
+      <!-- <Accordion.Root type="single" class="overflow-hidden" collapsible> -->
+      <!--   <Accordion.Item value="item-1"> -->
+      <!--     <Accordion.Trigger>Section 1</Accordion.Trigger> -->
+      <!--     <Accordion.Content> -->
+      <!--       <p>This is the content for section 1.</p> -->
+      <!--     </Accordion.Content> -->
+      <!--   </Accordion.Item> -->
+      <!---->
+      <!--   <Accordion.Item value="item-2"> -->
+      <!--     <Accordion.Trigger>Section 2</Accordion.Trigger> -->
+      <!--     <Accordion.Content> -->
+      <!--       <p>This is the content for section 2.</p> -->
+      <!--     </Accordion.Content> -->
+      <!--   </Accordion.Item> -->
+      <!---->
+      <!--   <div class="object-contain flex flex-col justify-left w-auto"> -->
+      <!--     <Button class="w-[10vw]" on:click={() => alert("Clicked!")}> -->
+      <!--       Simple Button -->
+      <!--     </Button> -->
+      <!--   </div> -->
+      <!-- </Accordion.Root> -->
       {#if data.user}
         <a href="/logout" data-sveltekit-reload class="w-1/8 flex-initial py-[16px] group hover:bg-[#FFFFFF]">
           <Button variant="navBar" class="w-1/2 text-[#000000] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer">

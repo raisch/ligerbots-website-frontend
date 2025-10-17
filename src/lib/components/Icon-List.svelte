@@ -1,12 +1,7 @@
-<!-- 
-  TODO: Move the Icon List up so that it is right underneath the LigerBots Logo
-  TODO: Fix the Icon List's spacing
--->
-
 <script>
   import * as Resizable from "$components/components/ui/resizable/index.js";
 </script>
-<div class="flex flex-row justify-center max-h-[50px] max-w-[40%] items-center justify-center overflow-contain object-center gap-[2vw] mx-auto w-fit py-[1vw]">
+<div class="flex flex-row justify-center max-h-[50px] md:min-w-[40%] sm:min-w-[60%] items-center overflow-contain object-center gap-[2vw] mx-auto w-fit pt-[3vw] lg:pt-[1vw] pb-[3vw] lg:pb-[1vw]">
 <!--   <Resizable.PaneGroup -->
 <!--   direction="horizontal" -->
 <!--   class="max-w-[40%] items-start object-center rounded-lg translate-y-[-25%] flex items-center" -->
