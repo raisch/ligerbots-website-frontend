@@ -1,6 +1,8 @@
 <script>
   // List Carpool Event Details
   // path: /carpool/[id]
+  import { goto } from '$app/navigation';
+  import CarpoolTrip from '$lib/components/CarpoolTrip.svelte';
 
   /**
    * @typedef {Object} EventRecord
@@ -19,42 +21,30 @@
    */
 
   /**
-   * @typedef {Object} Trip
-   * @property {string} collection - The type of trip (e.g., 'destination_trip', 'return_trip')
-   * @property {Object} item - The trip details
-   * @property {string} item.departs_from - The location the trip departs from
-   * @property {string} item.departs_on - The date the trip departs
-   * @property {string} item.departs_at - The time the trip departs
-   * @property {string} item.destination - The destination of the trip
+   * @typedef {import('$lib/server/trip').Trip} Trip
    */
 
   /**
    * @typedef {Array<Trip>} Trips
    */
 
-  
+  /** @type {EventRecord|undefined} */
+  export let data // { event }
 
-  
+  /** @type {Event|undefined} */
+  export let event = data?.event // Fallback to empty object if data is not available
 
-  
-  /**
-   * @typedef {Object} Props
-   * @property {EventRecord|undefined} data - { event }
-   * @property {Event|undefined} [event] - Fallback to empty object if data is not available
-   * @property {Trips|Array<undefined>} [trips] - console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
-   */
+  /** @type {Trips} */
+  export let trips = event?.trips || []
 
-  /** @type {Props} */
-  let { data, event = data?.event, trips = event?.trips || [] } = $props();
-
-  
+  // console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
 </script>
 
 <div class="container mt-4">
   <h1>Carpool Event Detail Page</h1>
 
   <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-    <div class="col-md-8">
+    <div class="">
       <div class="card mb-6">
         <div class="card-body">
           <h2 class="card-title">{event?.name}</h2>
@@ -62,32 +52,23 @@
           <p class="card-text"><strong>Start Date:</strong> {event?.start_date}</p>
           <p class="card-text"><strong>End Date:</strong> {event?.end_date}</p>
           <p class="card-text"><strong>Location:</strong> {event?.location}</p>
-          <p class="card-text"><strong>Trips:</strong></p>
-          {#if trips.length > 0}
-            <ul>
-              {#each trips as trip}
-                <li class="mb-2" style="background-color: #ddd; padding: 10px; border-radius: 10px;">
-                  <strong>Type:</strong>
-                  {#if trip?.collection === 'destination_trip'}
-                    <span class="badge badge-success">To Event</span>
-                  {:else if trip?.collection === 'return_trip'}
-                    <span class="badge badge-danger">From Event</span>
-                  {:else}
-                    <span class="badge badge-secondary">Unknown</span>
-                  {/if}
-                  <br />
-                  <strong>Departs From:</strong>
-                  {trip?.item.departs_from} on {trip?.item.departs_on} at {trip?.item.departs_at}<br />
-                  <strong>Destination:</strong>
-                  {trip?.item.destination}<br />
-
-                  <button class="btn btn-primary" onclick={() => alert('TBD')}>View Trip Detail</button>
-                </li>
-              {/each}
-            </ul>
-          {:else}
-            <p>No trips available for this event.</p>
-          {/if}
+          <div>
+            <p class="card-text"><strong>Trips:</strong></p>
+            {#if trips.length > 0}
+              <div style="list-style-type: none; padding: 0; float: left; width: 49%;">
+                {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
+                  <CarpoolTrip {trip} />
+                {/each}
+              </div>
+              <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
+                {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
+                  <CarpoolTrip {trip} />
+                {/each}
+              </div>
+            {:else}
+              <p>No trips available for this event.</p>
+            {/if}
+          </div>
         </div>
       </div>
     </div>
