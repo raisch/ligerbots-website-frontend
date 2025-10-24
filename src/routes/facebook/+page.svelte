@@ -1,3 +1,6 @@
+<!--
+  TODO: Make facebook inaccessable to people who aren't logged in
+-->
 <script>
   // @ts-nocheck
 
@@ -42,11 +45,24 @@
   <meta property="og:title" content="LigerBots Facebook" />
 </svelte:head>
 
-{#each students as student}
-  <div class="facebook-entry">
-    <img src={student.imageUrl} alt="Profile picture of {student.fullname}" />
-    <br />
-    <div class="name">{student.fullname}</div>
-    <div class={student.school.toLowerCase()}>{student.school}</div>
-  </div>
-{/each}
+<center class="basis-1/12 font-[Open_Sans] text-[13pt] w-full text-black/80">
+  <div class="bg-[#D04E1D] text-white text-[20pt] font-[PT_Serif] font-bold text-ellipsis overflow-hidden w-1/3 h-full px-2 py-3 rounded-md">LIGERBOTS FACEBOOK</div>
+  <br />
+  The information on this page is confidential - It is only available to registered and approved users.
+  <br />
+  <br />
+  <br />
+  <br />
+</center>
+<div class="grid grid-flow-row auto-rows-min grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-[50px] px-[5vw]">
+  {#each students as student}
+    <div class="w-[150px] h-[280px] text-[10.5pt]">
+      <img src={student.imageUrl} alt="Profile picture of {student.fullname}" />
+      <br />
+      <div class="flex flex-row">
+        <div class="w-[70%]">{student.fullname}</div>
+        <div class="{student.school.toLowerCase()} {student.school.toLowerCase() === 'south' ? 'text-[#0066b3]' : 'text-[#d04e1d]'}">{student.school}</div>
+      </div>
+    </div>
+  {/each}
+</div>

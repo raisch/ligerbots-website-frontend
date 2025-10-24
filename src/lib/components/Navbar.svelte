@@ -15,8 +15,6 @@
 
   import { writable } from "svelte/store";
 
-  let triggerButton
-
   /**
    * @typedef {Object} NavbarConfig
    *
@@ -52,57 +50,6 @@
     data.user = user ? JSON.parse(user) : null
   })
 </script>
-
-<!-- <nav class="text-white font-sans font-bold tracking-[0.03em] text-[13.5pt] navbar-expand-lg navbar-ligerbots bg-[#0066B3] rounded-sm mb-0 min-h-32"> -->
-<!--   <div class="max-w-[1200px]" id="navbar-container"> -->
-<!--     <div class="navbar-header"> -->
-<!--       <button type="button" class="navbar-toggle navbar-toggle-ligerbots" data-target="#myNavbar"> -->
-<!--         <span class="icon-bar icon-bar-ligerbots">...</span> -->
-<!--         <span class="icon-bar icon-bar-ligerbots"></span> -->
-<!--         <span class="icon-bar icon-bar-ligerbots"></span> -->
-<!--       </button> -->
-<!--     </div> -->
-<!--     <div class="collapse navbar-collapse" id="navbar"> -->
-<!--       <ul class="nav navbar-nav nav-stacked"> -->
-<!--         {#each data.config as elt} -->
-<!--           {#if elt.children} -->
-<!--             <li class="dropdown"> -->
-<!--               <a class="dropdown-toggle" data-toggle="dropdown" href={elt.url}> -->
-<!--                 {@html elt.title}<DropDownIcon /> -->
-<!--               </a> -->
-<!--               <ul class="dropdown-menu"> -->
-<!--                 {#each elt.children as child} -->
-<!--                   {#if child.requires_login && !data.user} -->
-<!--                     <!-- Skip this item -->
-<!--                   {:else} -->
-<!--                     <li><a href={child.url} data-sveltekit-reload>{@html child.title}</a></li> -->
-<!--                     {#if child.divider_after} -->
-<!--                       <li role="separator" class="divider"></li> -->
-<!--                     {/if} -->
-<!--                   {/if} -->
-<!--                 {/each} -->
-<!--               </ul> -->
-<!--             </li> -->
-<!--           {:else if elt.requires_login && !data.user} -->
-<!--             <!-- Skip this item -->
-<!--           {:else} -->
-<!--             <li class="active"><a href={elt.url} data-sveltekit-reload>{@html elt.title}</a></li> -->
-<!--           {/if} -->
-<!--         {/each} -->
-<!--         {#if data.user} -->
-<!--           <li><a href="/logout" data-sveltekit-reload><LogoutIcon /> Logout</a></li> -->
-<!--         {:else} -->
-<!--           <li class="active"><a href="/login" data-sveltekit-reload><LoginIcon /> Login</a></li> -->
-<!--         {/if} -->
-<!--       </ul> -->
-<!--     </div> -->
-<!--   </div> -->
-<!-- </nav> -->
-
-<!--
-  I have absolutely no clue why, but the shadow just refused to show up when using Tailwind. So I just put some actual CSS in. 
-  I have some choice words for the person who wrote the code for Tailwind's shadows. 
--->
 
 <!-- Desktop NavBar -->
 <div class="lg:min-w-[1024px] hidden lg:flex flex-row w-2/3 items-center mx-auto justify-around ligerbots-blue-background min-h-[50px] h-[3.25vw] pl-[10px] rounded-t-[8px] relative z-10 font-[Open_Sans]" style="box-shadow: 0 10px 15px -15px #000000"> 
@@ -143,14 +90,14 @@
     </div>
   {/each}
   {#if data.user}
-    <a href="/logout" data-sveltekit-reload class="w-1/8 flex-initial py-[16px] group hover:bg-[#FFFFFF]">
-      <Button variant="navBar" class="w-1/2 text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer">
+    <a href="/logout" data-sveltekit-reload class="basis-1/12 shrink flex-initial pt-[10px] pb-[6px] group hover:bg-[#FFFFFF] h-full">
+      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer h-full">
         <LogoutIcon /> Logout 
       </Button>
     </a>
     {:else}
-    <a href="/login" data-sveltekit-reload class="basis-1/12 shrink flex-initial pt-[10px] pb-[6px] group hover:bg-[#FFFFFF]">
-      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer">
+    <a href="/login" data-sveltekit-reload class="basis-1/12 shrink flex-initial pt-[10px] pb-[6px] group hover:bg-[#FFFFFF] h-full">
+      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer h-full">
 
       <LoginIcon /> Login
     </Button>
@@ -167,30 +114,25 @@
       <Accordion.Root type="single" collapsible>
         <div class="flex flex-col justify-left">
           {#each data.config as item, index}
-            <div class="basis-1/12 mr-auto pl-[1vw] group py-[16px] transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] cursor-pointer group">
+            <div class="basis-1/12 mr-auto pl-[1vw] py-[16px] transition delay-0 duration-150 ease-in-out border-0 cursor-pointer group">
               {#if item.children} 
-                <Accordion.Item value={`item-${index}`} class="py-0 my-0">
+                <Accordion.Item value={`item-${index}`} class="py-0 my-0 w-full rounded">
                   <Accordion.Trigger class="w-full">
-                    <Button variant="navBar" class="text-white w-full mr-auto text-left text-[13.5pt] font-[1000] cursor-pointer group-hover:bg-white">
+                    <Button variant="navBar" class="text-white h-full group-hover:text-black focus:text-black w-full mr-auto text-left text-[13.5pt] font-[1000] cursor-pointer group-hover:bg-white focus:bg-white">
                         {item.title} <DropDownIcon />
                     </Button>
                   </Accordion.Trigger>
 
-                  <Accordion.Content class="border-0 shadow-none z-10 text-black bg-white rounded absolute">
+                  <Accordion.Content class="border-0 shadow-none z-10 text-black rounded absolute h-auto text-[14pt] accordionContent">
                     <div class="flex flex-col justify-evenly">
                       <!-- <DropdownMenu.Group class="shadow-xs shadow-black/30"> -->
                         <!-- <div class="flex flex-col"> -->
                           {#each item.children as child, i (child.url)}
                             {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
-                              <a href={child.url} class="w-full no-underline" class:border-b={child.divider_after}>
+                              <a href={child.url} class="bg-white w-full no-underline border-gray-500/50 last:rounded-b p-2 transition duration-150 ease-in-out hover:bg-gray-100" class:border-b={child.divider_after}>
                                 <!-- <DropdownMenu.Item class="bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#D6D6D6] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer rounded-[0px] {i === item.children.length - 1 ? 'rounded-b-[0.25vw]' : ''}">{child.title}</DropdownMenu.Item> -->
                                 {child.title}
                               </a>
-                              {#if child.divider_after == true}
-                                <!-- <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-white" /> -->
-                                <!-- <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-[#D6D6D6]" /> -->
-                                <!-- <DropdownMenu.Separator class="w-full flex-none -my-[1/3px] -mx-[4/3px] bg-white" /> -->
-                              {/if}
                             {/if}
                           {/each}
                         <!-- </div> -->
@@ -200,7 +142,7 @@
                 </Accordion.Item>
               {:else} 
                 <a href={item.url} class="w-full py-[16px] h-full">
-                  <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:text-[#000000]">{item.title}</Button>
+                  <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:bg-white group-hover:text-[#000000]">{item.title}</Button>
                 </a>
               {/if}
             </div>

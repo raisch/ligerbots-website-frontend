@@ -75,11 +75,11 @@
         <div class="flex flex-col w-[20vw] gap-[1vw]">
           <div class="flex flex-col gap-[0.5vw] items-start font-bold text-gray-700">
             Username:
-            <input class="h-[1vw] w-full font-[12pt] text-black py-[1vw] px-[0.5vw] border-1 border-gray-400 inset-shadow-2xs inset-shadow-gray-300 rounded-[0.2vw] focus:border-blue-400 focus:shadow-blue-400/50 focus:shadow-md focus:outline-none font-normal" bind:value={email} type="email" placeholder="Email" />
+            <input class="h-[1vw] w-full font-[12pt] text-black py-[1vw] px-[0.5vw] border-1 border-gray-400 inset-shadow-2xs inset-shadow-gray-300 rounded-[0.2vw] transition ease-in-out duration-150 focus:border-blue-400 focus:shadow-blue-400/50 focus:shadow-md focus:outline-none font-normal" bind:value={email} type="email" placeholder="Email" />
           </div>
           <div class="flex flex-col gap-[0.5vw] items-start font-bold text-gray-700">
             Password: 
-            <input class="h-[1vw] w-full font-[12pt] text-black py-[1vw] px-[0.5vw] border-1 border-gray-400 inset-shadow-2xs inset-shadow-gray-300 rounded-[0.2vw] focus:border-blue-400 focus:shadow-blue-400/50 focus:shadow-md focus:outline-none font-normal" bind:value={password} type="password" placeholder="Password" />
+            <input class="h-[1vw] w-full font-[12pt] text-black py-[1vw] px-[0.5vw] border-1 border-gray-400 inset-shadow-2xs inset-shadow-gray-300 rounded-[0.2vw] transition ease-in-out duration-150 focus:border-blue-400 focus:shadow-blue-400/50 focus:shadow-md focus:outline-none font-normal" bind:value={password} type="password" placeholder="Password" />
           </div>
           <label class="font-[Open_Sans] cursor-pointer flex flex-row items-center">
             <input class="h-[2vw] w-fit pt-[0.2vw] pb-[0.3vw] my-auto px-[0.5vw] border-1 border-gray-400 rounded-[0.2vw] hover:bg-gray-100 cursor-pointer" type="checkbox" bind:value={rememberMe}/> 

@@ -28,7 +28,7 @@
   <meta property="og:title" content="LigerBots Directory" />
 </svelte:head>
 
-{#if !user}
+{#if user}
   <div class="flex flex-col w-full">
     <center class="basis-1/12 font-[Open_Sans] text-[13pt] w-full text-black/80">
       <div class="bg-[#D04E1D] text-white text-[20pt] font-[PT_Serif] font-bold text-ellipsis overflow-hidden w-1/3 h-full px-2 py-3 rounded-md">LIGERBOTS DIRECTORY</div>

@@ -1,11 +1,14 @@
 <script>
-  export let data
+  /** @type {import('./$types').PageData} */
+  export let data;
+
+  const { post } = data;
 </script>
 
 <div class="col-md-10 col-md-offset-1 col-sm-12">
-  <div class="level4-heading">{data.post.title}</div>
-  <div class="announce-date">{data.post.publish_on}</div>
+  <div class="level4-heading">{post.title}</div>
+  <div class="announce-date">{post.publish_on}</div>
   <div class="blog-content">
-    <p>{@html data.post.body}</p>
+    <p>{@html post.body}</p>
   </div>
 </div>
