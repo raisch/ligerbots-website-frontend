@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+
+# NAME: get-directus-schema-snapshot.sh
+# VERSION: 1.0.0
+# DATE: 2025-10-27
+# AUTHOR: Rob Raisch <raisch@gmail.com>
+# LICENSE: MIT
+
+# DESCRIPTION: Retrieve the current Directus schema snapshot from a Directus server API
+
+# USAGE: ./get-directus-schema-snapshot.sh [options]
+
+# OPTIONS:
+#   --server <url>     Directus server URL (default: admin.0mo.cc)
+#   --email <email>    Directus admin email
+#   --password <pass>  Directus admin password
+#   --help             Show this help message
+#   --debug            Enable debug output
+#   --dry-run          Show what would be done, but do not execute
+#   --verbose          Enable verbose output
+
+# DEFAULTS: server=admin.0mo.cc
+
+# REQUIREMENTS:
+#   - curl - to make HTTP requests
+#   - jq - to parse JSON responses and pretty-print the output
+
+set -euo pipefail
+
+# Defaults
+SERVER="admin.0mo.cc"
+EMAIL=""
+PASSWORD=""
+DEBUG=0
+DRY_RUN=0
+VERBOSE=0
+
+# Debug and verbose output functions
+debug() {
+  if [[ $DEBUG -eq 1 ]]; then
+    echo "[DEBUG] $*" >&2
+  fi
+}
+
+verbose() {
+  if [[ $VERBOSE -eq 1 ]]; then
+    echo "$*" >&2
+  fi
+}
+
+message() {
+  echo "$*" >&2
+}
+
+usage() {
+  cat <<EOF
+Usage: $0 [options]
+
+Options:
+  --server <url>     Directus server URL (default: admin.0mo.cc)
+  --email <email>    Directus admin email
+  --password <pass>  Directus admin password
+  --help             Show this help message
+  --debug            Enable debug output
+  --dry-run          Show what would be done, but do not execute
+  --verbose          Enable verbose output
+EOF
+}
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --server)
+      SERVER="$2"; shift 2;;
+    --email)
+      EMAIL="$2"; shift 2;;
+    --password)
+      PASSWORD="$2"; shift 2;;
+    --help)
+      usage; exit 0;;
+    --debug)
+      DEBUG=1; shift;;
+    --dry-run)
+      DRY_RUN=1; shift;;
+    --verbose)
+      VERBOSE=1; shift;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+# Prompt for missing values
+if [[ -z "$EMAIL" ]]; then
+  read -rp "Directus admin email: " EMAIL
+fi
+if [[ -z "$PASSWORD" ]]; then
+  read -rsp "Directus admin password: " PASSWORD; echo
+fi
+
+API_URL="https://$SERVER"
+LOGIN_URL="$API_URL/auth/login"
+SCHEMA_URL="$API_URL/schema/snapshot"
+
+debug "API_URL: $API_URL"
+debug "LOGIN_URL: $LOGIN_URL"
+debug "SCHEMA_URL: $SCHEMA_URL"
+debug "Login payload: {\"email\":\"$EMAIL\",\"password\":\"*****\"}"
+
+if [[ $DRY_RUN -eq 1 ]]; then
+  message "[DRY-RUN] Would POST to $LOGIN_URL with email/password, then GET $SCHEMA_URL"
+  exit 0
+fi
+
+if [[ $DRY_RUN -eq 1 ]]; then
+  message "[DRY-RUN] Would POST to $LOGIN_URL with email/password, then GET $SCHEMA_URL"
+  exit 0
+fi
+
+# Login to Directus
+LOGIN_RESPONSE=$(curl -sS -X POST "$LOGIN_URL" \
+  -H 'Content-Type: application/json' \
+  -d "{\"email\":\"$EMAIL\",\"password\":\"$PASSWORD\"}")
+
+debug "Login response: $LOGIN_RESPONSE"
+
+ACCESS_TOKEN=$(echo "$LOGIN_RESPONSE" | grep -o '"access_token":"[^"]*"' | cut -d':' -f2 | tr -d '"')
+if [[ -z "$ACCESS_TOKEN" ]]; then
+  message "Failed to retrieve access token. Response: $LOGIN_RESPONSE"
+  exit 1
+fi
+
+if [[ $VERBOSE -eq 1 ]]; then
+  verbose "Authenticated. Access token obtained."
+fi
+
+ACCESS_TOKEN=$(echo "$LOGIN_RESPONSE" | grep -o '"access_token":"[^"]*"' | cut -d':' -f2 | tr -d '"')
+if [[ -z "$ACCESS_TOKEN" ]]; then
+  echo "ERROR: Failed to retrieve access token. Response: $LOGIN_RESPONSE"
+  exit 1
+fi
+
+verbose "Authenticated. Access token obtained."
+
+# Retrieve schema snapshot
+debug "GET $SCHEMA_URL with Bearer token"
+
+SCHEMA_RESPONSE=$(curl -sS -X GET "$SCHEMA_URL" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H 'Accept: application/json')
+
+debug "Schema response: $SCHEMA_RESPONSE"
+
+# Output schema
+verbose "Schema snapshot retrieved successfully."
+
+echo "$SCHEMA_RESPONSE" | jq .

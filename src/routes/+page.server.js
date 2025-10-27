@@ -10,11 +10,8 @@ import getSiteConfig from '$lib/server/site'
  * @param {object} opts.fetch
  * @returns {Promise<{ site: object }>}
  */
-export async function load({ fetch }) {
+export async function load ({ fetch }) {
   const site = await getSiteConfig()
-  // console.log(
-  //   `\nin +page.server.js/getSiteConfig, config: ${JSON.stringify(site)}\n`
-  // )
 
   return { site }
 }
