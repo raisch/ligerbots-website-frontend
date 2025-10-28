@@ -1,12 +1,12 @@
 import getSiteConfig from '$lib/server/site';
 
 export async function load({ fetch }) {
-  let site;
+  let data;
   try {
-    site = await getSiteConfig();
+    data = await getSiteConfig();
   } catch (error) {
     console.error('failed to retrieve site config:', error);
   }
 
-  return { site };
+  return { data };
 }

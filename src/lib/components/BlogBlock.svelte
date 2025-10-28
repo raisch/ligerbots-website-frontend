@@ -4,21 +4,21 @@
 </script>
 
 <!-- <div class="w-full"> -->
-  <div class="rounded-[0.1vw] border-1 border-[#939598] h-14/15 shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)] flex flex-col">
+  <div class="rounded-[5px] border-1 border-[#939598] lg:h-[600px] shadow-[5px_5px_15px_-10px_rgba(0,0,0,25)] flex flex-col overflow-hidden">
     <div class="ligerbots-blue-background rounded-t-[0.1vw] text-center min-h-[60px] h-[60px] align-middle flex justify-center items-center">
       <a href="/blog" data-svelte-h="svelte-i5en1z" class="font-[700] font-[PT_Serif] text-[#FFFFFF] text-[17pt] no-underline hover:underline">LIGERBOTS BLOG </a>
     </div>
       <div class="blog-image-box justify-center">
         <img src="/images/Enabling-Engineering-2024.webp" class="h-auto w-full object-contain" alt="enabling engineering internship 2024" />
       </div>
-      <div class="mx-auto py-4 px-6 justify-center">
-        <p data-svelte-h="svelte-fm4mp4" class="font-[Open_Sans] font-[12pt] leading-[1.5] text-left">
+      <div class="mx-auto py-4 justify-center">
+        <p data-svelte-h="svelte-fm4mp4" class="font-[Open_Sans] font-[12pt] leading-[1.5] text-left text-[#333] tracking-[0.04em] mx-[20px]">
           This summer, 18 LigerBots took part in an eight week program through Northeastern University’s Enabling
           Engineering&nbsp; internship.”During the internship, the students helped to design and build five different
           projects for patients, children and nurses in…
         </p>
       </div>
-      <div class="my-[15px] mb-[3vw] flex justify-center text-center">
+      <div class="mt-[15px] mb-[15px] flex justify-center text-center">
         <a href="https://ligerbots.org/2024/09/14/ligerbots-excel-and-innovate-at-northeastern-internship/"
           ><img src="/images/read_more_flat.svg" alt="Read More" /></a
         >

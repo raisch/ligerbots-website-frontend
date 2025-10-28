@@ -25,17 +25,15 @@
 <div class="row">
   <div class="title-bar">
     <center>
-      <div class="notindex-title">
-        <a href="/gallery" style="color: white;">SIGNUP</a>
+      <div class="font-[PT_Serif] font-bold text-[20pt] leading-[26pt] text-center bg-[#d04e1d] px-[2em] py-[0.5em] w-1/7 rounded mx-auto flex flex-row justify-center">
+        <a class="text-white " href="/gallery">SIGNUP</a>
       </div>
     </center>
     <br />
   </div>
-  <div class="row bottom-margin row-margins">
-    <div class="col-xs-12">
-      <center>
-        <div>This is the SIGNUP page.</div>
-      </center>
-    </div>
+  <div class="flex flex-col">
+    <center>
+      <div>This is the SIGNUP page.</div>
+    </center>
   </div>
 </div>

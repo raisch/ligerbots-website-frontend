@@ -62,19 +62,21 @@
               {item.title} <DropDownIcon /></Button>
         </DropdownMenu.Trigger>
 
-        <DropdownMenu.Content class="border-0 w-[10%] shadow-none -mt-[calc(0.5vw-1px)]" align="start">
-          <DropdownMenu.Group class="shadow-xs shadow-black/30 overflow-hidden">
+        <DropdownMenu.Content class="border-0 w-[10%] shadow-none -mt-[0.5em] -ml-[4px]" align="start">
+          <DropdownMenu.Group class="shadow-xs shadow-black/30 overflow-hidden border-0 last:rounded-b-md">
             <!-- <div class="flex flex-col"> -->
               {#each item.children as child, i (child.url)}
                 {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
                   <a href={child.url} class="w-full h-full no-underline text-left">
-                    <DropdownMenu.Item class="-ml-[0.2vw] z-11 relative bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#D6D6D6] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer rounded-[0px] {i === item.children.length - 1 ? 'rounded-b-[0.25vw]' : ''}">{child.title}</DropdownMenu.Item>
+                    <DropdownMenu.Item class="-ml-[0.2vw] z-11 relative bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#F5F5F5] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer">{child.title}</DropdownMenu.Item>
                   </a>
                   {#if child.divider_after == true}
                     <!-- <DropdownMenu.Separator class="w-auto flex-none -my-[1/3px] -mx-[4/3px] bg-white" /> -->
                     <!-- <DropdownMenu.Separator class="w-auto flex-none -my-[1/3px] -mx-[4/3px] bg-[#D6D6D6]" /> -->
                     <!-- <DropdownMenu.Separator class="w-auto flex-none -my-[1/3px] -mx-[4/3px] bg-white" /> -->
+                    <DropdownMenu.Separator class="bg-white my-0 py-[2px]"/>
                     <DropdownMenu.Separator class="bg-[#D6D6D6] my-0"/>
+                    <DropdownMenu.Separator class="bg-white my-0 py-[2px]"/>
                   {/if}
                 {/if}
               {/each}

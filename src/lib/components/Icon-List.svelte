@@ -1,7 +1,4 @@
-<script>
-  import * as Resizable from "$components/components/ui/resizable/index.js";
-</script>
-<div class="flex flex-row justify-center max-h-[50px] md:min-w-[40%] sm:min-w-[60%] items-center overflow-contain object-center gap-[2vw] mx-auto w-fit pt-[3vw] lg:pt-[1vw] pb-[3vw] lg:pb-[1vw]">
+<div class="flex flex-row justify-center max-h-[50px] md:min-w-[40%] sm:min-w-[60%] items-center overflow-contain object-center gap-[2vw] mx-auto w-fit my-[20px]">
 <!--   <Resizable.PaneGroup -->
 <!--   direction="horizontal" -->
 <!--   class="max-w-[40%] items-start object-center rounded-lg translate-y-[-25%] flex items-center" -->
@@ -9,49 +6,49 @@
   <!-- <Resizable.Pane defaultSize={1} class="overflow-contain"> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px] overflow-contain"> -->
       <a class="cursor-pointer overflow-contain flex-none" target="_blank" href="http://www.firstinspires.org/robotics/frc">
-        <img class="w-auto max-h-[50px] h-[2vw] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/images/first.svg" alt="first robotics" />
+        <img class="w-auto max-h-[50px] h-[2vw] min-h-[20px] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/images/first.svg" alt="first robotics" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px] object-contain"> -->
       <a class="cursor-pointer overflow-contain flex-none h-[1.5vw] w-auto" target="_blank" href="https://www.youtube.com/c/ligerbots">
-        <img class="w-auto translate-y-[0.25vw] h-[1vw] max-h-[50px] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/e46d43c9-1e15-4e34-98a5-1bb9760ff078" alt="youtube" />
+        <img class="w-auto translate-y-[0.25vw] h-[1vw] min-h-[15px] max-h-[50px] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/e46d43c9-1e15-4e34-98a5-1bb9760ff078" alt="youtube" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px]"> -->
       <a class="cursor-pointer h-[2%] w-auto flex-none overflow-contain max-h-[50px]" target="_blank" href="https://x.com/ligerbots">
-        <img class="object-contain translate-y-[0.1vw] max-h-[50px] w-auto h-[1.3vw] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/aaebd520-32cf-4c3e-bd31-9d8a5178ee05" alt="x" />
+        <img class="object-contain translate-y-[0.1vw] max-h-[50px] min-h-[20px] w-auto h-[1.3vw] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/aaebd520-32cf-4c3e-bd31-9d8a5178ee05" alt="x" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex-shrink flex h-full w-full items-center justify-center p-[6px]"> -->
       <a class="cursor-pointer h-[2%] aspect-square flex-none overflow-contain" target="_blank" href="https://www.facebook.com/The-LigerBots-162121450506644/">
-        <img class="w-auto h-[1.5vw] max-h-[50px] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/a32f4f54-b323-45ee-a624-59276a135108" alt="facebook" />
+        <img class="w-auto h-[1.5vw] max-h-[50px] min-h-[20px] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/a32f4f54-b323-45ee-a624-59276a135108" alt="facebook" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px]"> -->
       <a class="cursor-pointer h-[2%] aspect-square flex-none overflow-contain" target="_blank" href="https://www.instagram.com/ligerbots_frc2877/">
-        <img class="w-auto h-[1.5vw] max-h-[50px] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/3806f78a-68c5-4b0c-8f1d-9ac04481e94c" alt="instagram" />
+        <img class="w-auto h-[1.5vw] min-h-[20px] max-h-[50px] transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/3806f78a-68c5-4b0c-8f1d-9ac04481e94c" alt="instagram" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px]"> -->
       <a class="cursor-pointer flex-none overflow-contain -translate-x-[0.5vw]" target="_blank" href="https://www.flickr.com/photos/ligerbots/">
-        <img class="h-[1.25vw] max-h-[50px] object-contain transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/cf477ab4-9c50-417f-b8b7-a30a24e843d8" alt="flickr" />
+        <img class="h-[1.25vw] max-h-[50px] min-h-[10px] object-contain transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/cf477ab4-9c50-417f-b8b7-a30a24e843d8" alt="flickr" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px]"> -->
       <a class="cursor-pointer flex-none overflow-contain -ml-[1.25vw]" href="/sponsor-us">
-        <img class="max-h-[50px] h-[1.5vw] object-contain transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets//5bb9e371-74d4-4462-ae03-de76107749e7" alt="donate" />
+        <img class="max-h-[50px] min-h-[10px] h-[1.5vw] object-contain transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets//5bb9e371-74d4-4462-ae03-de76107749e7" alt="donate" />
       </a>
     <!-- </div> -->
 <!--   </Resizable.Pane> -->

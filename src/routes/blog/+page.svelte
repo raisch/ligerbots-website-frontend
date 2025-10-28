@@ -1,15 +1,9 @@
-<script>
-  // placeholder for the data
-  /** @type {import('./$types').PageData} */
-  export let data
+<!--
+  TODO: Make "/page", "/blog" and "/announcement" all link to a page where there is just a list of all posts that may be interacted with
+-->
 
-  console.log(data)
+<script>
+  // Placeholder for data
 </script>
 
-<div class="col-md-10 col-md-offset-1 col-sm-12">
-  <div class="level4-heading">{data.post.title}</div>
-  <div class="announce-date">{data.post.publish_on}</div>
-  <div class="blog-content">
-    <p>{@html data.post.body}</p>
-  </div>
-</div>
+<div>Blog Posts</div>

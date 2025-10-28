@@ -5,4 +5,4 @@
   // FiLogIn.a = { ...FiLogIn.a, 'stroke-width': 4 }
 </script>
 
-<Icon src={TrFillCaretDown} size="12" />
+<Icon src={TrFillCaretDown} class="text-[24px] w-[1em] h-[1em] align-middle" />

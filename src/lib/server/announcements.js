@@ -1,7 +1,7 @@
-import createDebugMessages from 'debug'
-import { getBackendClient } from './client.js'
+import createDebugMessages from 'debug';
+import { getBackendClient } from './client.js';
 
-const debug = createDebugMessages('APP:src/$lib/server/announcements')
+const debug = createDebugMessages('APP:src/$lib/server/announcements');
 
 const POSTS_QUERY = `
   query Post {
@@ -24,7 +24,7 @@ const POSTS_QUERY = `
         lede
         status
       }
-  }`
+  }`;
 
 // const POST_QUERY = `{
 //   post(filter: { slug: { _eq: "{{slug}}" } }) {
@@ -59,24 +59,24 @@ const POSTS_QUERY = `
  *
  * @returns {Promise<AnnouncementsList>}
  */
-export default async function getAnnouncements (query = POSTS_QUERY) {
-  const client = await getBackendClient()
+export default async function getAnnouncements(query = POSTS_QUERY) {
+  const client = await getBackendClient();
 
-  debug(`getAnnouncements() query: ${query}`)
+  debug(`getAnnouncements() query: ${query}`);
 
-  let result
+  let result;
   try {
-    result = await client.query(query)
+    result = await client.query(query);
   } catch (/** @type {any} */ err) {
-    throw new Error(`failed to retrieve posts: ${JSON.stringify(err)}`)
+    throw new Error(`failed to retrieve posts: ${JSON.stringify(err)}`);
   }
   if (!(result && result.post && Array.isArray(result.post))) {
     console.error(
       `getAnnouncements() failed to retrieve posts: ${JSON.stringify(result)}`
-    )
-    return []
+    );
+    return [];
   }
-  result = result.post
-  debug(`getPosts() result: ${JSON.stringify(result)}`)
-  return result
+  result = result.post;
+  debug(`getPosts() result: ${JSON.stringify(result)}`);
+  return result;
 }

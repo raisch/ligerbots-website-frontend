@@ -15,13 +15,13 @@
   /** @type {PageData} */
   export let data
 
-  // Debug.on().log('Photos.+page data:', data)
+  Debug.on().log('Photos.+page data:', data)
 
-  data.currentSeason = '2024/25'
-  data.currentEvent = 'Reefscape'
-  data.title = `LigerBots Photos - ${data.currentSeason} ${data.currentEvent}`
-  data.photos_link = 'https://www.flickr.com/photos/ligerbots/'
-  data.videos_link = 'https://www.youtube.com/c/ligerbots/'
+  // data.currentSeason = '2024/25'
+  // data.currentEvent = 'Reefscape'
+  // data.title = `LigerBots Photos - ${data.currentSeason} ${data.currentEvent}`
+  // data.photos_link = 'https://www.flickr.com/photos/ligerbots/'
+  // data.videos_link = 'https://www.youtube.com/c/ligerbots/'
 </script>
 
 <svelte:head>
@@ -66,7 +66,7 @@
           </DropdownMenu.Trigger>
             <DropdownMenu.Content class="mx-auto text-center absolute bg-white !shadow-xl shadow-black/30 !border-gray-500/50">
               <!-- svelte-ignore a11y-missing-attribute -->
-              <!-- <div><a class="gallery-dropdown-item-active active text-[rgb(0,102,179)] hover:text-black"> 2024/25 Reefscape </a></div> -->
+              <div><a href="/gallery?year=0" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2024/25 Reefscape </a></div>
               <div><a href="/gallery?year=1" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2023/24 Crescendo </a></div>
               <div><a href="/gallery?year=2" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2022/23 Charged Up </a></div>
               <div><a href="/gallery?year=3" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2021/22 Rapid React </a></div>

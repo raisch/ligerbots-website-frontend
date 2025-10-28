@@ -21,6 +21,7 @@
 
 <div id="header-ghost"></div>
 
+<div class="bg-[linear-gradient(to_bottom,white_0%,rgba(0,0,0,0)_40vw),url('/images/background.jpg')] bg-no-repeat bg-cover h-max w-max z-[-1] absolute">
 <div class="w-[100vw] mx-auto h-full overflow-visible px-0">
   <div class="w-full px-0 overflow-visible">
     <Masthead />
@@ -37,4 +38,5 @@
       <Footer />
     </div>
   </div>
+</div>
 </div>
