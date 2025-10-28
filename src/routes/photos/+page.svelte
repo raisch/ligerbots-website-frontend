@@ -2,6 +2,9 @@
   import Debug from '$lib/debugging'
   import * as DropdownMenu from '$components/components/ui/dropdown-menu'
 
+  const years = ['2024/25', '2023/24', '2022/23', '2021/22', '2020/21', '2019/20', '2018/19', '2017/18', '2016/17', '2015/16', '2014/15', '2013/14', '2012/13', '2011/12', '2010/11', '2009/10', '2008/9']
+  const seasons = [ "Reefscape", "Crescendo", "Charged Up", "Rapid React", "Infinite Recharge", "Infinite Recharge", "Destination: Deep Space", "First Power Up", "First Steamworks", "First Stronghold", "Recycle Rush", "Aerial Assist", "Ultimate Ascent", "Rebound Rumble", "Logomotion", "Breakaway", "Lunacy", "Overdrive" ];
+
   /**
    * @typedef {Object} PageData
    *
@@ -14,8 +17,13 @@
 
   /** @type {PageData} */
   export let data
+  export let year
+
+  year = data.year ?? 0
+  data = data.data
 
   Debug.on().log('Photos.+page data:', data)
+  Debug.on().log('Photos.+page year:', year)
 
   // data.currentSeason = '2024/25'
   // data.currentEvent = 'Reefscape'
@@ -26,8 +34,8 @@
 
 <svelte:head>
   <!-- <link rel="stylesheet" href="/css/gallery.css" /> -->
-  <title>{data.title}</title>
-  <meta property="og:title" content={data.title} />
+  <title>LigerBots Photos - {years[year]} {seasons[year]}</title>
+  <meta property="og:title" content="LigerBots Photos - {years[year]} {seasons[year]}" />
 </svelte:head>
 
 <div class="flex flex-col">
@@ -48,95 +56,75 @@
     </h5>
   </center>
 
-  <div class="gallery-container">
-    <div>
-      <a class="float-left ml-[3vw] text-[rgb(208,78,29)] text-[12pt] font-medium font-[Open_Sans] transition ease-in-out duration-150 hover:text-black" href="/gallery?year=1">
-        <!--span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span-->
-        <span class="font-bold">&laquo;</span>&nbsp;Previous year
-      </a>
-      <a class="float-right mr-[3vw] text-[rgba(208,78,29,0.5)] text-[12pt] font-medium font-[Open_Sans] cursor-not-allowed" href="/gallery">
-        Next year&nbsp;<span class="font-bold">&raquo;</span>
-        <!-- span class="glyphicon glyphicon-chevron-right"></span>
-          <span class="glyphicon glyphicon-chevron-right"></span-->
-      </a>
-      <div class="flex flex-row justify-center">
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger class="text-[#2B65AE] font-bold text-[18pt] transition ease-in-out duration-150 hover:text-black cursor-pointer text-center">
-            2024/25 Reefscape &nbsp;<span class="down-arrow">&#x25BC;</span>
-          </DropdownMenu.Trigger>
-            <DropdownMenu.Content class="mx-auto text-center absolute bg-white !shadow-xl shadow-black/30 !border-gray-500/50">
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <div><a href="/gallery?year=0" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2024/25 Reefscape </a></div>
-              <div><a href="/gallery?year=1" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2023/24 Crescendo </a></div>
-              <div><a href="/gallery?year=2" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2022/23 Charged Up </a></div>
-              <div><a href="/gallery?year=3" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2021/22 Rapid React </a></div>
-              <div>
-                <a href="/gallery?year=4" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2020/21 Infinite Recharge at Home </a>
-              </div>
-              <div><a href="/gallery?year=5" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2019/20 Infinite Recharge </a></div>
-              <div><a href="/gallery?year=6" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2018/19 Destination: Deep Space </a></div>
-              <div><a href="/gallery?year=7" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2017/18 Power Up </a></div>
-              <div><a href="/gallery?year=8" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2016/17 Steamworks </a></div>
-              <div><a href="/gallery?year=9" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2015/16 Stronghold </a></div>
-              <div><a href="/gallery?year=10" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2014/15 Recycle Rush </a></div>
-              <div><a href="/gallery?year=11" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2014 Aerial Assist </a></div>
-              <div><a href="/gallery?year=12" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2013 Ultimate Ascent </a></div>
-              <div><a href="/gallery?year=13" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2012 Rebound Rumble </a></div>
-              <div><a href="/gallery?year=14" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2011 Logo Motion </a></div>
-              <div><a href="/gallery?year=15" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2010 Breakaway </a></div>
-              <div><a href="/gallery?year=16" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2009 Lunacy </a></div>
-              <div><a href="/gallery?year=17" class="text-[rgb(0,102,179)] hover:underline hover:text-black"> 2008 FIRST Overdrive </a></div>
-            </DropdownMenu.Content>
-        </DropdownMenu.Root>
-      </div>
+  <div>
+    <a class="float-left ml-[3vw] text-[rgb(208,78,29)] text-[12pt] font-medium font-[Open_Sans] transition ease-in-out duration-150 hover:text-black" href="/gallery?year=1">
+      <!--span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span-->
+      <span class="font-bold">&laquo;</span>&nbsp;Previous year
+    </a>
+    <a class="float-right mr-[3vw] text-[rgba(208,78,29,0.5)] text-[12pt] font-medium font-[Open_Sans] cursor-not-allowed" href="/gallery">
+      Next year&nbsp;<span class="font-bold">&raquo;</span>
+      <!-- span class="glyphicon glyphicon-chevron-right"></span>
+        <span class="glyphicon glyphicon-chevron-right"></span-->
+    </a>
+    <div class="flex flex-row justify-center">
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger class="text-[#2B65AE] font-bold text-[18pt] transition ease-in-out duration-150 hover:text-black cursor-pointer text-center">
+          {years[year]} {seasons[year]} &nbsp;<span class="down-arrow">&#x25BC;</span>
+        </DropdownMenu.Trigger>
+          <DropdownMenu.Content class="mx-auto text-center absolute bg-white !shadow-xl shadow-black/30 !border-gray-500/50">
+            {#each years as _, i}
+            <div><a href="/gallery?year={i}" class="text-[rgb(0,102,179)] hover:underline hover:text-black {i == year ? "hidden" : ""}"> {years[i]} {seasons[i]} </a></div>
+            {/each}
+          </DropdownMenu.Content>
+      </DropdownMenu.Root>
     </div>
-
-    <div class="flex flex-row justify-center flex-wrap w-full"> <!-- It's not just good; it's good enough. -->
-      <a href="/gallery?album=72177720320536974" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
-        <div
-          class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-[url(https://farm66.staticflickr.com/65535/54014893604_f3d3d7c808_z.jpg)] bg-cover bg-center"
-        >
-          <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white py-[3pt] px-[1pt]">FRC Robocon NE, 9/21/24</div>
-        </div>
-      </a>
-      <a href="/gallery?album=72177720320430286" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
-        <div
-          class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-cover bg-center bg-[url(https://farm66.staticflickr.com/65535/54004511582_905f8cb21f_z.jpg)]"
-        >
-          <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white py-[3pt] px-[1pt]">Newton Upper Falls Village Day, 9/15/24</div>
-        </div>
-      </a>
-      <a href="/gallery?album=72177720320425369" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
-        <div
-          class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-cover bg-center bg-[url(https://farm66.staticflickr.com/65535/54002445812_cde9a976bd_z.jpg)]"
-        >
-          <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white py-[3pt] px-[1pt]">STEAM Expo for Neurodivergent Students, 9/15/24</div>
-        </div>
-      </a>
-      <a href="/gallery?album=72177720320339316" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
-        <div
-          class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-cover bg-center bg-[url(https://farm66.staticflickr.com/65535/53997209140_838169a304_z.jpg)]"
-        >
-          <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white tpy-[3pt] px-[1pt]">Countryside Elementary School Picnic, 9/9/24</div>
-        </div>
-      </a>
-    </div>
-    <!-- <div class="row gallery-buttons-bar-container-bottom"> -->
-    <!--   <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3"> -->
-    <!--     <a style="float: left;" class="gallery-nav-button" href="/gallery?year=1"> -->
-    <!--       <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span> -->
-    <!--       Previous year -->
-    <!--     </a> -->
-    <!--   </div> -->
-    <!--   <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3"> -->
-    <!--     <a style="float: right;" class="gallery-nav-button-disabled" href="/gallery?"> -->
-    <!--       Next year<span class="glyphicon glyphicon-chevron-right"></span><span  -->
-    <!--         class="glyphicon glyphicon-chevron-right" -->
-    <!--       ></span> -->
-    <!--     </a> -->
-    <!--   </div> -->
-    <!-- </div> -->
   </div>
+
+  <div class="flex flex-row justify-center flex-wrap w-full"> <!-- It's not just good; it's good enough. -->
+    <a href="/gallery?album=72177720320536974" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
+      <div
+        class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-[url(https://farm66.staticflickr.com/65535/54014893604_f3d3d7c808_z.jpg)] bg-cover bg-center"
+      >
+        <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white py-[3pt] px-[1pt]">FRC Robocon NE, 9/21/24</div>
+      </div>
+    </a>
+    <a href="/gallery?album=72177720320430286" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
+      <div
+        class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-cover bg-center bg-[url(https://farm66.staticflickr.com/65535/54004511582_905f8cb21f_z.jpg)]"
+      >
+        <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white py-[3pt] px-[1pt]">Newton Upper Falls Village Day, 9/15/24</div>
+      </div>
+    </a>
+    <a href="/gallery?album=72177720320425369" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
+      <div
+        class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-cover bg-center bg-[url(https://farm66.staticflickr.com/65535/54002445812_cde9a976bd_z.jpg)]"
+      >
+        <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white py-[3pt] px-[1pt]">STEAM Expo for Neurodivergent Students, 9/15/24</div>
+      </div>
+    </a>
+    <a href="/gallery?album=72177720320339316" class="opacity-full transition ease-in-out duration-200 hover:opacity-70">
+      <div
+        class="w-[189.75pt] h-[189.75pt] m-[7.71pt] relative p-0 rounded-[4px] border border-[#939598] bg-cover bg-center bg-[url(https://farm66.staticflickr.com/65535/53997209140_838169a304_z.jpg)]"
+      >
+        <div class="bg-[#0066b3] z-1 absolute bottom-0 w-full text-center text-white tpy-[3pt] px-[1pt]">Countryside Elementary School Picnic, 9/9/24</div>
+      </div>
+    </a>
+  </div>
+  <!-- <div class="row gallery-buttons-bar-container-bottom"> -->
+  <!--   <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3"> -->
+  <!--     <a style="float: left;" class="gallery-nav-button" href="/gallery?year=1"> -->
+  <!--       <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span> -->
+  <!--       Previous year -->
+  <!--     </a> -->
+  <!--   </div> -->
+  <!--   <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3"> -->
+  <!--     <a style="float: right;" class="gallery-nav-button-disabled" href="/gallery?"> -->
+  <!--       Next year<span class="glyphicon glyphicon-chevron-right"></span><span  -->
+  <!--         class="glyphicon glyphicon-chevron-right" -->
+  <!--       ></span> -->
+  <!--     </a> -->
+  <!--   </div> -->
+  <!-- </div> -->
 </div>
 
 <style>
