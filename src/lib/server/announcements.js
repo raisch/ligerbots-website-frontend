@@ -9,7 +9,6 @@ const POSTS_QUERY = `
         filter: {
           _and: [
             {status: { _eq: "published" } },
-            {type: {_eq: "announcement"}}
           ]
         },
         sort: [
@@ -17,7 +16,6 @@ const POSTS_QUERY = `
         ],
         limit: 5
       ) {
-        type
         slug
         title
         publish_on

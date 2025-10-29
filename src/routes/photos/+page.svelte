@@ -2,6 +2,7 @@
   import Debug from '$lib/debugging'
   import * as DropdownMenu from '$components/components/ui/dropdown-menu'
 
+  // TODO: Add the two constants into Directus
   const years = ['2024/25', '2023/24', '2022/23', '2021/22', '2020/21', '2019/20', '2018/19', '2017/18', '2016/17', '2015/16', '2014/15', '2013/14', '2012/13', '2011/12', '2010/11', '2009/10', '2008/9']
   const seasons = [ "Reefscape", "Crescendo", "Charged Up", "Rapid React", "Infinite Recharge", "Infinite Recharge", "Destination: Deep Space", "First Power Up", "First Steamworks", "First Stronghold", "Recycle Rush", "Aerial Assist", "Ultimate Ascent", "Rebound Rumble", "Logomotion", "Breakaway", "Lunacy", "Overdrive" ];
 
