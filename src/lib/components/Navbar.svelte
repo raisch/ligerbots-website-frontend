@@ -1,5 +1,6 @@
-<!--
-  TODO: Fix Logout Icon
+<!-- 
+  TODO: Fix the DropdownIcon shrinking depending on god knows what
+  TODO: Add in login to the mobile navbar
 -->
 
 <script>
@@ -92,14 +93,14 @@
     </div>
   {/each}
   {#if data.user}
-    <a href="/logout" data-sveltekit-reload class="basis-1/12 shrink flex-initial pt-[10px] pb-[6px] group hover:bg-[#FFFFFF] h-full">
-      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer h-full">
+    <a href="/logout" data-sveltekit-reload class="basis-1/12 shrink flex-initial pt-[10px] pb-[6px] group transition duration-150 ease-in-out hover:bg-[#FFFFFF] h-full">
+      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] transition duration-150 ease-in-out group-hover:text-[#000000] cursor-pointer h-full">
         <LogoutIcon /> Logout 
       </Button>
     </a>
     {:else}
-    <a href="/login" data-sveltekit-reload class="basis-1/12 shrink flex-initial pt-[10px] pb-[6px] group hover:bg-[#FFFFFF] h-full">
-      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] cursor-pointer h-full">
+    <a href="/login" data-sveltekit-reload class="basis-1/12 shrink flex-initial transition duration-150 ease-in-out pt-[10px] pb-[6px] group hover:bg-[#FFFFFF] h-full">
+      <Button variant="navBar" class="w-full text-[#FFFFFF] text-[13.5pt] font-[1000] transition duration-150 ease-in-out group-hover:text-[#000000] cursor-pointer h-full">
 
       <LoginIcon /> Login
     </Button>

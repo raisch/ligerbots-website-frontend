@@ -5,4 +5,7 @@
   // FiLogIn.a = { ...FiLogIn.a, 'stroke-width': 4 }
 </script>
 
-<Icon src={TrFillCaretDown} class="text-[24px] w-[1em] h-[1em] align-middle" />
+<!-- Why do I need this text-0? I have absolutely no clue. ¯\_(ツ)_/¯ -->
+<div class="text-0">
+  <Icon src={TrFillCaretDown} className="size-[20px]" />
+</div>

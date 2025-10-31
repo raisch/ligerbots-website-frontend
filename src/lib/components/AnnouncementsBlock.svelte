@@ -21,14 +21,26 @@
   <div class="ligerbots-blue-background text-center min-h-[60px] h-[60px] align-middle flex justify-center items-center">
     <a href="/announcement" class="text-[#FFFFFF] font-[700] text-[17pt] font-[PT_Serif] no-underline hover:underline">ANNOUNCEMENTS</a>
   </div>
-  <div class="m-[20px] leading-[19pt]">
+  <div class="m-[20px] flex flex-col justify-center leading-[19pt] h-full pb-[40px]">
     {#if data && data.result.length != 0}
       <!-- {@html data.result[0].lede} -->
-      {#each data.result as _, i}
-        <p class="text-wrap">{@html data.result[i].lede}</p>
+      <!--
+        TODO: Add a "Type" field to directus posts 
+      -->
+      {#each data.result as i}
+        <div class="flex-auto flex flex-col">
+          <a href="/post/{i.slug}" class="text-[#337ab7] font-[Open_Sans_Condensed] no-underline text-[16pt] hover:text-[#2864ad] hover:underline font-[700] leading-[16pt] mx-auto">{i.title}</a>
+          <div class="text-left italic font-[Open_Sans] font-[400]">{i.publish_on}</div>
+          <div class="[&_img]:hidden [&_*]:max-w-full [&_*]:wrap-break-word [&_*]:font-[Open_Sans] [&_*]:text-[#333] [&_*]:font-[12pt] [&_*]:tracking-[0.04em]">
+            <span class="inline">
+              <span class="inline [&_*]:inline">{@html i.lede}</span>&nbsp;&hellip;&nbsp;<a href="/post/{i.slug}" class="!text-[#337ab7] no-underline hover:!text-[#2864ad] hover:underline">Continue Reading</a>
+            </span>
+          </div>
+          <br />
+        </div>
       {/each}
     {:else}
-      Loading Data...
+      Loading announcements...
     {/if}
     <!-- <div> -->
     <!--   <div class="font-[Open_Sans_Condensed] font-[700] text-center"> -->
@@ -100,7 +112,7 @@
     <!--         class="no-underline text-[#2C72AE] hover:underline hover:text-[#2864ad]" -->
     <!--         >Continue reading <span class="screen-reader-text"> “Nope. Not my problem.”</span></a -->
     <!--       > -->
-    <!--       <!-- All jokes aside: the actual text is right beneath this. I just didn't feel like writing it all down.--> -->
+    <!--       <!-- All jokes aside: the actual text is right beneath this. I just didn't feel like writing it all down.-->
     <!--     </p> -->
     <!--   </div> -->
     <!-- </div> -->

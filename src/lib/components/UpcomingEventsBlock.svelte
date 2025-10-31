@@ -1,7 +1,3 @@
-<!--
-  TODO: Get the Google Calender embed working
--->
-
 <script>
   import LinkIcon from './icons/LinkIcon.svelte'
 </script>

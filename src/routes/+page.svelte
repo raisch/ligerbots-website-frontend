@@ -41,9 +41,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-[40px]">
       <div class="pl-[10px] lg:pl-[40px]"><BlogBlock /></div>
       
-      <div class="max-lg:pl-[10px] lg:pr-[40px] object-contain"><UpcomingEventsBlock /></div>
-      <div class="pl-[10px] lg:pl-[40px]"><AnnouncementsBlock /></div>
-      <div class="max-lg:pl-[10px] lg:pr-[40px]"><TwitterBlock /></div>
+      <div class="max-lg:pl-[10px] lg:pr-[40px]"><UpcomingEventsBlock /></div>
+      <div class="pl-[10px] lg:pl-[40px] h-full self-stretch"><AnnouncementsBlock /></div>
+      <div class="max-lg:pl-[10px] lg:pr-[40px] h-full self-stretch"><TwitterBlock /></div>
       <div class="col-span-full p-[4px]">
         <BottomRowBlock />
       </div>
