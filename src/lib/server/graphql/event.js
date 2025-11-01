@@ -26,6 +26,7 @@ const queries = {
                       departs_from
                       departs_on
                       departs_at
+                      arrives_at
                       status
                       rides {
                           item {
@@ -94,6 +95,7 @@ const queries = {
                       departs_from
                       departs_on
                       departs_at
+                      arrives_at
                       rides {
                           item {
                               ... on trip_ride {
