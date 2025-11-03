@@ -4,8 +4,8 @@
     /** 
      * @type {{ 
      *   trip: import('$lib/server/trip').Trip,
-     *   RideId: number,
-     *   SetId: (rideId: number) => void
+     *   RideId: number | null,
+     *   SetId: (rideId: number | null) => void
      * }} 
      */
     let { trip, RideId, SetId } = $props();

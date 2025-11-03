@@ -37,18 +37,18 @@
   /** @type {Trips} */
   let trips = $derived(event?.trips || []);
 
-  let destinationRideId = $state(-1);
-  let returnRideId = $state(-1);
+  let destinationRideId = $state(/** @type {number | null} */ (null));
+  let returnRideId = $state(/** @type {number | null} */ (null));
   
   //@ts-ignore
   function setDestinationRideId(rideId) {
     console.log(typeof(rideId))
-    destinationRideId = destinationRideId === rideId ? -1 : rideId;
+    destinationRideId = destinationRideId === rideId ? null : rideId;
   }
 
   //@ts-ignore
   function setReturnRideId(rideId) {
-    returnRideId = returnRideId === rideId ? -1 : rideId;
+    returnRideId = returnRideId === rideId ? null : rideId;
   }
 </script>
 
@@ -66,14 +66,34 @@
           <p class="card-text"><strong>End Date:</strong> {event?.end_date}</p>
           <p class="card-text"><strong>Location:</strong> {event?.location}</p>
           <div>
-            <p class="card-text"><strong>Trips:</strong></p>
             {#if trips.length > 0}
               <div style="list-style-type: none; padding: 0; float: left; width: 49%;">
+                <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
+                <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
+                  <div 
+                  style={`width: 15px; height: 15px; background-color: ${destinationRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 2px solid #3375a6;`}
+                  onclick={() => {
+                    setDestinationRideId(-1)
+                  }}
+                  ></div>
+                  <div style="font-size: 12px;">Opt Out</div>
+                </div>
+                
                 {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
                   <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} />
                 {/each}
               </div>
               <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
+                <div style="font-size: 25px; padding-bottom: 10px;">Return Trips</div>
+                <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
+                  <div 
+                  style={`width: 15px; height: 15px; background-color: ${returnRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 2px solid #3375a6;`}
+                  onclick={() => {
+                    setReturnRideId(-1)
+                  }}
+                  ></div>
+                  <div style="font-size: 12px;">Opt Out</div>
+                </div>
                 {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
                   <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} />
                 {/each}
