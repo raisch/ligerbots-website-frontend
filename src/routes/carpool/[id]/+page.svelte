@@ -28,17 +28,30 @@
    * @typedef {Array<Trip>} Trips
    */
 
-  /** @type {EventRecord|undefined} */
-  export let data // { event }
+  /** @type {{ data?: EventRecord }} */
+  let { data } = $props();
 
   /** @type {Event|undefined} */
-  export let event = data?.event // Fallback to empty object if data is not available
+  let event = $derived(data?.event);
 
   /** @type {Trips} */
-  export let trips = event?.trips || []
+  let trips = $derived(event?.trips || []);
 
-  // console.log('Carpool Event Data:', JSON.stringify(data, null, 2))
+  let destinationRideId = $state(-1);
+  let returnRideId = $state(-1);
+  
+  //@ts-ignore
+  function setDestinationRideId(rideId) {
+    console.log(typeof(rideId))
+    destinationRideId = destinationRideId === rideId ? -1 : rideId;
+  }
+
+  //@ts-ignore
+  function setReturnRideId(rideId) {
+    returnRideId = returnRideId === rideId ? -1 : rideId;
+  }
 </script>
+
 
 <div class="container mt-4">
   <h1>Carpool Event Detail Page</h1>
@@ -57,12 +70,12 @@
             {#if trips.length > 0}
               <div style="list-style-type: none; padding: 0; float: left; width: 49%;">
                 {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                  <CarpoolTrip {trip} />
+                  <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} />
                 {/each}
               </div>
               <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
                 {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                  <CarpoolTrip {trip} />
+                  <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} />
                 {/each}
               </div>
             {:else}

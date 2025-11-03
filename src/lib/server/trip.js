@@ -16,6 +16,8 @@ const debug = createDebugMessages('APP:lib/server/event')
  * @prop {string} item.departs_at - The time the trip departs
  * @prop {string} item.destination - The destination of the trip
  * @prop {string} item.arrives_at
+ * @prop {string} item.arrives_at
+ * @prop {Array} item.rides - The rides associated with the trip
  */
 
 
