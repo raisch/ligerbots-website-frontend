@@ -71,7 +71,7 @@
                 <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
                 <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
                   <div 
-                  style={`width: 15px; height: 15px; background-color: ${destinationRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 2px solid #3375a6;`}
+                  style={`width: 15px; height: 15px; background-color: ${destinationRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
                   onclick={() => {
                     setDestinationRideId(-1)
                   }}
@@ -84,10 +84,10 @@
                 {/each}
               </div>
               <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
-                <div style="font-size: 25px; padding-bottom: 10px;">Return Trips</div>
+                <div style="font-size: 25px; padding-bottom: 5px;">Return Trips</div>
                 <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
                   <div 
-                  style={`width: 15px; height: 15px; background-color: ${returnRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 2px solid #3375a6;`}
+                  style={`width: 15px; height: 15px; background-color: ${returnRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
                   onclick={() => {
                     setReturnRideId(-1)
                   }}
