@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "svelte.svelte-vscode", // Svelte support
+    "dbaeumer.vscode-eslint", // Linting support
+    "esbenp.prettier-vscode", // Code formatting
+    "streetsidesoftware.code-spell-checker", // Spell checking
+    "eamodio.gitlens", // Git enhancements
+    "ms-vscode.vscode-typescript-next", // TypeScript support
+    "ms-azuretools.vscode-docker", // Docker support (if applicable)
+    "mhutchie.git-graph", // Visualize Git history
+    "gruntfuggly.todo-tree", // Highlight TODO comments
+    "usernamehw.errorlens" // Inline error highlighting
+  ]
+}
