@@ -1,6 +1,4 @@
 <script>
-   
-
     /** 
      * @type {{ 
      *   trip: import('$lib/server/trip').Trip,
@@ -8,7 +6,7 @@
      *   SetId: (rideId: number | null) => void
      * }} 
      */
-    let { trip, RideId, SetId } = $props();
+    let { trip, RideId, SetId} = $props();
 </script>
 <div>
     {#if trip}
@@ -29,9 +27,9 @@
 	        <div style="flex-basis: 100%; display: flex; align-items: center; width: 100%;">
 		        <span style="flex: 1; text-align: left;">{driver} – {seatDisplay}</span>
 		        <span 
-                style={`flex: 0 0 1rem; text-align: right; background-color: ${remaining > 0 ? '#3375a6' : '#808080'}; border-radius: 5px; padding: 3px 5px; color: white; cursor: pointer`}
+                style={`flex: 0 0 1rem; text-align: right; background-color: ${remaining > 0 && RideId !== -1 ? '#3375a6' : '#808080'}; border-radius: 5px; padding: 3px 5px; color: white; cursor: pointer`}
                 onclick={() => {
-                    if (remaining <= 0) return; // User cannot select a full ride
+                    if (remaining <= 0 || RideId === -1) return; // User cannot select a full ride
                     SetId(id)
                     }}
                 >{remaining > 0 ? (RideId === id ? 'Selected' : 'Select') : 'Full'}</span>
