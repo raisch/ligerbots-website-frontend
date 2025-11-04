@@ -15,6 +15,6 @@
   "typescript.tsdk": "node_modules/typescript/lib", // Use the TypeScript version installed in the project
   "gitlens.hovers.enabled": true, // Enable GitLens hovers
   "todo-tree.tree.showScanModeButton": false, // Simplify TODO Tree UI
-  "workbench.colorTheme": "Default Dark+", // Set a default theme
-  "workbench.iconTheme": "vscode-icons" // Use VSCode Icons for better file visuals
+  //"workbench.colorTheme": "Default Dark+", // Set a default theme
+  //"workbench.iconTheme": "vscode-icons" // Use VSCode Icons for better file visuals
 }
