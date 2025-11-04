@@ -4,8 +4,6 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode", // Use Prettier as the default formatter
   "files.eol": "\n", // Use LF for line endings
   "files.exclude": {
-    "**/node_modules": true, // Hide node_modules folder
-    "**/.git": true // Hide .git folder
   },
   "eslint.validate": [
     "javascript",
