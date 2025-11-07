@@ -50,6 +50,8 @@
   function setReturnRideId(rideId) {
     returnRideId = returnRideId === rideId ? null : rideId;
   }
+
+  function updateRideSelections() {}
 </script>
 
 
@@ -65,39 +67,40 @@
           <p class="card-text"><strong>Start Date:</strong> {event?.start_date}</p>
           <p class="card-text"><strong>End Date:</strong> {event?.end_date}</p>
           <p class="card-text"><strong>Location:</strong> {event?.location}</p>
-          <div>
+          <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
             {#if trips.length > 0}
-              <div style="list-style-type: none; padding: 0; float: left; width: 49%;">
-                <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
-                <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
-                  <div 
-                  style={`width: 15px; height: 15px; background-color: ${destinationRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
-                  onclick={() => {
-                    setDestinationRideId(-1)
-                  }}
-                  ></div>
-                  <div style="font-size: 12px;">Opt Out</div>
+              <div style="display: flex; justify-content: space-between;">
+                <div style="list-style-type: none; padding: 0; float: left; width: 49%;">
+                  <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
+                  <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
+                    <div 
+                    style={`width: 15px; height: 15px; background-color: ${destinationRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
+                    onclick={() => {
+                      setDestinationRideId(-1)
+                    }}
+                    ></div>
+                    <div style="font-size: 12px;">Opt Out</div>
+                  </div>
+                  
+                  {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
+                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} />
+                  {/each}
                 </div>
-                
-                {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                  <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} />
-                {/each}
-              </div>
-              <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
-                <div style="font-size: 25px; padding-bottom: 5px;">Return Trips</div>
-                <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
-                  <div 
-                  style={`width: 15px; height: 15px; background-color: ${returnRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
-                  onclick={() => {
-                    setReturnRideId(-1)
-                  }}
-                  ></div>
-                  <div style="font-size: 12px;">Opt Out</div>
+                <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
+                  <div style="font-size: 25px; padding-bottom: 5px;">Return Trips</div>
+                  <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
+                    <div 
+                      style={`width: 15px; height: 15px; background-color: ${returnRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
+                      onclick={() => setReturnRideId(-1)}
+                    ></div>
+                    <div style="font-size: 12px;">Opt Out</div>
+                  </div>
+                  {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
+                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} />
+                  {/each}
                 </div>
-                {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                  <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} />
-                {/each}
               </div>
+              <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateRideSelections}>Confirm</button>
             {:else}
               <p>No trips available for this event.</p>
             {/if}
@@ -120,5 +123,20 @@
   }
   .card {
     border-radius: 15px;
+  }
+
+  .confirm {
+    background-color: #3375a6;
+    cursor: pointer;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    min-width: 120px;
+    align-self: center;
+  }
+  .confirm:disabled {
+    background-color: #808080;
+    cursor: not-allowed;
   }
 </style>
