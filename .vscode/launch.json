@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "npm:dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Vite",
+      "program": "${workspaceFolder}/node_modules/vite/bin/vite.js",
+      "args": ["--port", "5173"],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

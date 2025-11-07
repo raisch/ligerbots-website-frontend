@@ -1,6 +1,4 @@
 <script>
-   
-
     /** 
      * @type {{ 
      *   trip: import('$lib/server/trip').Trip,
@@ -8,7 +6,7 @@
      *   SetId: (rideId: number | null) => void
      * }} 
      */
-    let { trip, RideId, SetId } = $props();
+    let { trip, RideId, SetId} = $props();
 </script>
 <div>
     {#if trip}

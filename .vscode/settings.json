@@ -1,0 +1,20 @@
+{
+  "editor.tabSize": 2, // Use 2 spaces for indentation
+  "editor.formatOnSave": true, // Automatically format files on save
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // Use Prettier as the default formatter
+  "files.eol": "\n", // Use LF for line endings
+  "files.exclude": {
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "svelte" // Enable ESLint for Svelte files
+  ],
+  "prettier.requireConfig": true, // Ensure Prettier only runs if a config file is present
+  "svelte.plugin.svelte.format.enable": false, // Disable Svelte's built-in formatter (use Prettier instead)
+  "typescript.tsdk": "node_modules/typescript/lib", // Use the TypeScript version installed in the project
+  "gitlens.hovers.enabled": true, // Enable GitLens hovers
+  "todo-tree.tree.showScanModeButton": false, // Simplify TODO Tree UI
+  //"workbench.colorTheme": "Default Dark+", // Set a default theme
+  //"workbench.iconTheme": "vscode-icons" // Use VSCode Icons for better file visuals
+}
