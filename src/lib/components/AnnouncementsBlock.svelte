@@ -1,3 +1,7 @@
+<!--
+  TODO: Add a "Type" field to directus posts 
+-->
+
 <script>
   import LinkIcon from './icons/LinkIcon.svelte'
   import { onMount } from 'svelte'
@@ -23,10 +27,6 @@
   </div>
   <div class="m-[20px] flex flex-col justify-center leading-[19pt] h-full pb-[40px]">
     {#if data && data.result.length != 0}
-      <!-- {@html data.result[0].lede} -->
-      <!--
-        TODO: Add a "Type" field to directus posts 
-      -->
       {#each data.result as i}
         <div class="flex-auto flex flex-col">
           <a href="/post/{i.slug}" class="text-[#337ab7] font-[Open_Sans_Condensed] no-underline text-[16pt] hover:text-[#2864ad] hover:underline font-[700] leading-[16pt] mx-auto">{i.title}</a>

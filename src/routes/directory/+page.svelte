@@ -28,13 +28,13 @@
   <meta property="og:title" content="LigerBots Directory" />
 </svelte:head>
 
-{#if user}
+{#if !user}
   <div class="flex flex-col w-full">
     <center class="basis-1/12 font-[Open_Sans] text-[13pt] w-full text-black/80">
       <div class="bg-[#D04E1D] text-white text-[20pt] font-[PT_Serif] font-bold text-ellipsis overflow-hidden w-1/3 h-full px-2 py-3 rounded-md">LIGERBOTS DIRECTORY</div>
       <br />
       <br />
-      The information on this page is confidential - It is only available to registered and approved users.
+      The information on this page is confidential. It is only available to registered and approved users.
       <br />
     </center>
 
@@ -67,13 +67,12 @@
       </table>
     </div>
 
-    <form class="form-inline" action="/" method="post">
-      <!--
-        TODO: Fix the download user button in the directory
-      -->
+    <!-- <form class="form-inline" action="/" method="post">
+        TODO: Fix the download user button in the directory/remove it
+
       <button type="submit" name="download_users" class="btn btn-default">Download Userlist</button>
-    </form>
+    </form> -->
   </div>
 {:else}
-  <div>e</div>
+    The information on this page is confidential. It is only available to registered and approved users.
 {/if}

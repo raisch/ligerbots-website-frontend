@@ -3,7 +3,7 @@
 	import { slide } from "svelte/transition";
 	export let transition = slide;
 	export let transitionConfig = {
-		duration: 150,
+		duration: 300,
 	};
 </script>
 

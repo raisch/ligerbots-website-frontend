@@ -41,7 +41,7 @@
   <!-- <Resizable.Pane defaultSize={1}> -->
     <!-- <div class="flex h-full items-center justify-center p-[6px]"> -->
       <a class="cursor-pointer flex-none overflow-contain -translate-x-[0.5vw]" target="_blank" href="https://www.flickr.com/photos/ligerbots/">
-        <img class="h-[1.25vw] max-h-[50px] min-h-[10px] object-contain transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/cf477ab4-9c50-417f-b8b7-a30a24e843d8" alt="flickr" />
+        <img class="h-[1.25vw] max-h-[50px] min-h-[17px] object-contain transition delay-0 duration-200 ease-in-out hover:-translate-y-1 hover:scale-130" src="/assets/cf477ab4-9c50-417f-b8b7-a30a24e843d8" alt="flickr" />
       </a>
     <!-- </div> -->
   <!-- </Resizable.Pane> -->

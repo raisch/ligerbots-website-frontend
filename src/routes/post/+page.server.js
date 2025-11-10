@@ -1,5 +1,4 @@
 import createDebugMessages from 'debug';
-
 import { error } from '@sveltejs/kit';
 
 import getPostBySlug from '$lib/server/post';

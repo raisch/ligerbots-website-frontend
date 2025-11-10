@@ -14,13 +14,10 @@
   /** @type {String}*/
   let password
 
-  /** @type {Bool}*/
-  let rememberMe
-
   async function handleSubmit(/** @type {Event} */ evt) {
     let loginFields = { email, password }
 
-    // TODO: implement login
+    // TODO: Implement login
     const res = await fetch('/api/login', {
       method: 'POST',
       headers: {
@@ -73,10 +70,10 @@
           Password: 
           <input class="h-[1vw] w-full font-[12pt] text-black py-[1vw] px-[0.5vw] border-1 border-gray-400 inset-shadow-2xs inset-shadow-gray-300 rounded-[0.2vw] transition ease-in-out duration-150 focus:border-blue-400 focus:shadow-blue-400/50 focus:shadow-md focus:outline-none font-normal" bind:value={password} type="password" placeholder="Password" />
         </div>
-        <label class="font-[Open_Sans] cursor-pointer flex flex-row items-center">
-          <input class="h-[2vw] w-fit pt-[0.2vw] pb-[0.3vw] my-auto px-[0.5vw] border-1 border-gray-400 rounded-[0.2vw] hover:bg-gray-100 cursor-pointer" type="checkbox" bind:value={rememberMe}/> 
-          &nbsp;Remember me
-        </label>
+        <!-- <label class="font-[Open_Sans] cursor-pointer flex flex-row items-center"> -->
+        <!--   <input class="h-[2vw] w-fit pt-[0.2vw] pb-[0.3vw] my-auto px-[0.5vw] border-1 border-gray-400 rounded-[0.2vw] hover:bg-gray-100 cursor-pointer" type="checkbox" bind:value={rememberMe}/>  -->
+        <!--   &nbsp;Remember me -->
+        <!-- </label> -->
         <button class="h-[2vw] w-fit pt-[0.2vw] pb-[0.3vw] my-auto px-[0.5vw] border-1 border-gray-400 inset-shadow-2xs inset-shadow-gray-300 rounded-[0.2vw] hover:bg-gray-100 cursor-pointer"> Login </button>
       </div>
     </form>
