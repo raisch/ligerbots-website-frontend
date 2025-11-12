@@ -1,9 +1,3 @@
-<!-- 
-  TODO: Fix the misaligned login/logout icons in mobile navbar
-  TODO: Fix the weird "hitbox" of the items in the mobile navbar
-  TODO: Honestly the mobile navbar just needs to be remade
--->
-
 <script>
   import * as DropdownMenu from '$components/components/ui/dropdown-menu'
   import * as Collapsible from '$components/components/ui/collapsible'
@@ -112,50 +106,48 @@
     <Collapsible.Trigger class="mr-auto p-[10px] text-white cursor-pointer h-[50px]"><MobileNavbarTrigger size="30px" /></Collapsible.Trigger>
     <Collapsible.Content class="lg:hidden ligerbots-blue-background overflow-visible">
       <Accordion.Root type="single" collapsible>
-        <div class="flex flex-col justify-left gap-0 [&_*]:p-0 [&_*]:rounded-none">
+        <div class="flex flex-col justify-left gap-0 [&_*]:rounded-none [&_*]:!no-underline">
           {#each data.config as item, index}
-            <div class="basis-1/12 mr-auto pl-[1vw] py-[16px] transition delay-0 duration-150 ease-in-out border-0 w-full [&>*]:!my-[10px] [&_*]:!text-left">
-              {#if item.children} 
-                <Accordion.Item value={`item-${index}`} class="py-0 my-0 w-full group h-auto">
-                  <Accordion.Trigger class="w-full h-[20px]">
-                    <Button variant="navBar" class="h-[20px] !border-0 text-white group-hover:text-black focus:text-black text-left text-[13.5pt] font-[1000] w-full cursor-pointer group-hover:bg-white focus:bg-white">
-                        {item.title} <DropDownIcon />
-                    </Button>
-                  </Accordion.Trigger>
-
-                  <Accordion.Content class="border-0 shadow-none z-10 text-black h-auto text-[14pt]">
-                    <div class="flex flex-col justify-evenly [&_*]:p-0">
-                      {#each item.children as child, i (child.url)}
-                        {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
-                          <a href={child.url} class="ligerbots-blue-background w-full no-underline border-gray-500/50 last:rounded-b p-2 transition duration-150 ease-in-out hover:bg-gray-100">
-                            {child.title}
-                          </a>
-                        {/if}
-                      {/each}
-                    </div>
-                  </Accordion.Content>
-                </Accordion.Item>
-              {:else} 
-                <a href="{item.url}" class="w-fit group mr-auto h-[20px]">
-                  <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:bg-white group-hover:text-[#000000]">
-                    {item.title} 
+            {#if item.children} 
+              <Accordion.Item value={`item-${index}`} class="py-0 my-0 w-full group h-auto transition ease-in-out duration-300">
+                <Accordion.Trigger class="w-full h-[20px] cursor-pointer transition ease-in-out duration-300 focus-within:bg-white hover:bg-white focus-within:[&_*]:text-black">
+                  <Button variant="navBar" class="h-[20px] text-white group-hover:text-black focus:text-black text-[13.5pt] font-[1000] w-fit cursor-pointer text-left mr-auto [&_*]:!no-underline transition ease-in-out duration-300">
+                      {item.title} <DropDownIcon />
                   </Button>
-                </a>
-                <!-- <a href={item.url} class="w-full py-[16px] h-[20px] group"> -->
-                <!--   <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:bg-white group-hover:text-[#000000]">{item.title}</Button> -->
-                <!-- </a> -->
-              {/if}
-            </div>
+                </Accordion.Trigger>
+
+                <Accordion.Content class="border-0 shadow-none z-10 h-auto text-[14pt]">
+                  <div class="flex flex-col justify-evenly">
+                    {#each item.children as child, i (child.url)}
+                      {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
+                        <a href={child.url} class="text-white ml-[20px] w-full no-underline border-gray-500/50 p-1 transition ease-in-out duration-300 hover:bg-gray-200 hover:text-black">
+                          {child.title}
+                        </a>
+                      {/if}
+                    {/each}
+                  </div>
+                </Accordion.Content>
+              </Accordion.Item>
+            {:else} 
+              <a href="{item.url}" class="w-full group h-[20px] hover:bg-white transition ease-in-out duration-300 py-[16px] flex flex-col justify-center">
+                <Button variant="navBar" class="cursor-pointer w-fit mr-auto h-full text-white text-[13.5pt] font-[1000] group-hover:text-black transition ease-in-out duration-300">
+                  {item.title} 
+                </Button>
+              </a>
+              <!-- <a href={item.url} class="w-full py-[16px] h-[20px] group"> -->
+              <!--   <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:bg-white group-hover:text-[#000000]">{item.title}</Button> -->
+              <!-- </a> -->
+            {/if}
           {/each}
           {#if data.user}
-            <a href="/logout" class="w-fit py-[16px] h-full group mr-auto pl-[16px]">
-              <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:bg-white group-hover:text-[#000000]">
+            <a href="/logout" class="w-full group h-[20px] hover:bg-white transition ease-in-out duration-300 py-[16px] flex flex-col justify-center mb-[5px]">
+              <Button variant="navBar" class="cursor-pointer w-fit mr-auto h-full text-white text-[13.5pt] font-[1000] group-hover:text-black transition ease-in-out duration-300">
                 <LogoutIcon /> Logout 
               </Button>
             </a>
             {:else}
-              <a href="/login" class="w-fit py-[16px] h-full group mr-auto">
-                <Button variant="navBar" class="cursor-pointer h-full text-white text-[13.5pt] font-[1000] group-hover:bg-white group-hover:text-[#000000]">
+              <a href="/login" class="w-full group h-[20px] hover:bg-white transition ease-in-out duration-300 py-[16px] flex flex-col justify-center mb-[5px]">
+                <Button variant="navBar" class="cursor-pointer w-fit mr-auto h-full text-white text-[13.5pt] font-[1000] group-hover:text-black transition ease-in-out duration-300">
                   <LoginIcon /> Login
                 </Button>
               </a>
