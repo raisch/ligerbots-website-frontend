@@ -58,6 +58,20 @@ const config: Config = {
       fontFamily: {
         sans: [...fontFamily.sans],
       },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+        fadeOut: {
+          from: { opacity: 1 },
+          to: { opacity: 0 },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 0.3s ease-out forwards',
+        fadeOut: 'fadeOut 0.3s ease-out forwards',
+      },
     },
   },
 };

@@ -53,29 +53,29 @@
   {#each data.config as item, index}
     <div class="max-w-[7vw] h-full group transition delay-0 duration-150 ease-in-out border-0 hover:bg-[#FFFFFF] cursor-pointer">
       {#if item.children} 
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger asChild let:builder class="h-full py-[16px]">
-          <Button variant="navBar" class="text-[#FFFFFF] text-[13.5pt] z-12 font-[1000] group-hover:text-[#000000] h-full cursor-pointer flex flex-row items-center" builders={[builder]}>
-              {item.title} <DropDownIcon /></Button>
-        </DropdownMenu.Trigger>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild let:builder class="h-full py-[16px]">
+            <Button variant="navBar" class="text-[#FFFFFF] text-[13.5pt] z-12 font-[1000] group-hover:text-[#000000] h-full cursor-pointer flex flex-row items-center" builders={[builder]}>
+                {item.title} <DropDownIcon /></Button>
+          </DropdownMenu.Trigger>
 
-        <DropdownMenu.Content class="border-0 w-[10%] shadow-none -mt-[0.5em] -ml-[4px]" align="start">
-          <DropdownMenu.Group class="shadow-xs shadow-black/30 overflow-hidden border-0 last:rounded-b-md">
-            {#each item.children as child, i (child.url)}
-              {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
-                <a href={child.url} class="w-full h-full no-underline text-left">
-                  <DropdownMenu.Item class="-ml-[0.2vw] z-11 relative bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#F5F5F5] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer">{child.title}</DropdownMenu.Item>
-                </a>
-                {#if child.divider_after == true}
-                  <DropdownMenu.Separator class="bg-white my-0 py-[2px]"/>
-                  <DropdownMenu.Separator class="bg-[#D6D6D6] my-0"/>
-                  <DropdownMenu.Separator class="bg-white my-0 py-[2px]"/>
+          <DropdownMenu.Content class="border-0 w-[10%] shadow-none -mt-[0.5em] -ml-[4px] duration-150" align="start">
+            <DropdownMenu.Group class="shadow-xs shadow-black/30 overflow-hidden border-0 last:rounded-b-md">
+              {#each item.children as child, i (child.url)}
+                {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
+                  <a href={child.url} class="w-full h-full no-underline text-left">
+                    <DropdownMenu.Item class="-ml-[0.2vw] z-11 relative bg-[#FFFFFF] transition delay-0 duration-150 ease-in-out hover:bg-[#F5F5F5] h-full text-[16px] text-[#000000] font-[Open_Sans] pl-[0.75vw] cursor-pointer">{child.title}</DropdownMenu.Item>
+                  </a>
+                  {#if child.divider_after == true}
+                    <DropdownMenu.Separator class="bg-white my-0 py-[2px]"/>
+                    <DropdownMenu.Separator class="bg-[#D6D6D6] my-0"/>
+                    <DropdownMenu.Separator class="bg-white my-0 py-[2px]"/>
+                  {/if}
                 {/if}
-              {/if}
-            {/each}
-          </DropdownMenu.Group>
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
+              {/each}
+            </DropdownMenu.Group>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
       {:else} 
         <a href={item.url} class="w-full py-[16px] h-full">
           <Button variant="navBar" class="cursor-pointer h-full text-[#FFFFFF] text-[13.5pt] font-[1000] group-hover:text-[#000000] flex flex-row items-center">{item.title}</Button>
@@ -109,18 +109,18 @@
         <div class="flex flex-col justify-left gap-0 [&_*]:rounded-none [&_*]:!no-underline">
           {#each data.config as item, index}
             {#if item.children} 
-              <Accordion.Item value={`item-${index}`} class="py-0 my-0 w-full group h-auto transition ease-in-out duration-300">
+              <Accordion.Item value={`item-${index}`} class="py-0 my-0 w-full group h-auto transition ease-in-out duration-300 relative">
                 <Accordion.Trigger class="w-full h-[20px] cursor-pointer transition ease-in-out duration-300 focus-within:bg-white hover:bg-white focus-within:[&_*]:text-black">
                   <Button variant="navBar" class="h-[20px] text-white group-hover:text-black focus:text-black text-[13.5pt] font-[1000] w-fit cursor-pointer text-left mr-auto [&_*]:!no-underline transition ease-in-out duration-300">
                       {item.title} <DropDownIcon />
                   </Button>
                 </Accordion.Trigger>
 
-                <Accordion.Content class="border-0 shadow-none z-10 h-auto text-[14pt] absolute">
-                  <div class="flex flex-col justify-evenly -mr-[10px] bg-white w-[150px] border-gray-500 border-1">
+                <Accordion.Content class="z-10 h-auto text-[14pt] absolute overflow-visible">
+                  <div class="flex flex-col justify-evenly bg-white w-[200px] border-gray-500 border-1 last:!rounded-b-md shadow-md shadow-black/50 !overflow-visible">
                     {#each item.children as child, i (child.url)}
                       {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
-                        <a href={child.url} class="text-black pl-[20px] w-full text-left no-underline border-gray-500/50 p-1 transition ease-in-out duration-300 hover:bg-gray-200 last:rounded-b-md">
+                        <a href={child.url} class="text-black pl-[20px] w-full text-left no-underline border-gray-500/50 p-1 transition ease-in-out duration-300 hover:bg-gray-200">
                           {child.title}
                         </a>
                       {/if}

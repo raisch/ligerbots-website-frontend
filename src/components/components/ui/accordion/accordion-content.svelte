@@ -1,11 +1,11 @@
 <script>
 	import { Accordion as AccordionPrimitive } from "bits-ui";
-	import { slide } from "svelte/transition";
+	import { fade } from "svelte/transition";
 	import { cn } from "$components/lib/utils.js";
 	let className = undefined;
-	export let transition = slide;
+	export let transition = fade;
 	export let transitionConfig = {
-		duration: 200,
+		duration: 100,
 	};
 	export { className as class };
 </script>

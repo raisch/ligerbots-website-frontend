@@ -1,10 +1,13 @@
 <script>
 	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 	import { cn, flyAndScale } from "$components/lib/utils.js";
+	import { fade } from "svelte/transition";
 	let className = undefined;
 	export let sideOffset = 4;
-	export let transition = flyAndScale;
-	export let transitionConfig = undefined;
+	export let transition = fade
+	export let transitionConfig = {
+    duration: 100,
+  };
 	export { className as class };
 </script>
 
