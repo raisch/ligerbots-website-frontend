@@ -21,24 +21,24 @@
 
 <div id="header-ghost"></div>
 
-<div class="bg-[linear-gradient(to_bottom,white_0%,rgba(0,0,0,0)_40vw),url('/images/background.jpg')] bg-no-repeat bg-cover h-max w-max z-[-1] absolute">
-<div class="w-[100vw] mx-auto h-full overflow-visible px-0">
-  <div class="w-full px-0 overflow-visible">
+<div class="bg-[linear-gradient(to_bottom,white_0%,rgba(0,0,0,0)_40vw),url('/images/background.jpg')] bg-no-repeat bg-cover pb-[130px] h-max w-max z-[-1] absolute">
+  <div class="w-[100vw] mx-auto h-full overflow-visible px-0">
     <Masthead />
-    <!-- <IconList /> -->
-    <div class="xl:max-2xl:-mt-[40px] mt-0">
-      {#key user}
-        <Navbar />
-      {/key}
-      <div class="justify-center">
-        <div class="w-full overflow-visible">
-          <MainPane>
-            <slot />
-          </MainPane>
+    <div class="w-full 2xl:w-[1300px] sm:w-[640px] lg:w-[1024px] mx-auto shadow-md shadow-black/30 rounded-t-md">
+      <!-- <IconList /> -->
+      <div class="xl:max-2xl:-mt-[40px] mt-0">
+        {#key user}
+          <Navbar />
+        {/key}
+        <div class="justify-center">
+          <div class="w-full overflow-visible">
+            <MainPane>
+              <slot />
+            </MainPane>
+          </div>
+          <Footer />
         </div>
-        <Footer />
       </div>
     </div>
   </div>
-</div>
 </div>

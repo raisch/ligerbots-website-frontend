@@ -1,17 +1,5 @@
 @import 'tailwindcss';
 
-body {
-  /* background-image: url('/images/background.jpg'); */
-  background:
-    linear-gradient(to bottom, white 0vw, rgba(255, 255, 255, 0) 40vw),
-    url('/images/background.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
