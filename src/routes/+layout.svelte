@@ -26,16 +26,18 @@
   <div class="w-full px-0 overflow-visible">
     <Masthead />
     <!-- <IconList /> -->
-    {#key user}
-      <Navbar />
-    {/key}
-    <div class="justify-center">
-      <div class="w-full overflow-visible">
-        <MainPane>
-          <slot />
-        </MainPane>
+    <div class="xl:max-2xl:-mt-[40px] mt-0">
+      {#key user}
+        <Navbar />
+      {/key}
+      <div class="justify-center">
+        <div class="w-full overflow-visible">
+          <MainPane>
+            <slot />
+          </MainPane>
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   </div>
 </div>

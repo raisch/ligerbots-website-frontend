@@ -116,11 +116,11 @@
                   </Button>
                 </Accordion.Trigger>
 
-                <Accordion.Content class="border-0 shadow-none z-10 h-auto text-[14pt]">
-                  <div class="flex flex-col justify-evenly">
+                <Accordion.Content class="border-0 shadow-none z-10 h-auto text-[14pt] absolute">
+                  <div class="flex flex-col justify-evenly -mr-[10px] bg-white w-[150px] border-gray-500 border-1">
                     {#each item.children as child, i (child.url)}
                       {#if data.user || !child.requires_login} <!-- This only returns false if there is no user and it requires a login -->
-                        <a href={child.url} class="text-white ml-[20px] w-full no-underline border-gray-500/50 p-1 transition ease-in-out duration-300 hover:bg-gray-200 hover:text-black">
+                        <a href={child.url} class="text-black pl-[20px] w-full text-left no-underline border-gray-500/50 p-1 transition ease-in-out duration-300 hover:bg-gray-200 last:rounded-b-md">
                           {child.title}
                         </a>
                       {/if}
