@@ -50,10 +50,10 @@
 
   <center class="mb-[2.25em] break-all font-[Open_Sans] tracking-[0.04em]">
     <h5 class="italic text-[11.5pt] leading-[24pt] m-0 text-black">
-      To see all LigerBots photos: <a class="text-[#3B64A9] no-underline transition ease-in-out duration-150 hover:text-black hover:underline" href={data.photos_link} target="_blank">flickr.com/photos/ligerbots/</a>
+      To see all LigerBots photos: <a class="text-[#3B64A9] no-underline transition ease-in-out duration-150 hover:text-black hover:underline cursor-pointer" href={data.photos_link} target="_blank">flickr.com/photos/ligerbots/</a>
     </h5>
     <h5 class="italic text-[11.5pt] leading-[24pt] m-0 text-black">
-      To see all LigerBots videos: <a class="text-[#3B64A9] no-underline transition ease-in-out duration-150 hover:text-black hover:underline" href={data.videos_link} target="_blank">youtube.com/c/ligerbots</a>
+      To see all LigerBots videos: <a class="text-[#3B64A9] no-underline transition ease-in-out duration-150 hover:text-black hover:underline cursor-pointer" href={data.videos_link} target="_blank">youtube.com/c/ligerbots</a>
     </h5>
   </center>
 
