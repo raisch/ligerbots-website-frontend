@@ -1,6 +1,7 @@
 <script>
   import Debug from '$lib/debugging'
   import * as DropdownMenu from '$components/components/ui/dropdown-menu'
+  import { BadgeRussianRuble } from 'lucide-react';
 
   // TODO: Add these two constants into Directus?
   const years = ['2024/25', '2023/24', '2022/23', '2021/22', '2020/21', '2019/20', '2018/19', '2017/18', '2016/17', '2015/16', '2014/15', '2013/14', '2012/13', '2011/12', '2010/11', '2009/10', '2008/9']
@@ -20,10 +21,11 @@
   /**
    * @typedef {Object} Props
    * @property {PageData} data
+   * @property {number} year
    */
 
   /** @type {Props} */
-  let { data = $bindable() } = $props();
+  let { data = $bindable(), year = $bindable() } = $props();
 
   year = data.year ?? 0
   data = data.data
@@ -75,11 +77,11 @@
     <div class="flex flex-row justify-center">
       <DropdownMenu.Root>
         <DropdownMenu.Trigger class="text-[#2B65AE] font-bold text-[18pt] transition ease-in-out duration-150 hover:text-black cursor-pointer text-center">
-          {years[year]} {seasons[year]} &nbsp;<span class="down-arrow">&#x25BC;</span>
+          {years[year]} {seasons[year]} &nbsp;<span class="text-[#d04e1d]">&#x25BC;</span>
         </DropdownMenu.Trigger>
           <DropdownMenu.Content class="mx-auto text-center absolute bg-white !shadow-xl shadow-black/30 !border-gray-500/50">
             {#each years as _, i}
-            <div><a href="/gallery?year={i}" class="text-[rgb(0,102,179)] hover:underline hover:text-black {i == year ? "hidden" : ""}"> {years[i]} {seasons[i]} </a></div>
+              <div><a href="/gallery?year={i}" class="text-[rgb(0,102,179)] hover:underline hover:text-black {i == year ? "hidden" : ""}"> {years[i]} {seasons[i]} </a></div>
             {/each}
           </DropdownMenu.Content>
       </DropdownMenu.Root>
@@ -116,23 +118,8 @@
       </div>
     </a>
   </div>
-  <!-- <div class="row gallery-buttons-bar-container-bottom"> -->
-  <!--   <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3"> -->
-  <!--     <a style="float: left;" class="gallery-nav-button" href="/gallery?year=1"> -->
-  <!--       <span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-chevron-left"></span> -->
-  <!--       Previous year -->
-  <!--     </a> -->
-  <!--   </div> -->
-  <!--   <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3"> -->
-  <!--     <a style="float: right;" class="gallery-nav-button-disabled" href="/gallery?"> -->
-  <!--       Next year<span class="glyphicon glyphicon-chevron-right"></span><span  -->
-  <!--         class="glyphicon glyphicon-chevron-right" -->
-  <!--       ></span> -->
-  <!--     </a> -->
-  <!--   </div> -->
-  <!-- </div> -->
 </div>
-
+<!--
 <style>
   .down-arrow {
     color: rgb(208, 78, 29);
@@ -145,3 +132,4 @@
     font-size: 16px;
   }
 </style>
+-->
