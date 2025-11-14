@@ -8,9 +8,10 @@
   let { children } = $props();
 </script>
 
-<div class="row page-body home-page-body" id="main-pane">
-  <div class="col-md-12 col-md-offset-0 col-sm-10 col-sm-offset-1 col-xs-12">
-    <div class="row top-spacer"> </div>
-    {@render children?.()}
+<div class="flex flex-row justify-center" id="main-pane">
+  <div class="w-full 2xl:w-[1300px] sm:w-[640px] lg:w-[1024px] flex-none px-[5px] pt-[40px] bg-[#FFFFFF] overflow-visible">
+    <div class="w-full">
+      {@render children?.()}
+    </div>
   </div>
 </div>

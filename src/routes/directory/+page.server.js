@@ -8,12 +8,19 @@ import User from '$lib/server/user'
 export async function load(page) {
   User.requireLogin(page)
 
-  let users  
+  let users
+  let user
 
   try {
     users = await User.listForDirectory()
   } catch (error) {
     console.error(error) // TODO handle error
+  }
+
+  try {
+    user = await document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 2)[1] || sessionStorage.getItem('user')
+  } catch (error) {
+    console.error(error)
   }
 
   // sort by lastname (case-insensitive) ascending.

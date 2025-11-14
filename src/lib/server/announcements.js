@@ -9,7 +9,7 @@
 import createDebugMessages from 'debug'
 import { getBackendClient } from './client.js'
 
-const debug = createDebugMessages('APP:src/$lib/server/announcements')
+const debug = createDebugMessages('APP:src/$lib/server/announcements');
 
 const POSTS_QUERY = `
   query Post {
@@ -17,7 +17,6 @@ const POSTS_QUERY = `
         filter: {
           _and: [
             {status: { _eq: "published" } },
-            {type: {_eq: "announcement"}}
           ]
         },
         sort: [
@@ -25,7 +24,6 @@ const POSTS_QUERY = `
         ],
         limit: 5
       ) {
-        type
         slug
         title
         publish_on

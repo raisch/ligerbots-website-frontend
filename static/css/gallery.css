@@ -2,7 +2,7 @@
 /* These should be the same as in ligerbots.css */
 :root {
   --box-radius: 4px;
-  --team-blue: rgb(147,149,152);
+  --team-blue: rgb(147, 149, 152);
 }
 
 /* For the ligerbots flickr and youtube links. */
@@ -45,7 +45,7 @@
 /* the caption for an album's thumbnail */
 .gallery-caption {
   z-index: 1;
-  background: rgb(0,102,179);
+  background: rgb(0, 102, 179);
   border-radius: 0 0 var(--box-radius) var(--box-radius);
   width: 100%;
   position: absolute;
@@ -75,15 +75,16 @@
   position: relative;
   margin-top: 3pt; /* align bottom with dropdown menu */
   text-decoration: none;
-  color: rgb(208,78,29);
+  color: rgb(208, 78, 29);
   transition: 0.1s;
 }
 
-.gallery-nav-button-disabled, .gallery-nav-button-disabled:hover {
+.gallery-nav-button-disabled,
+.gallery-nav-button-disabled:hover {
   position: relative;
   margin-top: 3pt;
   text-decoration: none;
-  color: rgba(208,78,29,0.5);
+  color: rgba(208, 78, 29, 0.5);
   cursor: not-allowed;
 }
 
@@ -154,13 +155,14 @@
 }
 
 /* the dropdown menu button */
-.gallery-dropdown-button, .gallery-dropdown-button:focus {
+.gallery-dropdown-button,
+.gallery-dropdown-button:focus {
   background-color: transparent;
   border: none;
   padding: 0;
   margin: 0;
   top: -5pt; /* fix text spacing; button is taller than text */
-  color: rgb(0,102,179);
+  color: rgb(0, 102, 179);
   font-weight: bold;
   font-size: 18pt;
   letter-spacing: 0.04em;
@@ -169,7 +171,8 @@
 }
 
 /* tweaks to the dropdown menu button under other actions */
-.gallery-dropdown-button:hover, .gallery-dropdown-button:active {
+.gallery-dropdown-button:hover,
+.gallery-dropdown-button:active {
   background-color: transparent !important;
   color: black !important; /* important needed to override preset button specs */
 }
@@ -194,7 +197,7 @@
 /* active item in the dropdown menu */
 .gallery-dropdown-itme-active {
   color: white !important;
-  background-color: rgb(0,102,179) !important;
+  background-color: rgb(0, 102, 179) !important;
 }
 
 /* Description text for an album that shows when viewing it's photos */
@@ -209,13 +212,14 @@
 
 /* the triangle for the dropdown menu */
 .glyphicon-triangle-bottom {
-  color: rgb(208,78,29);
+  color: rgb(208, 78, 29);
   font-size: 14pt;
   top: 1pt; /* align to the top of a small s */
 }
 
 /* specs for chevrons */
-.glyphicon-chevron-left, .glyphicon-chevron-right {
+.glyphicon-chevron-left,
+.glyphicon-chevron-right {
   top: 0;
   font-size: 8pt;
   letter-spacing: -0.3em;

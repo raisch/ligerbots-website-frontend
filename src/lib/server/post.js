@@ -1,16 +1,13 @@
-/** @module */
+import createDebugMessages from 'debug';
 
-import createDebugMessages from 'debug'
+import { getBackendClient } from '$lib/server/client';
 
-import { getBackendClient } from '$lib/server/client'
-
-const debug = createDebugMessages('APP:$lib/server/post')
+const debug = createDebugMessages('APP:$lib/server/post');
 
 const POST_QUERY = `{
   post(filter: { slug: { _eq: "{{slug}}" } }) {
       slug
       status
-      type
       title
       body
       publish_on
@@ -21,7 +18,7 @@ const POST_QUERY = `{
           filename_download
       }
   }
-}`
+}`;
 
 /**
  * Get post from Directus.
@@ -34,22 +31,22 @@ const POST_QUERY = `{
  * @throws {Error} if failed to retrieve files.
  */
 export default async function getPostBySlug(slug, query = POST_QUERY) {
-  const client = await getBackendClient()
+  const client = await getBackendClient();
 
-  query = query.replace('{{slug}}', slug)
+  query = query.replace('{{slug}}', slug);
 
-  debug(`getPost(slug=${slug}) query: ${query}`)
+  debug(`getPost(slug=${slug}) query: ${query}`);
 
-  let result
+  let result;
   try {
-    const resp = await client.query(query)
-    debug(`getPost(slug=${slug}) resp: ${JSON.stringify(resp)}`)
-    result = resp.post.shift()
+    const resp = await client.query(query);
+    debug(`getPost(slug=${slug}) resp: ${JSON.stringify(resp)}`);
+    result = resp.post.shift();
   } catch (/** @type {any} */ err) {
-    throw new Error(`failed to retrieve post: ${JSON.stringify(err)}`)
+    throw new Error(`failed to retrieve post: ${JSON.stringify(err)}`);
   }
-  debug(`getPost(slug=${slug}) result: ${JSON.stringify(result)}`)
-  return result
+  debug(`getPost(slug=${slug}) result: ${JSON.stringify(result)}`);
+  return result;
 }
 
 /**
