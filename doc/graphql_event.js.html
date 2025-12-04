@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: graphql/event.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: graphql/event.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * GraphQL queries and mutations for the `event` collection in Directus.
+ *
+ * - `EVENT_QUERY` – Fetches a list of events filtered by status. The `{{status}}` placeholder
+ *   is replaced at runtime before sending the query.
+ * - `EVENT_BY_ID_QUERY` – Fetches a single event with its associated trips, rides, and riders.
+ *   Uses the shared `RIDER_USER_FIELDS` fragment for rider user details.
+ * - `CREATE_EVENT_MUTATION` – Creates a new event item.
+ * - `UPDATE_EVENT_MUTATION` – Updates an existing event by ID.
+ * - `DELETE_EVENT_MUTATION` – Deletes an event by ID.
+ *
+ * These operations are consumed by `$lib/server/event.js` to implement the event service layer.
+ *
+ * @module graphql/event
+ */
+
+import { RIDER_USER_FIELDS } from '$lib/server/graphql/rider.js'
+
+/**
+ * GraphQL query for listing events by status.
+ *
+ * Replace `{{status}}` with the desired status (e.g. `"published"`).
+ */
+export const EVENT_QUERY = `{
+    event(filter: { status: { _eq: "{{status}}" } }) {
+        id
+        name
+        status
+        start_date
+        end_date
+        location
+    }
+  }`
+
+/** GraphQL query for fetching a single event by ID.
+ *
+ * Replace `{{id}}` with the Directus event ID.
+ */
+export const EVENT_BY_ID_QUERY = `{  event_by_id(id: "{{id}}") {
+          id
+          start_date
+          end_date
+          name
+          description
+          status
+          location
+          trips
+  }`
+
+/**
+ * GraphQL query for fetching a single event by ID, including all of its trips, rides, and riders.
+ *
+ * Replace `{{id}}` with the Directus event ID.
+ */
+export const EVENT_COMPLETE_BY_ID_QUERY = `{
+    event_complete_by_id: event_trips_by_id(id: "{{id}}") {
+          id
+          start_date
+          end_date
+          name
+          description
+          status
+          location
+          trips {
+              item {
+                  ... on destination_trip {
+                      destination
+                      departs_from
+                      departs_on
+                      departs_at
+                      status
+                      rides {
+                          item {
+                              ... on trip_ride {
+                                  id
+                                  ride {
+                                      vehicle_type
+                                      name
+                                      seats
+                                      driver {
+                                          item {
+                                              ... on users {
+                                                  id
+                                                  firstname
+                                                  lastname
+                                                  email_address
+                                                  phone_number
+                                                  photo {
+                                                      id
+                                                      filename_disk
+                                                      filename_download
+                                                  }
+                                              }
+                                          }
+                                          id
+                                          collection
+                                      }
+                                      id
+                                  }
+                                  riders {
+                                      item {
+                                          ${RIDER_USER_FIELDS}
+                                      }
+                                      id
+                                      collection
+                                  }
+                                  id
+                                  riders_func {
+                                      count
+                                  }
+                              }
+                          }
+                          collection
+                      }
+                      id
+                      status
+                      rides_func {
+                          count
+                      }
+                  }
+                  ... on return_trip {
+                      id
+                      status
+                      destination
+                      departs_from
+                      departs_on
+                      departs_at
+                      rides {
+                          item {
+                              ... on trip_ride {
+                                  id
+                                  ride {
+                                      vehicle_type
+                                      name
+                                      seats
+                                      driver {
+                                          item {
+                                              ... on users {
+                                                  id
+                                                  firstname
+                                                  lastname
+                                                  email_address
+                                                  phone_number
+                                                  photo {
+                                                      id
+                                                      filename_disk
+                                                      filename_download
+                                                  }
+                                              }
+                                          }
+                                          id
+                                          collection
+                                      }
+                                      id
+                                  }
+                                  riders {
+                                      item {
+                                          ${RIDER_USER_FIELDS}
+                                      }
+                                      id
+                                      collection
+                                  }
+                                  id
+                                  riders_func {
+                                      count
+                                  }
+                              }
+                          }
+                          collection
+                      }
+                      id
+                      status
+                      rides_func {
+                          count
+                      }
+                  }
+              }
+              id
+              collection
+          }
+      }
+  }`
+
+/** GraphQL mutation for creating a new event item. */
+export const CREATE_EVENT_MUTATION = `mutation ($event: create_event_input!) {
+    create_event_item(data: $event) {
+      id
+      name
+      status
+      description
+      start_date
+      end_date
+      location
+    }
+}`
+
+/** GraphQL mutation for updating an existing event item. */
+export const UPDATE_EVENT_MUTATION = `mutation ($id: ID!, $event: update_event_input!) {
+    update_event_item(id: $id, data: $event) {
+      id
+      name
+      status
+      description
+      start_date
+      end_date
+      location
+    }
+}`
+
+/** GraphQL mutation for deleting an event item by ID. */
+export const DELETE_EVENT_MUTATION = `mutation ($id: ID!) {
+    delete_event_item(id: $id) {
+      id
+    }
+}`
+
+export default {
+  EVENT_QUERY,
+  EVENT_BY_ID_QUERY,
+  CREATE_EVENT_MUTATION,
+  UPDATE_EVENT_MUTATION,
+  DELETE_EVENT_MUTATION
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-announcements.html">announcements</a></li><li><a href="module-client.html">client</a></li><li><a href="module-event.html">event</a></li><li><a href="module-files.html">files</a></li><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_backend.html">lib/backend</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-page.html">page</a></li><li><a href="module-post.html">post</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-site.html">site</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-user.html">user</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-event.html">event</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-backend-server-module-examples.html">backend-server-module-examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 17:49:03 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

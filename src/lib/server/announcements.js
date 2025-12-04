@@ -1,40 +1,10 @@
+/** @module */
 import createDebugMessages from 'debug'
 import { getBackendClient } from './client.js'
+import { AnnouncementModelSchema } from './models/announcement.model.js'
+import { POSTS_QUERY } from './graphql/post.js'
 
 const debug = createDebugMessages('APP:src/$lib/server/announcements')
-
-const POSTS_QUERY = `
-  query Post {
-      post(
-        filter: {
-          _and: [
-            {status: { _eq: "published" } },
-            {type: {_eq: "announcement"}}
-          ]
-        },
-        sort: [
-          "-publish_on"
-        ],
-        limit: 5
-      ) {
-        type
-        slug
-        title
-        publish_on
-        lede
-        status
-      }
-  }`
-
-// const POST_QUERY = `{
-//   post(filter: { slug: { _eq: "{{slug}}" } }) {
-//     slug
-//     title
-//     script
-//     content
-//     style
-//   }
-// }`
 
 /**
  * @typedef {Object} Announcement
@@ -52,7 +22,7 @@ const POSTS_QUERY = `
  */
 
 /**
- *
+ * Retrieve a list of announcements from the backend.
  * @param {string} [query=POSTS_QUERY]
  *
  * @throws {Error} if failed to retrieve files.
@@ -61,6 +31,10 @@ const POSTS_QUERY = `
  */
 export default async function getAnnouncements (query = POSTS_QUERY) {
   const client = await getBackendClient()
+
+  if (!client) {
+    throw new Error('Backend client is not available')
+  }
 
   debug(`getAnnouncements() query: ${query}`)
 

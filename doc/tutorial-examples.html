@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: examples</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: examples</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>examples</h2>
+</header>
+
+<article>
+    <h1>Backend Server Module Examples (<code>src/lib/server</code>)</h1>
+<p>This document shows how the backend service classes under <code>src/lib/server</code> work
+and gives concrete examples of calling <strong>all static methods</strong> on:</p>
+<ul>
+<li><code>Event</code> – <code>src/lib/server/event.js</code></li>
+<li><code>Trip</code> – <code>src/lib/server/trip.js</code></li>
+<li><code>Ride</code> – <code>src/lib/server/ride.js</code></li>
+<li><code>Rider</code> – <code>src/lib/server/rider.js</code></li>
+<li><code>Vehicle</code> – <code>src/lib/server/vehicle.js</code></li>
+</ul>
+<p>All of these classes are thin service layers over Directus GraphQL:</p>
+<ul>
+<li>They obtain a Directus client via <code>getBackendClient()</code>.</li>
+<li>They send typed GraphQL queries/mutations defined in <code>src/lib/server/graphql/*</code>.</li>
+<li>They use Joi models in <code>src/lib/server/models/*</code> for best‑effort validation and logging.</li>
+</ul>
+<blockquote>
+<p><strong>Important</strong></p>
+<ul>
+<li>These examples assume you are running inside the SvelteKit app (e.g. from
+a <code>+server.js</code>/<code>+page.server.js</code> file) and can use <code>$lib/server/...</code> imports.</li>
+<li>When running from standalone Node scripts in <code>bin/</code>, use <strong>relative imports</strong>
+instead (e.g. <code>import Event from '../src/lib/server/event.js'</code>), as shown in
+<code>bin/getEvents.js</code>.</li>
+</ul>
+</blockquote>
+<hr>
+<h2>Event service – <code>src/lib/server/event.js</code></h2>
+<pre class="prettyprint source lang-js"><code>import Event from '$lib/server/event.js'
+</code></pre>
+<h3><code>Event.isEvent(evt)</code></h3>
+<p>Validate that an object looks like an event record according to <code>EventModelSchema</code>.</p>
+<pre class="prettyprint source lang-js"><code>const maybeEvent = { id: 1, name: 'Robocon', location: 'WPS' }
+
+if (Event.isEvent(maybeEvent)) {
+  console.log('Looks like a valid event')
+}
+</code></pre>
+<h3><code>Event.getEvents(status = 'published', query = EVENT_QUERY)</code></h3>
+<p>Fetch a list of events filtered by status.</p>
+<pre class="prettyprint source lang-js"><code>// Get all published events
+const events = await Event.getEvents()
+
+// Get draft events
+const drafts = await Event.getEvents('draft')
+
+// events is an array of event records
+events.forEach((event) => {
+  console.log(event.id, event.name, event.status)
+})
+</code></pre>
+<h3><code>Event.getEventById(id, query = EVENT_BY_ID_QUERY)</code></h3>
+<p>Fetch a single event by ID.</p>
+<pre class="prettyprint source lang-js"><code>const eventId = '1'
+const event = await Event.getEventById(eventId)
+
+if (!event || !event.id) {
+  console.log('Event not found')
+} else {
+  console.log('Loaded event:', event.name, 'at', event.location)
+}
+</code></pre>
+<h3><code>Event.getCompleteEventById(id, query = EVENT_COMPLETE_BY_ID_QUERY)</code></h3>
+<p>Fetch a complete event, including its <strong>destination and return trips</strong>, and each
+trip’s <strong>rides and riders</strong>. Internally this uses the <code>Trip</code> service to hydrate
+trips.</p>
+<pre class="prettyprint source lang-js"><code>const eventId = '1'
+const complete = await Event.getCompleteEventById(eventId)
+
+// complete.trips is an array of relations; each has a `collection` and `item`:
+for (const rel of complete.trips ?? []) {
+  const { collection, item } = rel
+  if (!item) continue
+
+  console.log('Trip type:', collection, 'destination:', item.destination)
+
+  for (const rideRel of item.rides ?? []) {
+    const rideItem = rideRel.item
+    console.log('  Ride:', rideItem.ride.name, 'seats:', rideItem.ride.seats)
+
+    for (const riderRel of rideItem.riders ?? []) {
+      const rider = riderRel.item
+      console.log('    Rider:', rider.firstname, rider.lastname)
+    }
+  }
+}
+</code></pre>
+<h3><code>Event.createEvent(eventData, mutation = CREATE_EVENT_MUTATION)</code></h3>
+<p>Create a new event. <code>status</code> defaults to <code>'draft'</code>.</p>
+<pre class="prettyprint source lang-js"><code>const newEvent = await Event.createEvent({
+  name: 'Off‑Season Scrimmage',
+  description: 'Practice / scrimmage event',
+  start_date: '2025-01-25',
+  end_date: '2025-01-25',
+  location: 'Shop',
+  // status: 'draft' // optional – defaults to 'draft'
+})
+
+console.log('Created event with ID:', newEvent.id)
+</code></pre>
+<h3><code>Event.updateEvent(id, eventData, mutation = UPDATE_EVENT_MUTATION)</code></h3>
+<p>Update an existing event. If <code>trips</code> is provided, it normalizes any <code>item</code>
+objects to IDs for the m2a relation.</p>
+<pre class="prettyprint source lang-js"><code>const updated = await Event.updateEvent('1', {
+  name: 'Robocon (Updated Name)',
+  location: 'New Venue'
+})
+
+console.log('Updated event:', updated.id, updated.name, updated.location)
+</code></pre>
+<p>With trips:</p>
+<pre class="prettyprint source lang-js"><code>const updatedWithTrips = await Event.updateEvent('1', {
+  trips: [
+    {
+      id: 'rel1',
+      collection: 'destination_trip',
+      item: { id: 'trip1', destination: 'Venue', departs_from: 'Shop' }
+    }
+  ]
+})
+</code></pre>
+<h3><code>Event.archiveEvent(id, mutation = UPDATE_EVENT_MUTATION)</code></h3>
+<p>Convenience method to set <code>status</code> to <code>'archived'</code>.</p>
+<pre class="prettyprint source lang-js"><code>await Event.archiveEvent('1')
+</code></pre>
+<h3><code>Event.deleteEvent(id, mutation = DELETE_EVENT_MUTATION)</code></h3>
+<p>Delete an event by ID.</p>
+<pre class="prettyprint source lang-js"><code>const deleted = await Event.deleteEvent('42')
+console.log('Deleted event ID:', deleted.id)
+</code></pre>
+<h3>Trip helpers on <code>Event</code></h3>
+<p>These methods create/update/delete trips <em>in the context of an event</em>.</p>
+<h4><code>Event.createDestinationTrip(eventId, tripData, mutation = CREATE_DESTINATION_TRIP_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const destTrip = await Event.createDestinationTrip('1', {
+  destination: 'WPS',
+  departs_from: 'Starbucks Newtonville',
+  departs_on: '2024-09-21',
+  departs_at: '08:00',
+  // status: 'published' // default if omitted
+})
+</code></pre>
+<h4><code>Event.createReturnTrip(eventId, tripData, mutation = CREATE_RETURN_TRIP_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const returnTrip = await Event.createReturnTrip('1', {
+  destination: 'Starbucks Newtonville',
+  departs_from: 'WPS',
+  departs_on: '2024-09-21',
+  departs_at: '18:00'
+})
+</code></pre>
+<h4><code>Event.updateDestinationTrip(tripId, tripData, mutation = UPDATE_DESTINATION_TRIP_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const updatedDest = await Event.updateDestinationTrip('trip1', {
+  departs_at: '08:30'
+})
+</code></pre>
+<h4><code>Event.updateReturnTrip(tripId, tripData, mutation = UPDATE_RETURN_TRIP_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const updatedReturn = await Event.updateReturnTrip('trip2', {
+  status: 'archived'
+})
+</code></pre>
+<h4><code>Event.deleteTrip(tripId, collection, mutation = DELETE_TRIP_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>// Delete a destination trip
+await Event.deleteTrip('trip1', 'destination_trip')
+
+// Delete a return trip
+await Event.deleteTrip('trip2', 'return_trip')
+</code></pre>
+<h3>Trip ride helpers on <code>Event</code></h3>
+<p>These methods create/update/delete <strong>trip_ride</strong> records for a given trip.</p>
+<h4><code>Event.createTripRide(tripId, tripCollection, rideData, mutation = CREATE_TRIP_RIDE_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const tripRide = await Event.createTripRide(
+  'trip1',
+  'destination_trip',
+  {
+    ride: {
+      vehicle_type: 'Car',
+      name: &quot;Rob's Car&quot;,
+      seats: 4,
+      driver: { id: 'user1' }
+    }
+  }
+)
+</code></pre>
+<h4><code>Event.updateTripRide(tripRideId, rideData, mutation = UPDATE_TRIP_RIDE_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const updatedTripRide = await Event.updateTripRide('tride1', {
+  ride: { seats: 5 }
+})
+</code></pre>
+<h4><code>Event.deleteTripRide(tripRideId, mutation = DELETE_TRIP_RIDE_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>await Event.deleteTripRide('tride1')
+</code></pre>
+<h4><code>Event.addRiderToTripRide(tripRideId, userId, mutation = ADD_RIDER_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const updatedAfterAdd = await Event.addRiderToTripRide('tride1', 'user96')
+</code></pre>
+<h4><code>Event.removeRiderFromTripRide(tripRideId, relationshipId, mutation = REMOVE_RIDER_MUTATION)</code></h4>
+<pre class="prettyprint source lang-js"><code>const updatedAfterRemove = await Event.removeRiderFromTripRide('tride1', 'rel123')
+</code></pre>
+<h4><code>Event.getTripRideById(tripRideId, query = GET_TRIP_RIDE_BY_ID_QUERY)</code></h4>
+<pre class="prettyprint source lang-js"><code>const tripRide = await Event.getTripRideById('tride1')
+console.log('Trip ride seats:', tripRide.ride?.seats)
+</code></pre>
+<hr>
+<h2>Trip service – <code>src/lib/server/trip.js</code></h2>
+<pre class="prettyprint source lang-js"><code>import Trip from '$lib/server/trip.js'
+</code></pre>
+<h3><code>Trip.getTrips(eventId, tripType = 'destination_trip')</code></h3>
+<p>Fetch trips (with rides and riders) for a given event.</p>
+<pre class="prettyprint source lang-js"><code>const destinationTrips = await Trip.getTrips('1', 'destination_trip')
+const returnTrips = await Trip.getTrips('1', 'return_trip')
+
+destinationTrips.forEach((rel) => {
+  const trip = rel.item
+  if (!trip) return
+
+  console.log('Trip departs from', trip.departs_from, 'to', trip.destination)
+  console.log('Rides count:', trip.rides?.length ?? 0)
+})
+</code></pre>
+<h3><code>Trip.updateTrip(tripData, tripType = 'destination_trip')</code></h3>
+<p>Update a destination or return trip.</p>
+<pre class="prettyprint source lang-js"><code>const updatedTrip = await Trip.updateTrip(
+  {
+    id: 'trip1',
+    departs_at: '08:30:00'
+  },
+  'destination_trip'
+)
+
+console.log('Updated trip departs at:', updatedTrip.departs_at)
+</code></pre>
+<hr>
+<h2>Ride service – <code>src/lib/server/ride.js</code></h2>
+<p><code>Ride</code> manages the <strong><code>ride</code> collection</strong> (vehicles assigned to trips), not the
+<code>trip_ride</code> relationship.</p>
+<pre class="prettyprint source lang-js"><code>import Ride from '$lib/server/ride.js'
+</code></pre>
+<h3><code>Ride.getAllRides(query = GET_ALL_RIDES_QUERY)</code></h3>
+<pre class="prettyprint source lang-js"><code>const rides = await Ride.getAllRides()
+rides.forEach((ride) => {
+  console.log(ride.id, ride.name, 'seats:', ride.seats)
+})
+</code></pre>
+<h3><code>Ride.getRideById(rideId, query = GET_RIDE_BY_ID_QUERY)</code></h3>
+<pre class="prettyprint source lang-js"><code>const ride = await Ride.getRideById('ride1')
+console.log('Ride name:', ride.name)
+</code></pre>
+<h3><code>Ride.createRide(rideData, mutation = CREATE_RIDE_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>const newRide = await Ride.createRide({
+  vehicle_type: 'Van',
+  name: 'Team Van',
+  seats: 8,
+  driver: { id: 'user1' }
+})
+
+console.log('Created ride ID:', newRide.id)
+</code></pre>
+<h3><code>Ride.updateRide(rideData, mutation = UPDATE_RIDE_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>const updatedRide = await Ride.updateRide({
+  id: 'ride1',
+  seats: 5
+})
+
+console.log('Updated ride seats:', updatedRide.seats)
+</code></pre>
+<h3><code>Ride.deleteRide(rideId, mutation = DELETE_RIDE_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>await Ride.deleteRide('ride1')
+</code></pre>
+<hr>
+<h2>Rider service – <code>src/lib/server/rider.js</code></h2>
+<p><code>Rider</code> manages <strong>riders for a specific trip_ride</strong>, i.e. the
+<code>trip_ride_riders</code> junction collection.</p>
+<pre class="prettyprint source lang-js"><code>import Rider from '$lib/server/rider.js'
+</code></pre>
+<h3><code>Rider.addRiderToRide(tripRideId, userId, mutation = ADD_RIDER_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>const relation = await Rider.addRiderToRide('tride1', 'user96')
+
+console.log('Created rider relationship ID:', relation.id)
+</code></pre>
+<h3><code>Rider.getRidersFromRide(tripRideId, query = GET_TRIP_RIDE_BY_ID_QUERY)</code></h3>
+<pre class="prettyprint source lang-js"><code>const riders = await Rider.getRidersFromRide('tride1')
+
+for (const user of riders) {
+  console.log('Rider:', user.firstname, user.lastname)
+}
+</code></pre>
+<h3><code>Rider.removeRiderFromRide(relationshipId, mutation = REMOVE_RIDER_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>await Rider.removeRiderFromRide('rel123')
+</code></pre>
+<hr>
+<h2>Vehicle service – <code>src/lib/server/vehicle.js</code></h2>
+<p><code>Vehicle</code> represents reusable vehicles based on the same <code>ride</code> collection, but
+treated as a pool of templates that can be copied into <code>trip_ride</code> records.</p>
+<pre class="prettyprint source lang-js"><code>import Vehicle from '$lib/server/vehicle.js'
+</code></pre>
+<h3><code>Vehicle.getAllVehicles(query = GET_ALL_RIDES_QUERY)</code></h3>
+<pre class="prettyprint source lang-js"><code>const vehicles = await Vehicle.getAllVehicles()
+
+vehicles.forEach((vehicle) => {
+  console.log('Vehicle:', vehicle.name, 'seats:', vehicle.seats)
+})
+</code></pre>
+<h3><code>Vehicle.getVehicleById(vehicleId, query = GET_RIDE_BY_ID_QUERY)</code></h3>
+<pre class="prettyprint source lang-js"><code>const vehicle = await Vehicle.getVehicleById('rideTemplate1')
+console.log('Template vehicle name:', vehicle.name)
+</code></pre>
+<h3><code>Vehicle.createVehicle(vehicleData, mutation = CREATE_RIDE_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>const createdVehicle = await Vehicle.createVehicle({
+  name: 'Parent Van',
+  vehicle_type: 'Van',
+  seats: 7,
+  driver: { id: 'userParent' }
+})
+
+console.log('Created vehicle template ID:', createdVehicle.id)
+</code></pre>
+<h3><code>Vehicle.updateVehicle(vehicleData, mutation = UPDATE_RIDE_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>const updatedVehicle = await Vehicle.updateVehicle({
+  id: 'rideTemplate1',
+  seats: 8
+})
+
+console.log('Updated template seats:', updatedVehicle.seats)
+</code></pre>
+<h3><code>Vehicle.deleteVehicle(vehicleId, mutation = DELETE_RIDE_MUTATION)</code></h3>
+<pre class="prettyprint source lang-js"><code>await Vehicle.deleteVehicle('rideTemplate1')
+</code></pre>
+<hr>
+<h2>Notes and best practices</h2>
+<ul>
+<li>All methods are <code>async</code> and may throw <code>Error</code> instances when:
+<ul>
+<li>Required parameters are missing, or</li>
+<li>The backend client is not available, or</li>
+<li>The Directus GraphQL call fails.</li>
+</ul>
+</li>
+<li>Joi validation in these services is <strong>best‑effort</strong>: it logs validation
+errors via <code>debug</code> but does not throw.</li>
+<li>When using these services from SvelteKit endpoints, prefer <code>$lib/server/...</code>
+imports; when using from standalone Node scripts, use relative imports and
+ensure <code>dotenv/config</code> (or equivalent) is loaded so <code>API_URL</code> and
+<code>API_TOKEN</code> are available.</li>
+</ul>
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_backend.html">lib/backend</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-src_lib_server_announcements.html">src/lib/server/announcements</a></li><li><a href="module-src_lib_server_client.html">src/lib/server/client</a></li><li><a href="module-src_lib_server_event.html">src/lib/server/event</a></li><li><a href="module-src_lib_server_files.html">src/lib/server/files</a></li><li><a href="module-src_lib_server_page.html">src/lib/server/page</a></li><li><a href="module-src_lib_server_post.html">src/lib/server/post</a></li><li><a href="module-src_lib_server_ride.html">src/lib/server/ride</a></li><li><a href="module-src_lib_server_rider.html">src/lib/server/rider</a></li><li><a href="module-src_lib_server_site.html">src/lib/server/site</a></li><li><a href="module-src_lib_server_trip.html">src/lib/server/trip</a></li><li><a href="module-src_lib_server_user.html">src/lib/server/user</a></li><li><a href="module-src_lib_server_vehicle.html">src/lib/server/vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-src_lib_server_event.html">src/lib/server/event</a></li><li><a href="module-src_lib_server_ride.html">src/lib/server/ride</a></li><li><a href="module-src_lib_server_rider.html">src/lib/server/rider</a></li><li><a href="module-src_lib_server_trip.html">src/lib/server/trip</a></li><li><a href="module-src_lib_server_vehicle.html">src/lib/server/vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-examples.html">examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 17:43:07 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

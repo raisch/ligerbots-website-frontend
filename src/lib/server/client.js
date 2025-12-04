@@ -1,3 +1,4 @@
+/** @module */
 import 'dotenv/config'
 import createDebugMessages from 'debug'
 

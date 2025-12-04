@@ -1,3 +1,4 @@
+/** @module */
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
@@ -26,6 +27,10 @@ const PAGE_QUERY = `{
  */
 export default async function getPage (slug, query = PAGE_QUERY) {
   const client = await getBackendClient()
+
+  if (!client) {
+    throw new Error('Backend client is not available')
+  }
 
   query = query.replace('{{slug}}', slug)
 

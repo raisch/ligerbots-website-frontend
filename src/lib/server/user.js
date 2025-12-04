@@ -1,5 +1,5 @@
+/** @module */
 import createDebugMessages from 'debug'
-
 import { getBackendClient } from './client.js'
 
 const debug = createDebugMessages('APP:$lib/server/user')
@@ -12,6 +12,9 @@ export default class User {
    */
   static async listForDirectory() {
     const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
     const query = `
       query Users {
         users(limit: -1, filter: { status: { _eq: "published" } }) {
@@ -50,6 +53,9 @@ export default class User {
    */
   static async listForFacebook() {
     const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
     const query = `
       query Users {
         users(limit: -1, filter: { status: { _eq: "published" } }) {
@@ -99,6 +105,9 @@ export default class User {
    */
   static async findByEmail(email) {
     const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
     const query = `
       query Users {
         users(filter: { email_address: { _eq: "${email}" } } ) {
@@ -148,6 +157,9 @@ export default class User {
    */
   static async login(email, password) {
     const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
 
     /** @type {UserRecord | null} */
     const user = await User.findByEmail(email)

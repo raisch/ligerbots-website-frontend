@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: user.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: user.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module */
+import createDebugMessages from 'debug'
+import { getBackendClient } from './client.js'
+
+const debug = createDebugMessages('APP:$lib/server/user')
+
+export default class User {
+  /**
+   * List all published users for the /directory route.
+   *
+   * @returns {Promise.&lt;Array.&lt;DirectoryUserRecord>>} - The list of users.
+   */
+  static async listForDirectory() {
+    const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+    const query = `
+      query Users {
+        users(limit: -1, filter: { status: { _eq: "published" } }) {
+          id
+          status
+          firstname
+          lastname
+          phone_number
+          email_address
+          address
+          school
+          groups
+        }
+      }`
+
+    debug(`listForDirectory: query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      throw new Error(`Failed to list users: ${err}`)
+    }
+
+    if (!(result &amp;&amp; result.users &amp;&amp; Array.isArray(result.users))) {
+      return []
+    }
+
+    return result.users
+  }
+
+  /**
+   * List all published users with photos for the /facebook route.
+   *
+   * @returns {Promise.&lt;Array.&lt;FacebookUserRecord>>} - The list of users.
+   */
+  static async listForFacebook() {
+    const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+    const query = `
+      query Users {
+        users(limit: -1, filter: { status: { _eq: "published" } }) {
+          id
+          status
+          firstname
+          lastname
+          email_address
+          phone_number
+          address
+          school
+          groups
+          slug
+          fullname
+          last_login
+          photo {
+            id
+            filename_disk
+            filename_download
+          }
+        }
+      }`
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      throw new Error(`Failed to list users with photos: ${err}`)
+    }
+
+    if (!(result &amp;&amp; result.users &amp;&amp; Array.isArray(result.users))) {
+      debug('listForFacebook: no users found')
+      return []
+    }
+
+    return result.users
+  }
+
+  /**
+   * Find a user by email address.
+   *
+   * @param {String} email - The email address of the user to find.
+   *
+   * @returns {Promise.&lt;UserRecord | null>} - The user record if found, null otherwise.
+   *
+   * @throws {Error} If the Directus client is not valid.
+   * @throws {Error} If the query fails.
+   */
+  static async findByEmail(email) {
+    const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+    const query = `
+      query Users {
+        users(filter: { email_address: { _eq: "${email}" } } ) {
+          id
+          status
+          firstname
+          lastname
+          email_address
+          groups
+          school
+          graduation_year
+          password
+          fullname
+          slug
+          last_login
+          is_admin
+        }
+      }`
+
+    debug(`findByEmail(${email}): query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      throw new Error(`Failed to find user with email address "${email}": ${err}`)
+    }
+    const users = result?.users || []
+    if (!(Array.isArray(users) &amp;&amp; users.length === 1)) {
+      debug(`findByEmail: no user found for email: ${email}`)
+      return null
+    }
+    return users[0]
+  }
+
+  /**
+   * Log in a user.
+   *
+   * @param {String} email - The email address of the user to login.
+   * @param {String} password - The password of the user to login.
+   *
+   * @returns {Promise.&lt;UserRecord | null>} - True if the password is correct, false otherwise.
+   *
+   * @throws {Error} If the Directus client is not valid.
+   * @throws {Error} If the query fails.
+   * @throws {Error} If the user is not found
+   */
+  static async login(email, password) {
+    const client = await getBackendClient()
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    /** @type {UserRecord | null} */
+    const user = await User.findByEmail(email)
+    if (!user) {
+      console.error(`Failed to find user with email address: ${email}`)
+      return null
+    }
+    debug(`User.login user: ${JSON.stringify(user, null, 2)}`)
+
+    const query = `mutation Utils_hash_verify {
+      utils_hash_verify(string: "${password}", hash: "${user.password}")
+    }`
+
+    debug(`User.login query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query, null, 'system')
+    } catch (err) {
+      throw new Error(`Failed to verify password for user with email address "${email}": ${err}`)
+    }
+    debug(`User.login result: ${JSON.stringify(result, null, 2)}`)
+
+    if (user.password) {
+      user.password = '***'
+    }
+
+    return !!result?.utils_hash_verify ? user : null
+  }
+}
+
+/**
+ * @typedef {Object} UserRecord
+ * @property {String} id
+ * @property {String} status
+ * @property {String} firstname
+ * @property {String} lastname
+ * @property {String} email_address
+ * @property {Array.&lt;String>} groups
+ * @property {String} school
+ * @property {String} graduation_year
+ * @property {String} password
+ * @property {String} address
+ * @property {String} phone_number
+ * @property {String} fullname
+ * @property {String} slug
+ * @property {String} last_login
+ */
+
+/**
+ * @typedef {Object} DirectoryUserRecord
+ *
+ * @property {String} id
+ * @property {String} status
+ * @property {String} firstname
+ * @property {String} lastname
+ * @property {String} phone_number
+ * @property {String} email_address
+ * @property {String} address
+ * @property {String} school
+ * @property {Array.&lt;String>} groups
+ */
+
+/**
+ * @typedef {Object} FacebookUserRecord
+ *
+ * @property {String} id
+ * @property {String} status
+ * @property {String} firstname
+ * @property {String} lastname
+ * @property {String} email_address
+ * @property {String} phone_number
+ * @property {String} address
+ * @property {String} school
+ * @property {Array.&lt;String>} groups
+ * @property {String} slug
+ * @property {String} fullname
+ * @property {String} last_login
+ * @property {Object} photo
+ * @property {String} photo.id
+ * @property {String} photo.filename_disk
+ * @property {String} photo.filename_download
+ */
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-announcements.html">announcements</a></li><li><a href="module-client.html">client</a></li><li><a href="module-event.html">event</a></li><li><a href="module-files.html">files</a></li><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_backend.html">lib/backend</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-page.html">page</a></li><li><a href="module-post.html">post</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-site.html">site</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-user.html">user</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-event.html">event</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-backend-server-module-examples.html">backend-server-module-examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 17:49:03 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

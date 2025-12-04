@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>ligerbots-website-frontend</h1>
+<p>This is the repo for the new Ligerbots website, a work in progress.</p>
+<p>Contact Coach Rob on slack if you're interested in helping.</p>
+<h2>Directory Structure</h2>
+<ul>
+<li>/bin - useful scripts (probably out-of-date)</li>
+<li>/src - site components (svelte)
+<ul>
+<li>lib
+<ul>
+<li>/components - svelte componentry
+<ul>
+<li>/icons - useful icons as svelte components
+<ul>
+<li>Note: Sourced from svelte-icon-pack, might wish to use a better pack, like
+lucide-svelte</li>
+</ul>
+</li>
+<li>*.svelte - site components
+<ul>
+<li>Note: Most of these are just html ripped from existing site and should be refactored
+into actual components. To do so, we'll need to decide on a site wide css layout
+library. The existing site uses an old version of bootstrap which is sub-optimal.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>/server - server-side javascript</li>
+</ul>
+</li>
+<li>routes - sveltekit routes
+<ul>
+<li>[slug] - general pages reachable via <a href="http:%5C/%5C/HOST/%5Bslug">http://HOST/[slug</a>]</li>
+<li>announcement - announcements (TBD), <a href="http:%5C/%5C/HOST/announcement">http://HOST/announcement</a> &amp; <a href="http:%5C/%5C/HOST/announcement/%5Bslug">http://HOST/announcement/[slug</a>]</li>
+<li>api - service api for calls from client-side componentry, <a href="http:%5C/%5C/HOST/api/">http://HOST/api/</a>...</li>
+<li>blog - blog posts (TBD), <a href="http:%5C/%5C/HOST/blog">http://HOST/blog</a> &amp; <a href="http:%5C/%5C/HOST/blog/%5Bslug">http://HOST/blog/[slug</a>]</li>
+<li>carpool - scaffolding (TBD), <a href="http:%5C/%5C/HOST/carpool">http://HOST/carpool</a></li>
+<li>directory - user directory, <a href="http:%5C/%5C/HOST/directory">http://HOST/directory</a></li>
+<li>facebook - user photo gallery, <a href="http:%5C/%5C/HOST/facebook">http://HOST/facebook</a></li>
+<li>login - user login (relies on /api/login), <a href="http:%5C/%5C/HOST/login">http://HOST/login</a></li>
+<li>logout - user logout, <a href="http:%5C/%5C/HOST/logout">http://HOST/logout</a></li>
+<li>photos - photo gallery (TBD), <a href="http:%5C/%5C/HOST/photos">http://HOST/photos</a></li>
+<li>post - DEPRECATED, see /announcement &amp; /blog</li>
+<li>signup - new user signup (TBD), <a href="http:%5C/%5C/HOST/signup">http://HOST/signup</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>/static - static site resources (served via url: <a href="http:%5C/%5C/HOST/">http://HOST/</a>...)</li>
+<li>/system - boilerplate and instructions for installation on a ubuntu linux service machine</li>
+</ul>
+<h2>Architecture</h2>
+<p>This site is built using <a href="kit.svelte.dev"><code>sveltekit</code></a> which is a leading-edge, standards-compliant framework
+for building web sites. (Under the covers, it uses the standard <a href="https://expressjs.com/">ExpressJS</a> running
+on top of <a href="https://nodejs.org/en">NodeJS</a>.)</p>
+<p><code>sveltekit</code> is powered by</p>
+<ul>
+<li><a href="https://vitejs.dev/"><code>vite</code></a> which provides all the tooling required to build and serve your site or app, and</li>
+<li><a href="https://svelte.dev/"><code>svelte</code></a> which is a compiled, component-based framework (a little like React but
+much faster and lighter) that allows you to combine business logic (in Javascript), content layout/organization
+(in HTML), and presentation styling (in CSS) into discrete 'components' you can use to build your web pages.</li>
+</ul>
+<p>For example, the base for all the pages on this site looks like:</p>
+<pre class="prettyprint source"><code>&lt;head />
+&lt;body data-sveltekit-preload-data=&quot;hover&quot;>
+  &lt;div style=&quot;display: contents&quot;>
+    &lt;App>
+      &lt;slot/>
+    &lt;/App>
+  &lt;/div>
+&lt;/body>
+</code></pre>
+<p>where the <code>&lt;App&gt;</code> tag is defined as:</p>
+<pre class="prettyprint source"><code>&lt;div id=&quot;header-ghost&quot;>&lt;/div>
+
+&lt;div class=&quot;container-fluid no-side-padding&quot; id=&quot;page-container&quot;>
+  &lt;div class=&quot;col-xs-12 no-side-padding&quot;>
+    &lt;Masthead />
+    &lt;Navbar />
+    &lt;MainPane>
+      &lt;slot /> &lt;!-- where anything between &lt;App> and &lt;/App> will be inserted. -->
+    &lt;/MainPane>
+    &lt;Footer />
+  &lt;/div>
+&lt;/div>
+</code></pre>
+<p>As you can see, by breaking pages into a hierarchy of components, you gain concision of expression and a high level
+of reuse.</p>
+<h2>Note On The Use Of <code>&lt;embed&gt;</code> Tags</h2>
+<p>The <code>&lt;embed&gt;</code> tag defines a container for an external resource, such as a web page, a picture, a media player, or a plug-in application.</p>
+<p>We use the <code>&lt;embed&gt;</code> tag to embed active <code>SVG</code> elements in a page; active in this sense means they encapsulate
+images, links, and styles in the same object.</p>
+<p>Our use of the tag is to support images which have &quot;clickable regions&quot; within them.</p>
+<div style="color:red">But our use of this tag for this purpose poses both significant security issues for
+browsers and violates the contract browsers have with page content.</div><br/>
+<p>A far better way to accomplish the same functionality, and one that does not pose as much risk as SVGs, is to
+use individual <code>&lt;img&gt;</code> tags wrapped in <code>&lt;a&gt;</code> anchor tags which then rely on the standard page formatting
+tools to manage their position on the page.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-announcements.html">announcements</a></li><li><a href="module-client.html">client</a></li><li><a href="module-event.html">event</a></li><li><a href="module-files.html">files</a></li><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_backend.html">lib/backend</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-page.html">page</a></li><li><a href="module-post.html">post</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-site.html">site</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-user.html">user</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-event.html">event</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-backend-server-module-examples.html">backend-server-module-examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 17:49:03 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

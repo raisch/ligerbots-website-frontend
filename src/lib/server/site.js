@@ -1,5 +1,5 @@
+/** @module */
 import createDebugMessages from 'debug'
-
 import { getBackendClient } from '$lib/server/client'
 import { stringify } from '../util'
 
@@ -46,6 +46,10 @@ const MAINTENANCE_MODE_QUERY = `{
  */
 export default async function getSiteConfig(query = SITE_CONFIG_QUERY) {
   const client = await getBackendClient()
+
+  if (!client) {
+    throw new Error('Backend client is not available')
+  }
 
   debug(`getSite() query: ${query}`)
 

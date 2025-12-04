@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: vehicle-old.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: vehicle-old.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module */
+import createDebugMessages from 'debug'
+import { getBackendClient } from '$lib/server/client'
+
+import Queries from '$lib/server/graphql/event'
+const debug = createDebugMessages('APP:lib/server/tripride')
+
+/** @class */
+export default class Vehicle {
+  /**
+   * Get all vehicles.
+   *
+   * @param {string} [query] - Custom GraphQL query to use.
+   *
+   * @returns {Promise&lt;any[]>} - Array of vehicle records.
+   *
+   * @throws {Error} if failed to retrieve vehicles.
+   */
+  static async getAllVehicles(query = Queries.GET_ALL_VEHICLES_QUERY) {
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    debug(`getAllVehicles() query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query, {})
+      debug(`getAllVehicles() resp: ${JSON.stringify(result)}`)
+      result = result?.vehicle || []
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to retrieve vehicles: ${JSON.stringify(err)}`)
+    }
+
+    debug(`getAllVehicles() result: ${JSON.stringify(result)}`)
+    return result
+  }
+
+  /**
+   * Get a vehicle by ID.
+   *
+   * @param {string} vehicleId - The ID of the vehicle to retrieve.
+   * @param {string} [query=Queries.GET_VEHICLE_BY_ID_QUERY] - The GraphQL query to use.
+   *
+   * @returns {Promise&lt;Object>} - The vehicle record.
+   *
+   * @throws {Error} if failed to retrieve the vehicle.
+   */
+  static async getVehicleById(vehicleId, query = Queries.GET_VEHICLE_BY_ID_QUERY) {
+    if (!vehicleId) {
+      throw new Error('Vehicle ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    const variables = {
+      id: vehicleId
+    }
+
+    debug(`getVehicleById(vehicleId=${vehicleId}) query: ${query}`)
+    debug(`getVehicleById(vehicleId=${vehicleId}) variables: ${JSON.stringify(variables)}`)
+
+    let result
+    try {
+      result = await client.query(query, variables)
+      debug(`getVehicleById(vehicleId=${vehicleId}) resp: ${JSON.stringify(result)}`)
+      result = result?.vehicle_by_id || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to retrieve vehicle: ${JSON.stringify(err)}`)
+    }
+
+    debug(`getVehicleById(vehicleId=${vehicleId}) result: ${JSON.stringify(result)}`)
+    return result
+  }
+}
+
+
+// export  class TripRide {
+//     /**
+//      * Get a trip ride by ID.
+//      *
+//      * @param {string} tripRideId - The ID of the trip ride to retrieve.
+//      * @param {string} [query=Queries.GET_TRIP_RIDE_BY_ID_QUERY] - The GraphQL query to use.
+//      *
+//      * @returns {Promise&lt;Object>} - The trip ride record.
+//      *
+//      * @throws {Error} if failed to retrieve the trip ride.
+//      */
+//     static async getTripRideById(tripRideId, query = Queries.GET_TRIP_RIDE_BY_ID_QUERY) {
+//         if (!tripRideId) {
+//             throw new Error('Trip ride ID is required')
+//         }
+
+//         const client = await getBackendClient()
+
+//         if (!client) {
+//             throw new Error('Backend client is not available')
+//         }
+
+//         const variables = {
+//             id: tripRideId
+//         }
+
+//         debug(`getTripRideById(tripRideId=${tripRideId}) query: ${query}`)
+//         debug(`getTripRideById(tripRideId=${tripRideId}) variables: ${JSON.stringify(variables)}`)
+
+//         let result
+//         try {
+//             result = await client.query(query, variables)
+//             debug(`getTripRideById(tripRideId=${tripRideId}) resp: ${JSON.stringify(result)}`)
+//             result = result?.trip_ride_by_id || {}
+//         } catch (/** @type {any} */ err) {
+//             throw new Error(`Failed to retrieve trip ride: ${JSON.stringify(err)}`)
+//         }
+
+//         debug(`getTripRideById(tripRideId=${tripRideId}) result: ${JSON.stringify(result)}`)
+//         return result
+//     }
+
+//     /**
+//      * Get trip rides for a specific trip.
+//      *
+//      * @param {string} tripId - The ID of the trip.
+//      * @param {string} tripType - The type of trip (destination_trip or return_trip).
+//      *
+//      * @returns {Promise&lt;any[]>} - Array of trip rides.
+//      *
+//      * @throws {Error} if failed to retrieve trip rides.
+//      */
+//     static async getTripRidesByTrip(tripId, tripType) {
+//         if (!tripId) {
+//             throw new Error('Trip ID is required')
+//         }
+//         if (!tripType || (tripType !== "destination_trip" &amp;&amp; tripType !== "return_trip")) {
+//             throw new Error('Valid trip type is required (destination_trip or return_trip)')
+//         }
+
+//         const client = await getBackendClient()
+
+//         if (!client) {
+//             throw new Error('Backend client is not available')
+//         }
+
+//         // Use the existing trip queries to get rides
+//         const mutationName = tripType === "destination_trip" ? "GET_DESTINATION_TRIPS_MUTATION" : "GET_RETURN_TRIPS_MUTATION"
+//         const query = Queries[mutationName]
+
+//         const variables = {
+//             event_id: tripId
+//         }
+
+//         debug(`getTripRidesByTrip(tripId=${tripId}, tripType=${tripType}) query: ${mutationName}`)
+//         debug(`getTripRidesByTrip(tripId=${tripId}, tripType=${tripType}) variables: ${JSON.stringify(variables)}`)
+
+//         let result
+//         try {
+//             result = await client.query(query, variables)
+//             debug(`getTripRidesByTrip(tripId=${tripId}, tripType=${tripType}) resp: ${JSON.stringify(result)}`)
+
+//             // Extract rides from the trip data
+//             const trips = result?.event_by_id?.trips || []
+//             const tripData = trips.find((/** @type {any} */ trip) => trip.item?.id === tripId)
+//             result = tripData?.item?.rides || []
+//         } catch (/** @type {any} */ err) {
+//             throw new Error(`Failed to retrieve trip rides: ${JSON.stringify(err)}`)
+//         }
+
+//         debug(`getTripRidesByTrip(tripId=${tripId}, tripType=${tripType}) result: ${JSON.stringify(result)}`)
+//         return result
+//     }
+
+//     /**
+//      * Create a new trip ride.
+//      *
+//      * @param {Object} tripRideData - The trip ride data to create.
+//      *
+//      * @returns {Promise&lt;Object>} - The created trip ride record.
+//      *
+//      * @throws {Error} if failed to create the trip ride.
+//      */
+//     static async createTripRide(tripRideData) {
+//         if (!tripRideData) {
+//             throw new Error('Trip ride data is required')
+//         }
+
+//         const client = await getBackendClient()
+
+//         if (!client) {
+//             throw new Error('Backend client is not available')
+//         }
+
+//         const variables = {
+//             tripRide: tripRideData
+//         }
+
+//         debug(`createTripRide() variables: ${JSON.stringify(variables)}`)
+
+//         let result
+//         try {
+//             result = await client.query(Queries.CREATE_TRIP_RIDE_MUTATION, variables)
+//             debug(`createTripRide() resp: ${JSON.stringify(result)}`)
+//             result = result?.create_trip_ride_item || {}
+//         } catch (/** @type {any} */ err) {
+//             throw new Error(`Failed to create trip ride: ${JSON.stringify(err)}`)
+//         }
+
+//         debug(`createTripRide() result: ${JSON.stringify(result)}`)
+//         return result
+//     }
+
+//     /**
+//      * Update an existing trip ride.
+//      *
+//      * @param {any} tripRideData - The trip ride data to update (must include id).
+//      *
+//      * @returns {Promise&lt;Object>} - The updated trip ride record.
+//      *
+//      * @throws {Error} if failed to update the trip ride.
+//      */
+//     static async updateTripRide(tripRideData) {
+//         if (!tripRideData || !tripRideData.id) {
+//             throw new Error('Trip ride data with valid id is required')
+//         }
+
+//         const client = await getBackendClient()
+
+//         if (!client) {
+//             throw new Error('Backend client is not available')
+//         }
+
+//         const variables = {
+//             id: tripRideData.id,
+//             tripRide: { ...tripRideData }
+//         }
+//         delete variables.tripRide.id
+
+//         debug(`updateTripRide(tripRideId=${tripRideData.id}) variables: ${JSON.stringify(variables)}`)
+
+//         let result
+//         try {
+//             result = await client.query(Queries.UPDATE_TRIP_RIDE_MUTATION, variables)
+//             debug(`updateTripRide(tripRideId=${tripRideData.id}) resp: ${JSON.stringify(result)}`)
+//             result = result?.update_trip_ride_item || {}
+//         } catch (/** @type {any} */ err) {
+//             throw new Error(`Failed to update trip ride: ${JSON.stringify(err)}`)
+//         }
+
+//         debug(`updateTripRide(tripRideId=${tripRideData.id}) result: ${JSON.stringify(result)}`)
+//         return result
+//     }
+
+//     /**
+//      * Delete a trip ride.
+//      *
+//      * @param {string} tripRideId - The ID of the trip ride to delete.
+//      *
+//      * @returns {Promise&lt;Object>} - The deletion result.
+//      *
+//      * @throws {Error} if failed to delete the trip ride.
+//      */
+//     static async deleteTripRide(tripRideId) {
+//         if (!tripRideId) {
+//             throw new Error('Trip ride ID is required')
+//         }
+
+//         const client = await getBackendClient()
+
+//         if (!client) {
+//             throw new Error('Backend client is not available')
+//         }
+
+//         const variables = {
+//             id: tripRideId
+//         }
+
+//         debug(`deleteTripRide(tripRideId=${tripRideId}) variables: ${JSON.stringify(variables)}`)
+
+//         let result
+//         try {
+//             result = await client.query(Queries.DELETE_TRIP_RIDE_MUTATION, variables)
+//             debug(`deleteTripRide(tripRideId=${tripRideId}) resp: ${JSON.stringify(result)}`)
+//             result = result?.delete_trip_ride_item || {}
+//         } catch (/** @type {any} */ err) {
+//             throw new Error(`Failed to delete trip ride: ${JSON.stringify(err)}`)
+//         }
+
+//         debug(`deleteTripRide(tripRideId=${tripRideId}) result: ${JSON.stringify(result)}`)
+//         return result
+//     }
+
+//     /**
+//      * Add a rider to a trip ride.
+//      *
+//      * @param {string} tripRideId - The ID of the trip ride.
+//      * @param {string} userId - The ID of the user to add as a rider.
+//      *
+//      * @returns {Promise&lt;Object>} - The updated trip ride record.
+//      *
+//      * @throws {Error} if failed to add the rider.
+//      */
+//     static async addRider(tripRideId, userId) {
+//         if (!tripRideId) {
+//             throw new Error('Trip ride ID is required')
+//         }
+//         if (!userId) {
+//             throw new Error('User ID is required')
+//         }
+
+//         const client = await getBackendClient()
+
+//         if (!client) {
+//             throw new Error('Backend client is not available')
+//         }
+
+//         const variables = {
+//             tripRideId: tripRideId,
+//             userId: userId
+//         }
+
+//         console.log(`addRider(tripRideId=${tripRideId}, userId=${userId}) variables: ${JSON.stringify(variables)}`)
+//         debug(`addRider(tripRideId=${tripRideId}, userId=${userId}) variables: ${JSON.stringify(variables)}`)
+
+//         let result
+//         try {
+//             result = await client.query(Queries.ADD_RIDER_MUTATION, variables)
+//             debug(`addRider(tripRideId=${tripRideId}, userId=${userId}) resp: ${JSON.stringify(result)}`)
+//             result = result?.create_trip_ride_riders_item || {}
+//         } catch (/** @type {any} */ err) {
+//             throw new Error(`Failed to add rider: ${JSON.stringify(err)}`)
+//         }
+
+//         debug(`addRider(tripRideId=${tripRideId}, userId=${userId}) result: ${JSON.stringify(result)}`)
+//         return result
+//     }
+
+//     /**
+//      * Remove a rider from a trip ride.
+//      *
+//      * @param {string} tripRideId - The ID of the trip ride (not used in new implementation).
+//      * @param {string} relationshipId - The ID of the rider relationship to remove.
+//      *
+//      * @returns {Promise&lt;Object>} - The deletion result.
+//      *
+//      * @throws {Error} if failed to remove the rider.
+//      */
+//     static async removeRider(tripRideId, relationshipId) {
+//         if (!relationshipId) {
+//             throw new Error('Relationship ID is required')
+//         }
+
+//         const client = await getBackendClient()
+
+//         if (!client) {
+//             throw new Error('Backend client is not available')
+//         }
+
+//         const variables = {
+//             relationshipId: relationshipId
+//         }
+
+//         debug(`removeRider(relationshipId=${relationshipId}) variables: ${JSON.stringify(variables)}`)
+
+//         let result
+//         try {
+//             result = await client.query(Queries.REMOVE_RIDER_MUTATION, variables)
+//             debug(`removeRider(relationshipId=${relationshipId}) resp: ${JSON.stringify(result)}`)
+//             result = result?.delete_trip_ride_riders_item || {}
+//         } catch (/** @type {any} */ err) {
+//             throw new Error(`Failed to remove rider: ${JSON.stringify(err)}`)
+//         }
+
+//         debug(`removeRider(relationshipId=${relationshipId}) result: ${JSON.stringify(result)}`)
+//         return result
+//     }
+// }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_backend.html">lib/backend</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-src_lib_server_announcements.html">src/lib/server/announcements</a></li><li><a href="module-src_lib_server_client.html">src/lib/server/client</a></li><li><a href="module-src_lib_server_event.html">src/lib/server/event</a></li><li><a href="module-src_lib_server_files.html">src/lib/server/files</a></li><li><a href="module-src_lib_server_page.html">src/lib/server/page</a></li><li><a href="module-src_lib_server_post.html">src/lib/server/post</a></li><li><a href="module-src_lib_server_ride.html">src/lib/server/ride</a></li><li><a href="module-src_lib_server_rider.html">src/lib/server/rider</a></li><li><a href="module-src_lib_server_site.html">src/lib/server/site</a></li><li><a href="module-src_lib_server_trip.html">src/lib/server/trip</a></li><li><a href="module-src_lib_server_user.html">src/lib/server/user</a></li><li><a href="module-src_lib_server_vehicle.html">src/lib/server/vehicle</a></li><li><a href="module-src_lib_server_vehicle-old.html">src/lib/server/vehicle-old</a></li></ul><h3>Classes</h3><ul><li><a href="module-src_lib_server_event.html">src/lib/server/event</a></li><li><a href="module-src_lib_server_ride.html">src/lib/server/ride</a></li><li><a href="module-src_lib_server_rider.html">src/lib/server/rider</a></li><li><a href="module-src_lib_server_trip.html">src/lib/server/trip</a></li><li><a href="module-src_lib_server_vehicle.html">src/lib/server/vehicle</a></li><li><a href="module-src_lib_server_vehicle-old.html">src/lib/server/vehicle-old</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 17:21:47 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
