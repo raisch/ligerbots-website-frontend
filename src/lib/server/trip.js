@@ -1,94 +1,153 @@
+/** @module */
 import createDebugMessages from 'debug'
-
 import { getBackendClient } from '$lib/server/client'
+import joi from 'joi'
 
-import Queries from '$lib/server/graphql/event'
+import {
+  GET_DESTINATION_TRIPS_QUERY,
+  GET_RETURN_TRIPS_QUERY,
+  UPDATE_DESTINATION_TRIP_MUTATION,
+  UPDATE_RETURN_TRIP_MUTATION
+} from '$lib/server/graphql/trip'
 
-const debug = createDebugMessages('APP:lib/server/event')
+import DestinationTripModelSchema from '$lib/server/models/destination_trip.model.js'
+import ReturnTripModelSchema from '$lib/server/models/return_trip.model.js'
+
+const debug = createDebugMessages('APP:lib/server/trip')
 
 /**
- * @typedef {Object} Trip
- * @prop {string} collection - The type of trip (e.g., 'destination_trip', 'return_trip')
- * @prop {Object} item - The trip details
- * @prop {string} item.id - The unique identifier for the trip
- * @prop {string} item.departs_from - The location the trip departs from
- * @prop {string} item.departs_on - The date the trip departs
- * @prop {string} item.departs_at - The time the trip departs
- * @prop {string} item.destination - The destination of the trip
- * @prop {string} item.arrives_at
- * @prop {string} item.arrives_at
- * @prop {Array} item.rides - The rides associated with the trip
+ * Choose the appropriate Joi schema for a trip based on collection/type.
+ *
+ * @param {"destination_trip"|"return_trip"} type
+ * @returns {joi.ObjectSchema<any>|null}
  */
+function getTripSchema(type) {
+  if (type === 'destination_trip') return DestinationTripModelSchema
+  if (type === 'return_trip') return ReturnTripModelSchema
+  return null
+}
 
-
-export default {
-    async getTrips(eventId, mutation = "destination_trip") {
-        if (!eventId) {
-            throw new Error('Event ID is required')
-        }
-
-        if (mutation !== "destination_trip" && mutation !== "return_trip") {
-            throw new Error('Invalid mutation. Choose "destination_trip" or "return_trip"')
-        }
-
-        // Convert mutation to query
-        mutation = mutation === "destination_trip" ? "GET_DESTINATION_TRIPS_MUTATION" : "GET_RETURN_TRIPS_MUTATION"
-
-        const client = await getBackendClient()
-
-        const variables = {
-            event_id: eventId
-        }
-
-        debug(`getTrips(eventId=${eventId}) mutation: ${mutation}`)
-        debug(`getTrips(eventId=${eventId}) variables: ${JSON.stringify(variables)}`)
-
-        let result
-        try {
-            result = await client.query(Queries[mutation], variables)
-            debug(`getTrips(eventId=${eventId}) resp: ${JSON.stringify(result)}`)
-            result = result?.event_by_id?.trips || []
-        } catch (/** @type {any} */ err) {
-            throw new Error(`Failed to get trips: ${JSON.stringify(err)}`)
-        }
-
-        debug(`getTrips(eventId=${eventId}) result: ${JSON.stringify(result)}`)
-        return result
-    },
-
-    async updateTrip(tripData, mutation = "destination_trip") {
-        if (!tripData || !tripData.id) {
-            throw new Error('Trip data with valid id is required')
-        }
-        if (mutation !== "destination_trip" && mutation !== "return_trip") {
-            throw new Error('Invalid mutation. Choose "destination_trip" or "return_trip"')
-        }
-
-        const mutationName = mutation === "destination_trip" ? "UPDATE_DESTINATION_TRIP_MUTATION" : "UPDATE_RETURN_TRIP_MUTATION"
-        const mutationQuery = Queries[mutationName]
-
-        const client = await getBackendClient()
-
-        const variables = {
-            id: tripData.id,
-            trip: { ...tripData }
-        }
-        delete variables.trip.id
-
-        debug(`updateTrip(tripId=${tripData.id}) mutation: ${mutationName}`)
-        debug(`updateTrip(tripId=${tripData.id}) variables: ${JSON.stringify(variables)}`)
-
-        let result
-        try {
-            result = await client.query(mutationQuery, variables)
-            debug(`updateTrip(tripId=${tripData.id}) resp: ${JSON.stringify(result)}`)
-            const resultField = mutation === "destination_trip" ? "update_destination_trip_item" : "update_return_trip_item"
-            result = result?.[resultField] || {}
-        } catch (/** @type {any} */ err) {
-            throw new Error(`Failed to update trip: ${JSON.stringify(err)}`)
-        }
-
-        debug(`updateTrip(tripId=${tripData.id}) result: ${JSON.stringify(result)}`)
-        return result
+/** @class */
+export default class Trip {
+  /**
+   * Get trips for an event.
+   *
+   * @param {string} eventId
+   * @param {"destination_trip"|"return_trip"} [tripType="destination_trip"]
+   * @returns {Promise<Trip[]>}
+   */
+  static async getTrips(eventId, tripType = 'destination_trip') {
+    if (!eventId) {
+      throw new Error('Event ID is required')
     }
+
+    if (tripType !== 'destination_trip' && tripType !== 'return_trip') {
+      throw new Error('Invalid trip type. Choose "destination_trip" or "return_trip"')
+    }
+
+    const query =
+      tripType === 'destination_trip' ? GET_DESTINATION_TRIPS_QUERY : GET_RETURN_TRIPS_QUERY
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    const variables = {
+      event_id: eventId
+    }
+
+    debug(`getTrips(eventId=${eventId}, tripType=${tripType}) query`)
+    debug(`getTrips(eventId=${eventId}) variables: ${JSON.stringify(variables)}`)
+
+    let result
+    try {
+      result = await client.query(query, variables)
+      debug(`getTrips(eventId=${eventId}) resp: ${JSON.stringify(result)}`)
+      result = result?.event_by_id?.trips || []
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to get trips: ${JSON.stringify(err)}`)
+    }
+
+    // Best-effort validation of trip items against models; log issues but do not throw.
+    const schema = getTripSchema(tripType)
+    if (schema && Array.isArray(result)) {
+      for (const trip of result) {
+        const item = trip && trip.item
+        if (!item || typeof item !== 'object') continue
+        const { error } = schema.validate(item, { allowUnknown: true })
+        if (error) {
+          debug(
+            `getTrips(eventId=${eventId}, tripType=${tripType}) validation error for trip item: ${error.message}`
+          )
+        }
+      }
+    }
+
+    debug(`getTrips(eventId=${eventId}) result: ${JSON.stringify(result)}`)
+    return result
+  }
+
+  /**
+   * Update an existing trip.
+   *
+   * @param {any} tripData - Trip data including id and fields to update.
+   * @param {"destination_trip"|"return_trip"} [tripType="destination_trip"]
+   * @returns {Promise<any>}
+   */
+  static async updateTrip(tripData, tripType = 'destination_trip') {
+    if (!tripData || !tripData.id) {
+      throw new Error('Trip data with valid id is required')
+    }
+
+    if (tripType !== 'destination_trip' && tripType !== 'return_trip') {
+      throw new Error('Invalid trip type. Choose "destination_trip" or "return_trip"')
+    }
+
+    const isDestination = tripType === 'destination_trip'
+    const mutationQuery = isDestination
+      ? UPDATE_DESTINATION_TRIP_MUTATION
+      : UPDATE_RETURN_TRIP_MUTATION
+    const resultField = isDestination
+      ? 'update_destination_trip_item'
+      : 'update_return_trip_item'
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    const variables = {
+      id: tripData.id,
+      trip: { ...tripData }
+    }
+    delete variables.trip.id
+
+    debug(`updateTrip(tripId=${tripData.id}, tripType=${tripType}) mutation`)
+    debug(`updateTrip(tripId=${tripData.id}) variables: ${JSON.stringify(variables)}`)
+
+    let result
+    try {
+      result = await client.query(mutationQuery, variables)
+      debug(`updateTrip(tripId=${tripData.id}) resp: ${JSON.stringify(result)}`)
+      result = result?.[resultField] || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to update trip: ${JSON.stringify(err)}`)
+    }
+
+    const schema = getTripSchema(tripType)
+    if (schema) {
+      const { error } = schema.validate(result, { allowUnknown: true })
+      if (error) {
+        debug(
+          `updateTrip(tripId=${tripData.id}, tripType=${tripType}) validation error for result: ${error.message}`
+        )
+      }
+    }
+
+    debug(`updateTrip(tripId=${tripData.id}) result: ${JSON.stringify(result)}`)
+    return result
+  }
 }

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: tests/ride.test.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: tests/ride.test.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+// Shared mock Directus client
+const mockClient = {
+  query: vi.fn()
+}
+
+// Auto-mock Directus client wrapper
+vi.mock('$lib/server/client')
+
+// Mock GraphQL queries/mutations for rides (Directus `ride` collection)
+vi.mock('$lib/server/graphql/ride.js', () => ({
+  __esModule: true,
+  GET_ALL_RIDES_QUERY: 'GET_ALL_RIDES_QUERY',
+  GET_RIDE_BY_ID_QUERY: 'GET_RIDE_BY_ID_QUERY',
+  CREATE_RIDE_MUTATION: 'CREATE_RIDE_MUTATION',
+  UPDATE_RIDE_MUTATION: 'UPDATE_RIDE_MUTATION',
+  DELETE_RIDE_MUTATION: 'DELETE_RIDE_MUTATION'
+}))
+
+// Mock Joi model schema for rides
+vi.mock('$lib/server/models/ride.model.js', () => ({
+  __esModule: true,
+  default: {
+    validate: vi.fn()
+  }
+}))
+
+import Ride from '$lib/server/ride.js'
+import { getBackendClient } from '$lib/server/client'
+import {
+  GET_ALL_RIDES_QUERY,
+  GET_RIDE_BY_ID_QUERY,
+  CREATE_RIDE_MUTATION,
+  UPDATE_RIDE_MUTATION,
+  DELETE_RIDE_MUTATION
+} from '$lib/server/graphql/ride.js'
+import RideModelSchema from '$lib/server/models/ride.model.js'
+
+const mockGetBackendClient = /** @type {import('vitest').Mock} */ (getBackendClient)
+const mockRideValidate = /** @type {import('vitest').Mock} */ (RideModelSchema.validate)
+
+beforeEach(() => {
+  mockClient.query.mockReset()
+  mockGetBackendClient.mockReset()
+  mockGetBackendClient.mockResolvedValue(mockClient)
+  mockRideValidate.mockReset()
+})
+
+describe('Ride.getAllRides', () => {
+  it('returns rides and validates each ride', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      ride: [
+        { id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 },
+        { id: 'r2', name: 'Ride 2', vehicle_type: 'Van', seats: 7 }
+      ]
+    })
+    mockRideValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const result = await Ride.getAllRides()
+
+    expect(mockGetBackendClient).toHaveBeenCalled()
+    expect(mockClient.query).toHaveBeenCalledWith(GET_ALL_RIDES_QUERY, {})
+
+    expect(result).toEqual([
+      { id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 },
+      { id: 'r2', name: 'Ride 2', vehicle_type: 'Van', seats: 7 }
+    ])
+
+    expect(mockRideValidate).toHaveBeenCalledTimes(2)
+    expect(mockRideValidate).toHaveBeenNthCalledWith(
+      1,
+      { id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 },
+      { allowUnknown: true }
+    )
+    expect(mockRideValidate).toHaveBeenNthCalledWith(
+      2,
+      { id: 'r2', name: 'Ride 2', vehicle_type: 'Van', seats: 7 },
+      { allowUnknown: true }
+    )
+  })
+
+  it('returns empty array when backend returns no rides', async () => {
+    mockClient.query.mockResolvedValueOnce({})
+
+    const result = await Ride.getAllRides()
+
+    expect(result).toEqual([])
+    expect(mockRideValidate).not.toHaveBeenCalled()
+  })
+})
+
+describe('Ride.getRideById', () => {
+  it('throws when rideId is missing', async () => {
+    // @ts-expect-error testing missing rideId
+    await expect(Ride.getRideById()).rejects.toThrow('Ride ID is required')
+  })
+
+  it('fetches a ride by id and validates it', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      ride_by_id: { id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 }
+    })
+    mockRideValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const result = await Ride.getRideById('r1')
+
+    expect(mockClient.query).toHaveBeenCalledWith(GET_RIDE_BY_ID_QUERY, { id: 'r1' })
+    expect(result).toEqual({ id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 })
+    expect(mockRideValidate).toHaveBeenCalledWith(
+      { id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 },
+      { allowUnknown: true }
+    )
+  })
+})
+
+describe('Ride.createRide', () => {
+  it('throws when ride data is missing', async () => {
+    // @ts-expect-error testing missing data
+    await expect(Ride.createRide()).rejects.toThrow('Ride data is required')
+  })
+
+  it('creates a ride using the mutation and validates result', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      create_ride_item: { id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 }
+    })
+    mockRideValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const rideData = {
+      name: 'Ride 1',
+      vehicle_type: 'Car',
+      seats: 4
+    }
+
+    const result = await Ride.createRide(rideData)
+
+    expect(mockClient.query).toHaveBeenCalledWith(CREATE_RIDE_MUTATION, {
+      ride: rideData
+    })
+
+    expect(result).toEqual({ id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 })
+    expect(mockRideValidate).toHaveBeenCalledWith(
+      { id: 'r1', name: 'Ride 1', vehicle_type: 'Car', seats: 4 },
+      { allowUnknown: true }
+    )
+  })
+})
+
+describe('Ride.updateRide', () => {
+  it('throws when ride data is missing', async () => {
+    // @ts-expect-error testing missing data
+    await expect(Ride.updateRide()).rejects.toThrow('Ride data with valid id is required')
+  })
+
+  it('throws when ride id is missing', async () => {
+    // @ts-expect-error testing missing id
+    await expect(Ride.updateRide({})).rejects.toThrow('Ride data with valid id is required')
+  })
+
+  it('updates a ride and validates result', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      update_ride_item: { id: 'r1', name: 'Updated Ride', vehicle_type: 'Van', seats: 6 }
+    })
+    mockRideValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const rideData = {
+      id: 'r1',
+      name: 'Updated Ride',
+      vehicle_type: 'Van',
+      seats: 6
+    }
+
+    const result = await Ride.updateRide(rideData)
+
+    expect(mockClient.query).toHaveBeenCalledWith(UPDATE_RIDE_MUTATION, {
+      id: 'r1',
+      ride: {
+        name: 'Updated Ride',
+        vehicle_type: 'Van',
+        seats: 6
+      }
+    })
+
+    expect(result).toEqual({ id: 'r1', name: 'Updated Ride', vehicle_type: 'Van', seats: 6 })
+    expect(mockRideValidate).toHaveBeenCalledWith(
+      { id: 'r1', name: 'Updated Ride', vehicle_type: 'Van', seats: 6 },
+      { allowUnknown: true }
+    )
+  })
+})
+
+describe('Ride.deleteRide', () => {
+  it('throws when rideId is missing', async () => {
+    // @ts-expect-error testing missing id
+    await expect(Ride.deleteRide()).rejects.toThrow('Ride ID is required')
+  })
+
+  it('deletes a ride using the mutation', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      delete_ride_item: { id: 'r1' }
+    })
+
+    const result = await Ride.deleteRide('r1')
+
+    expect(mockClient.query).toHaveBeenCalledWith(DELETE_RIDE_MUTATION, { id: 'r1' })
+    expect(result).toEqual({ id: 'r1' })
+  })
+})
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-client.html">client</a></li><li><a href="module-event.html">event</a></li><li><a href="module-files.html">files</a></li><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_server_announcements.html">lib/server/announcements</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-page.html">page</a></li><li><a href="module-post.html">post</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-site.html">site</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-user.html">user</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-event.html">event</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-backend-server-module-examples.html">backend-server-module-examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 19:44:04 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
