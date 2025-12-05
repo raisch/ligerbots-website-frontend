@@ -1,0 +1,66 @@
+/**
+ * Shared GraphQL fragments and mutations for rider-related operations.
+ *
+ * - `RIDER_USER_FIELDS` – Fragment with common fields for `users` used in rider-related
+ *   selections, including basic identity and photo metadata.
+ * - `ADD_RIDER_MUTATION`, `REMOVE_RIDER_MUTATION` – Mutations that manage the
+ *   many-to-many `trip_ride_riders` relationship between trip rides and users.
+ *
+ * These utilities are interpolated into event, trip, and trip-ride queries and used by
+ * the Rider and Event services to keep rider handling consistent across the codebase.
+ *
+ * @module graphql/rider
+ */
+
+/** GraphQL fragment for selecting user fields used in rider queries. */
+export const RIDER_USER_FIELDS = `
+  ... on users {
+    id
+    firstname
+    lastname
+    email_address
+    phone_number
+    photo {
+      id
+      filename_disk
+      filename_download
+    }
+  }
+`
+
+/** GraphQL mutation for adding a rider (user) to a trip ride. */
+export const ADD_RIDER_MUTATION = `mutation ($tripRideId: ID!, $userId: String!) {
+  create_trip_ride_riders_item(
+    data: {
+      trip_ride_id: { id: $tripRideId },
+      item: $userId,
+      collection: "users"
+    }
+  ) {
+    id
+    trip_ride_id {
+      id
+    }
+    item {
+      ... on users {
+        id
+        firstname
+        lastname
+      }
+    }
+    collection
+  }
+}`
+
+/** GraphQL mutation for removing a rider relationship from a trip ride. */
+export const REMOVE_RIDER_MUTATION = `mutation ($relationshipId: ID!) {
+  delete_trip_ride_riders_item(id: $relationshipId) {
+    id
+  }
+}`
+
+export default {
+  RIDER_USER_FIELDS,
+  ADD_RIDER_MUTATION,
+  REMOVE_RIDER_MUTATION
+}

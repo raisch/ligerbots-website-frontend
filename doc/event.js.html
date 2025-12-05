@@ -1,4 +1,32 @@
-/** @module */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: event.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: event.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module */
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
@@ -73,7 +101,7 @@ export default class Event {
    * @param {string} [status='published'] - The status of the events to retrieve.
    * @param {string} [query=EVENT_QUERY] - The GraphQL query to use. It should contain a placeholder for the status.
    *
-   * @returns {Promise<EventsList>}
+   * @returns {Promise&lt;EventsList>}
    *
    * @throws {Error} if failed to retrieve events.
    */
@@ -105,7 +133,7 @@ export default class Event {
    *
    * @param {string} id - The ID of the event to retrieve.
    * @param {string} [query=EVENT_BY_ID_QUERY] - The GraphQL query to use. It should contain a placeholder for the ID.
-   * @returns {Promise<EventRecord|undefined>} - The event record if found, otherwise undefined.
+   * @returns {Promise&lt;EventRecord|undefined>} - The event record if found, otherwise undefined.
    */
   static async getEventById(id, query = EVENT_BY_ID_QUERY) {
     if (!id) {
@@ -136,7 +164,7 @@ export default class Event {
    * @param {string} id - The ID of the event to retrieve.
    * @param {string} [query=EVENT_COMPLETE_BY_ID_QUERY] - Unused placeholder to keep backward
    *   compatibility with earlier versions that accepted a custom GraphQL query.
-   * @returns {Promise<EventRecord|undefined>} - The complete event record if found, otherwise undefined,
+   * @returns {Promise&lt;EventRecord|undefined>} - The complete event record if found, otherwise undefined,
    *   with its `trips` array hydrated to include destination and return trips, rides, and riders.
    */
   static async getCompleteEventById(id, query = EVENT_COMPLETE_BY_ID_QUERY) {
@@ -200,7 +228,7 @@ export default class Event {
    * @param {string} [eventData.status='draft'] - The status of the event.
    * @param {string} [mutation=CREATE_EVENT_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<EventRecord>} - The created event record.
+   * @returns {Promise&lt;EventRecord>} - The created event record.
    *
    * @throws {Error} if failed to create the event.
    */
@@ -242,7 +270,7 @@ export default class Event {
     return result
   }
 
-  //     Array<{collection: string, item: {id: string, [key: string]: any}|string, id?: string}>
+  //     Array&lt;{collection: string, item: {id: string, [key: string]: any}|string, id?: string}>
 
   /**
    * Update an existing event in Directus.
@@ -255,10 +283,10 @@ export default class Event {
    * @param {string} [eventData.end_date] - The end date of the event (ISO format).
    * @param {string} [eventData.location] - The location of the event.
    * @param {string} [eventData.status] - The status of the event.
-   * @param {Array<TripRecord>} [eventData.trips] - The trips associated with the event.
+   * @param {Array&lt;TripRecord>} [eventData.trips] - The trips associated with the event.
    * @param {string} [mutation=UPDATE_EVENT_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<EventRecord>} - The updated event record.
+   * @returns {Promise&lt;EventRecord>} - The updated event record.
    *
    * @throws {Error} if failed to update the event.
    */
@@ -278,18 +306,18 @@ export default class Event {
     }
 
     // Process trips data if present to ensure proper format for GraphQL
-    if (Array.isArray(eventData.trips) && eventData.trips.length > 0) {
+    if (Array.isArray(eventData.trips) &amp;&amp; eventData.trips.length > 0) {
       // Make a deep copy to avoid modifying the original object
       const processedEventData = { ...eventData }
 
       // Ensure trips is an array of objects and convert nested items to IDs
       processedEventData.trips = eventData.trips
-        .filter((trip) => trip && typeof trip === 'object')
+        .filter((trip) => trip &amp;&amp; typeof trip === 'object')
         .map((trip) => {
           const item = trip.item
 
           // If item is an object with an id, replace it with just the id
-          if (item && typeof item === 'object' && typeof item.id === 'string') {
+          if (item &amp;&amp; typeof item === 'object' &amp;&amp; typeof item.id === 'string') {
             return {
               ...trip,
               item: item.id
@@ -335,7 +363,7 @@ export default class Event {
    * @param {string} id - The ID of the event to archive.
    * @param {string} [mutation=UPDATE_EVENT_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<EventRecord>} - The archived event record.
+   * @returns {Promise&lt;EventRecord>} - The archived event record.
    *
    * @throws {Error} if failed to archive the event.
    */
@@ -353,7 +381,7 @@ export default class Event {
    * @param {string} id - The ID of the event to delete.
    * @param {string} [mutation=DELETE_EVENT_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<{id: string}>} - Object containing the ID of the deleted event.
+   * @returns {Promise&lt;{id: string}>} - Object containing the ID of the deleted event.
    *
    * @throws {Error} if failed to delete the event.
    */
@@ -400,7 +428,7 @@ export default class Event {
    * @param {string} [tripData.status='published'] - The status of the trip.
    * @param {string} [mutation=CREATE_DESTINATION_TRIP_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The created trip.
+   * @returns {Promise&lt;Object>} - The created trip.
    *
    * @throws {Error} if failed to create the trip.
    */
@@ -461,7 +489,7 @@ export default class Event {
    * @param {string} [tripData.status='published'] - The status of the trip.
    * @param {string} [mutation=CREATE_RETURN_TRIP_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The created trip.
+   * @returns {Promise&lt;Object>} - The created trip.
    *
    * @throws {Error} if failed to create the trip.
    */
@@ -522,7 +550,7 @@ export default class Event {
    * @param {string} [tripData.status] - The status of the trip.
    * @param {string} [mutation=UPDATE_DESTINATION_TRIP_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The updated trip.
+   * @returns {Promise&lt;Object>} - The updated trip.
    *
    * @throws {Error} if failed to update the trip.
    */
@@ -576,7 +604,7 @@ export default class Event {
    * @param {string} [tripData.status] - The status of the trip.
    * @param {string} [mutation=UPDATE_RETURN_TRIP_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The updated trip.
+   * @returns {Promise&lt;Object>} - The updated trip.
    *
    * @throws {Error} if failed to update the trip.
    */
@@ -625,7 +653,7 @@ export default class Event {
    * @param {string} collection - The collection name ('destination_trip' or 'return_trip').
    * @param {string} [mutation=DELETE_TRIP_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<{id: string}>} - Object containing the ID of the deleted trip.
+   * @returns {Promise&lt;{id: string}>} - Object containing the ID of the deleted trip.
    *
    * @throws {Error} if failed to delete the trip.
    */
@@ -634,7 +662,7 @@ export default class Event {
       throw new Error('Trip ID is required')
     }
 
-    if (!collection || (collection !== 'destination_trip' && collection !== 'return_trip')) {
+    if (!collection || (collection !== 'destination_trip' &amp;&amp; collection !== 'return_trip')) {
       throw new Error('Valid collection name is required (destination_trip or return_trip)')
     }
 
@@ -679,7 +707,7 @@ export default class Event {
    * @param {string} rideData.ride.driver.id - The ID of the driver user.
    * @param {string} [mutation=CREATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The created trip ride.
+   * @returns {Promise&lt;Object>} - The created trip ride.
    *
    * @throws {Error} if failed to create the trip ride.
    */
@@ -688,7 +716,7 @@ export default class Event {
       throw new Error('Trip ID is required')
     }
 
-    if (!tripCollection || (tripCollection !== 'destination_trip' && tripCollection !== 'return_trip')) {
+    if (!tripCollection || (tripCollection !== 'destination_trip' &amp;&amp; tripCollection !== 'return_trip')) {
       throw new Error('Valid trip collection name is required (destination_trip or return_trip)')
     }
 
@@ -744,7 +772,7 @@ export default class Event {
    * @param {string} [rideData.ride.driver.id] - The ID of the driver user.
    * @param {string} [mutation=UPDATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The updated trip ride.
+   * @returns {Promise&lt;Object>} - The updated trip ride.
    *
    * @throws {Error} if failed to update the trip ride.
    */
@@ -790,7 +818,7 @@ export default class Event {
    * @param {string} tripRideId - The ID of the trip ride to delete.
    * @param {string} [mutation=DELETE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<{id: string}>} - Object containing the ID of the deleted trip ride.
+   * @returns {Promise&lt;{id: string}>} - Object containing the ID of the deleted trip ride.
    *
    * @throws {Error} if failed to delete the trip ride.
    */
@@ -832,7 +860,7 @@ export default class Event {
    * @param {string} userId - The ID of the user to add as a rider.
    * @param {string} [mutation=ADD_RIDER_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The updated trip ride with rider count.
+   * @returns {Promise&lt;Object>} - The updated trip ride with rider count.
    *
    * @throws {Error} if failed to add the rider.
    */
@@ -879,7 +907,7 @@ export default class Event {
    * @param {string} relationshipId - The ID of the relationship to remove.
    * @param {string} [mutation=REMOVE_RIDER_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The updated trip ride with rider count.
+   * @returns {Promise&lt;Object>} - The updated trip ride with rider count.
    *
    * @throws {Error} if failed to remove the rider.
    */
@@ -937,7 +965,7 @@ export default class Event {
    * @param {string} tripRideId - The ID of the trip ride to retrieve.
    * @param {string} [query=GET_TRIP_RIDE_BY_ID_QUERY] - The GraphQL query to use.
    *
-   * @returns {Promise<Object>} - The trip ride record.
+   * @returns {Promise&lt;Object>} - The trip ride record.
    *
    * @throws {Error} if failed to retrieve the trip ride.
    */
@@ -983,11 +1011,11 @@ export default class Event {
  * @property {string} start_date
  * @property {string} end_date
  * @property {string} status
- * @property {Array<any>} [trips]
+ * @property {Array&lt;any>} [trips]
  */
 
 /**
- * @typedef {Array.<EventRecord>} EventsList
+ * @typedef {Array.&lt;EventRecord>} EventsList
  */
 
 /**
@@ -1001,7 +1029,7 @@ export default class Event {
  * @property {string} departs_at
  * @property {string} status
  * @property {string} collection - Either 'destination_trip' or 'return_trip'
- * @property {Array.<TripRideRecord>} [rides]
+ * @property {Array.&lt;TripRideRecord>} [rides]
  */
 
 /**
@@ -1010,7 +1038,7 @@ export default class Event {
  * @property {string} id
  * @property {RideRecord} ride
  * @property {Object} trip
- * @property {Array.<UserRecord>} [riders]
+ * @property {Array.&lt;UserRecord>} [riders]
  */
 
 /**
@@ -1033,3 +1061,26 @@ export default class Event {
  * @property {string} [phone_number]
  * @property {Object} [photo]
  */
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-client.html">client</a></li><li><a href="module-event.html">event</a></li><li><a href="module-files.html">files</a></li><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_server_announcements.html">lib/server/announcements</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-page.html">page</a></li><li><a href="module-post.html">post</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-site.html">site</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-user.html">user</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-event.html">event</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-backend-server-module-examples.html">backend-server-module-examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 19:44:04 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: module:rider</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: module:rider</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>module:rider<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>Rider service for managing riders associated with a trip ride.</p>
+<p>This class uses:</p>
+<ul>
+<li>GraphQL operations from <code>graphql/trip_ride.js</code> to add/remove riders and fetch trip rides.</li>
+<li>Joi schema from <code>models/trip_ride_riders.model.js</code> to validate relationship records.</li>
+</ul>
+<p>Note: &quot;ride&quot; here refers to a <code>trip_ride</code> (a ride attached to a specific trip),
+not the standalone <code>ride</code> collection.</p></div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="module:rider"><span class="type-signature"></span>new module:rider<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rider.js.html">rider.js</a>, <a href="rider.js.html#line21">line 21</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".addRiderToRide"><span class="type-signature">(async, static) </span>addRiderToRide<span class="signature">(tripRideId, userId, mutation<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Add a rider (user) to a trip ride.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tripRideId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The ID of the trip_ride to add the rider to.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>userId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The ID of the user to add as a rider.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mutation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    ADD_RIDER_MUTATION
+                
+                </td>
+            
+
+            <td class="description last"><p>Optional custom GraphQL mutation.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rider.js.html">rider.js</a>, <a href="rider.js.html#line33">line 33</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        <p>if required parameters are missing or the backend call fails.</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>The created relationship record, including basic user info.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Object></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getRidersFromRide"><span class="type-signature">(async, static) </span>getRidersFromRide<span class="signature">(tripRideId, query<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;Object>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Get riders (users) for a given trip ride.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tripRideId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The ID of the trip_ride whose riders to fetch.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>query</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    GET_TRIP_RIDE_BY_ID_QUERY
+                
+                </td>
+            
+
+            <td class="description last"><p>Optional custom GraphQL query.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rider.js.html">rider.js</a>, <a href="rider.js.html#line110">line 110</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        <p>if required parameters are missing or the backend call fails.</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>Array of user records for riders on the trip ride.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Array.&lt;Object>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".removeRiderFromRide"><span class="type-signature">(async, static) </span>removeRiderFromRide<span class="signature">(relationshipId, mutation<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;{id: string}>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Remove a rider from a trip ride.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>relationshipId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The ID of the trip_ride_riders relationship to delete.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mutation</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    REMOVE_RIDER_MUTATION
+                
+                </td>
+            
+
+            <td class="description last"><p>Optional custom GraphQL mutation.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rider.js.html">rider.js</a>, <a href="rider.js.html#line157">line 157</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        <p>if required parameters are missing or the backend call fails.</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>Object containing the ID of the deleted relationship.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;{id: string}></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-client.html">client</a></li><li><a href="module-event.html">event</a></li><li><a href="module-files.html">files</a></li><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_server_announcements.html">lib/server/announcements</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-page.html">page</a></li><li><a href="module-post.html">post</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-site.html">site</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-user.html">user</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-event.html">event</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-backend-server-module-examples.html">backend-server-module-examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 19:44:04 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
