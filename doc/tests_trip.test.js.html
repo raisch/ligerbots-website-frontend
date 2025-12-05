@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: tests/trip.test.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: tests/trip.test.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+// Simple mock client used by all tests
+const mockClient = {
+  query: vi.fn()
+}
+
+// Auto-mock the Directus client wrapper; implementation configured in beforeEach
+vi.mock('$lib/server/client')
+
+// Mock GraphQL queries/mutations for trips
+vi.mock('$lib/server/graphql/trip', () => ({
+  __esModule: true,
+  GET_DESTINATION_TRIPS_QUERY: 'DEST_TRIPS_QUERY',
+  GET_RETURN_TRIPS_QUERY: 'RETURN_TRIPS_QUERY',
+  UPDATE_DESTINATION_TRIP_MUTATION: 'UPDATE_DEST_TRIP_MUTATION',
+  UPDATE_RETURN_TRIP_MUTATION: 'UPDATE_RETURN_TRIP_MUTATION'
+}))
+
+// Mock Joi model schemata for trips
+vi.mock('$lib/server/models/destination_trip.model.js', () => ({
+  __esModule: true,
+  default: {
+    validate: vi.fn()
+  }
+}))
+
+vi.mock('$lib/server/models/return_trip.model.js', () => ({
+  __esModule: true,
+  default: {
+    validate: vi.fn()
+  }
+}))
+
+import Trip from '$lib/server/trip.js'
+import { getBackendClient } from '$lib/server/client'
+import {
+  GET_DESTINATION_TRIPS_QUERY,
+  GET_RETURN_TRIPS_QUERY,
+  UPDATE_DESTINATION_TRIP_MUTATION,
+  UPDATE_RETURN_TRIP_MUTATION
+} from '$lib/server/graphql/trip'
+import DestinationTripModelSchema from '$lib/server/models/destination_trip.model.js'
+import ReturnTripModelSchema from '$lib/server/models/return_trip.model.js'
+
+const mockGetBackendClient = /** @type {import('vitest').Mock} */ (getBackendClient)
+const mockDestTripValidate = /** @type {import('vitest').Mock} */ (DestinationTripModelSchema.validate)
+const mockReturnTripValidate = /** @type {import('vitest').Mock} */ (ReturnTripModelSchema.validate)
+
+beforeEach(() => {
+  mockClient.query.mockReset()
+  mockGetBackendClient.mockReset()
+  mockGetBackendClient.mockResolvedValue(mockClient)
+  mockDestTripValidate.mockReset()
+  mockReturnTripValidate.mockReset()
+})
+
+describe('Trip.getTrips', () => {
+  it('throws when eventId is missing', async () => {
+    // @ts-expect-error testing missing id
+    await expect(Trip.getTrips()).rejects.toThrow('Event ID is required')
+  })
+
+  it('throws when tripType is invalid', async () => {
+    // @ts-expect-error testing invalid trip type
+    await expect(Trip.getTrips('e1', 'invalid')).rejects.toThrow(
+      'Invalid trip type. Choose "destination_trip" or "return_trip"'
+    )
+  })
+
+  it('uses destination trips query and validates destination trip items', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      event_by_id: {
+        trips: [
+          { item: { id: 't1', destination: 'X' }, collection: 'destination_trip' },
+          { item: { id: 't2', destination: 'Y' }, collection: 'destination_trip' }
+        ]
+      }
+    })
+    mockDestTripValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const result = await Trip.getTrips('e1', 'destination_trip')
+
+    expect(mockGetBackendClient).toHaveBeenCalled()
+    expect(mockClient.query).toHaveBeenCalledWith(GET_DESTINATION_TRIPS_QUERY, {
+      event_id: 'e1'
+    })
+
+    expect(result).toEqual([
+      { item: { id: 't1', destination: 'X' }, collection: 'destination_trip' },
+      { item: { id: 't2', destination: 'Y' }, collection: 'destination_trip' }
+    ])
+
+    expect(mockDestTripValidate).toHaveBeenCalledTimes(2)
+    expect(mockDestTripValidate).toHaveBeenNthCalledWith(
+      1,
+      { id: 't1', destination: 'X' },
+      { allowUnknown: true }
+    )
+    expect(mockDestTripValidate).toHaveBeenNthCalledWith(
+      2,
+      { id: 't2', destination: 'Y' },
+      { allowUnknown: true }
+    )
+  })
+
+  it('uses return trips query and validates return trip items', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      event_by_id: {
+        trips: [
+          { item: { id: 't3', destination: 'Z' }, collection: 'return_trip' }
+        ]
+      }
+    })
+    mockReturnTripValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const result = await Trip.getTrips('e1', 'return_trip')
+
+    expect(mockClient.query).toHaveBeenCalledWith(GET_RETURN_TRIPS_QUERY, {
+      event_id: 'e1'
+    })
+
+    expect(result).toEqual([
+      { item: { id: 't3', destination: 'Z' }, collection: 'return_trip' }
+    ])
+
+    expect(mockReturnTripValidate).toHaveBeenCalledTimes(1)
+    expect(mockReturnTripValidate).toHaveBeenCalledWith(
+      { id: 't3', destination: 'Z' },
+      { allowUnknown: true }
+    )
+  })
+
+  it('returns empty array when no trips are found', async () => {
+    mockClient.query.mockResolvedValueOnce({})
+
+    const result = await Trip.getTrips('e1', 'destination_trip')
+
+    expect(result).toEqual([])
+  })
+})
+
+describe('Trip.updateTrip', () => {
+  it('throws when tripData is missing', async () => {
+    // @ts-expect-error testing missing trip data
+    await expect(Trip.updateTrip()).rejects.toThrow('Trip data with valid id is required')
+  })
+
+  it('throws when tripData.id is missing', async () => {
+    // @ts-expect-error testing missing id
+    await expect(Trip.updateTrip({})).rejects.toThrow('Trip data with valid id is required')
+  })
+
+  it('throws when tripType is invalid', async () => {
+    // @ts-expect-error testing invalid trip type
+    await expect(Trip.updateTrip({ id: 't1' }, 'invalid')).rejects.toThrow(
+      'Invalid trip type. Choose "destination_trip" or "return_trip"'
+    )
+  })
+
+  it('updates destination trip with correct mutation and validates result', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      update_destination_trip_item: { id: 't1', destination: 'X' }
+    })
+    mockDestTripValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const tripData = {
+      id: 't1',
+      destination: 'X'
+    }
+
+    const result = await Trip.updateTrip(tripData, 'destination_trip')
+
+    expect(mockClient.query).toHaveBeenCalledWith(UPDATE_DESTINATION_TRIP_MUTATION, {
+      id: 't1',
+      trip: { destination: 'X' }
+    })
+
+    expect(result).toEqual({ id: 't1', destination: 'X' })
+    expect(mockDestTripValidate).toHaveBeenCalledWith(
+      { id: 't1', destination: 'X' },
+      { allowUnknown: true }
+    )
+  })
+
+  it('updates return trip with correct mutation and validates result', async () => {
+    mockClient.query.mockResolvedValueOnce({
+      update_return_trip_item: { id: 't2', destination: 'Y' }
+    })
+    mockReturnTripValidate.mockReturnValue({ error: undefined, value: {} })
+
+    const tripData = {
+      id: 't2',
+      destination: 'Y'
+    }
+
+    const result = await Trip.updateTrip(tripData, 'return_trip')
+
+    expect(mockClient.query).toHaveBeenCalledWith(UPDATE_RETURN_TRIP_MUTATION, {
+      id: 't2',
+      trip: { destination: 'Y' }
+    })
+
+    expect(result).toEqual({ id: 't2', destination: 'Y' })
+    expect(mockReturnTripValidate).toHaveBeenCalledWith(
+      { id: 't2', destination: 'Y' },
+      { allowUnknown: true }
+    )
+  })
+})
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-client.html">client</a></li><li><a href="module-event.html">event</a></li><li><a href="module-files.html">files</a></li><li><a href="module-graphql_event.html">graphql/event</a></li><li><a href="module-graphql_post.html">graphql/post</a></li><li><a href="module-graphql_rider.html">graphql/rider</a></li><li><a href="module-graphql_trip.html">graphql/trip</a></li><li><a href="module-graphql_trip_ride.html">graphql/trip_ride</a></li><li><a href="module-lib_server_announcements.html">lib/server/announcements</a></li><li><a href="module-models_AnnouncementModel.html">models/AnnouncementModel</a></li><li><a href="module-models_DesignDocsModel.html">models/DesignDocsModel</a></li><li><a href="module-models_DestinationTripModel.html">models/DestinationTripModel</a></li><li><a href="module-models_DestinationTripRidesModel.html">models/DestinationTripRidesModel</a></li><li><a href="module-models_DevelopmentModel.html">models/DevelopmentModel</a></li><li><a href="module-models_DirectusUsersModel.html">models/DirectusUsersModel</a></li><li><a href="module-models_DocsModel.html">models/DocsModel</a></li><li><a href="module-models_EventModel.html">models/EventModel</a></li><li><a href="module-models_EventTripsModel.html">models/EventTripsModel</a></li><li><a href="module-models_GlobalModel.html">models/GlobalModel</a></li><li><a href="module-models_LanguagesModel.html">models/LanguagesModel</a></li><li><a href="module-models_PageModel.html">models/PageModel</a></li><li><a href="module-models_PhotoAlbumModel.html">models/PhotoAlbumModel</a></li><li><a href="module-models_PostFiles1Model.html">models/PostFiles1Model</a></li><li><a href="module-models_PostFilesModel.html">models/PostFilesModel</a></li><li><a href="module-models_PostModel.html">models/PostModel</a></li><li><a href="module-models_ReturnTripModel.html">models/ReturnTripModel</a></li><li><a href="module-models_ReturnTripRidesModel.html">models/ReturnTripRidesModel</a></li><li><a href="module-models_RideDriverModel.html">models/RideDriverModel</a></li><li><a href="module-models_RideModel.html">models/RideModel</a></li><li><a href="module-models_TodoDependsOnModel.html">models/TodoDependsOnModel</a></li><li><a href="module-models_TodoModel.html">models/TodoModel</a></li><li><a href="module-models_TodoUsersModel.html">models/TodoUsersModel</a></li><li><a href="module-models_TripRideModel.html">models/TripRideModel</a></li><li><a href="module-models_TripRideRidersModel.html">models/TripRideRidersModel</a></li><li><a href="module-models_UsersModel.html">models/UsersModel</a></li><li><a href="module-page.html">page</a></li><li><a href="module-post.html">post</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-site.html">site</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-user.html">user</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Classes</h3><ul><li><a href="module-event.html">event</a></li><li><a href="module-ride.html">ride</a></li><li><a href="module-rider.html">rider</a></li><li><a href="module-trip.html">trip</a></li><li><a href="module-vehicle.html">vehicle</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-backend-server-module-examples.html">backend-server-module-examples</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Thu Dec 04 2025 19:44:04 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
