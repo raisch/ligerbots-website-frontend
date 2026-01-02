@@ -60,8 +60,6 @@
   /** @type {number | null} */
   let previousReturnRideId = null;
 
-  console.log('Event Data:', event);
-
   let isAdmin = false;
   /** @type String*/
   let userEmail = "";
@@ -95,6 +93,15 @@
           }
         }
       }
+    }
+
+    if (previousDestinationRideId && !previousReturnRideId) {
+      previousReturnRideId = -1;
+      returnRideId = -1;
+    }
+    if (!previousDestinationRideId && previousReturnRideId) {
+      previousDestinationRideId = -1;
+      destinationRideId = -1;
     }
   });
 </script>
@@ -145,7 +152,7 @@
                   {/each}
                 </div>
               </div>
-              <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateRideSelections}>Confirm</button>
+              <button class="confirm" disabled={destinationRideId === null || returnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={updateRideSelections}>Confirm</button>
             {:else}
               <p>No trips available for this event.</p>
             {/if}
