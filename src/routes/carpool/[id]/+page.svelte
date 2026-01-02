@@ -106,7 +106,7 @@
 
   let isAdmin = false;
   /** @type String*/
-  let userEmail = "";
+  let userId = "";
 
   onMount(() => {
     const user = sessionStorage.getItem('user');
@@ -114,10 +114,12 @@
     if (user) {
       const parsedUser = JSON.parse(user);
       isAdmin = parsedUser.is_admin;
-      userEmail = parsedUser.email_address;
+      userId = parsedUser.id;
+
+      console.log(parsedUser)
     }
 
-    if (userEmail) {
+    if (userId) {
       for (let i = 0; i < trips?.length; i++) { // finding user's current rides
         const trip = trips[i];
         for (let j = 0; j < trip.item.rides.length; j++) {
@@ -125,7 +127,7 @@
           const riders = ride.item.riders;
           for (let k = 0; k < riders.length; k++) {
             const rider = riders[k];
-            if (rider.item.email_address === userEmail) {
+            if (rider.item.id === userId) {
               if (trip.collection === 'destination_trip') {
                 destinationRideId = parseInt(ride.item.id);
                 previousDestinationRideId = parseInt(ride.item.id);
