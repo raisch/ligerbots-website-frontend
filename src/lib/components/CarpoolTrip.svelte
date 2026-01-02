@@ -9,7 +9,7 @@
      *   previousReturnRideId: number | null,
      *   isAdmin: boolean,
      *   modifying: Record<string, any> | null,
-     *   SetModifying: (subject: Record<string, any> | null) => void
+     *   SetModifying: (subject: Record<string, any> | null, mode: string) => void
      * }} 
      */
     let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, SetModifying } = $props();
@@ -17,12 +17,13 @@
     /**
      * Set the current modifying subject if none is set.
      * @param {Record<string, any> | null} newSubject
+     * @param {string} mode
      * @returns {void}
      */
-    function setSubject(newSubject) {
+    function setSubject(newSubject, mode) {
         // notify parent to set the modifying subject rather than mutating the prop locally
         if (typeof SetModifying === 'function') {
-            SetModifying(newSubject)
+            SetModifying(newSubject, mode)
         }
     }
 </script>
@@ -32,7 +33,7 @@
         {@const rides = trip.item.rides}
         <span style="flex-basis: 100%;">From {item.departs_from} to {item.destination}</span>
         {#if isAdmin}
-            <span class="editButton" onclick={() => setSubject(trip)}>Edit</span>
+            <span class="editButton" onclick={() => setSubject(trip, "edit")}>Edit</span>
         {/if}
         
         <span style="flex-basis: 100%;">Date: {item.departs_on}</span>

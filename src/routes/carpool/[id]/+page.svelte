@@ -48,9 +48,14 @@
   /**
      * Set the current modifying subject if none is set.
      * @param {Record<string, any> | null} subject
+     * @param {string} mode
      * @returns {void}
      */
-  function setModifying(subject) {
+  function setModifying(subject, mode) {
+    if (subject) {
+      subject.mode = mode
+    }
+    
     modifying = subject
   }
   
