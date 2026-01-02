@@ -51,8 +51,51 @@
     returnRideId = returnRideId === rideId ? null : rideId;
   }
 
-  function updateRideSelections() {
+  async function updateRideSelections() {
+    try {
+      // get user from sessionStorage or cookie
+      let user = null
+      const raw = sessionStorage.getItem('user')
+      if (raw) {
+        user = JSON.parse(raw)
+      } else {
+        // fallback to cookie
+        const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+        if (m) {
+          user = JSON.parse(decodeURIComponent(m[1]))
+        }
+      }
 
+      const payload = {
+        destinationRideId,
+        returnRideId,
+        previousDestinationRideId,
+        previousReturnRideId,
+        userId: user.id
+      }
+
+      const res = await fetch('/api/carpool/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      const result = await res.json()
+      if (!res.ok) {
+        console.error(result)
+        alert(result?.error || 'Failed to update ride selections')
+        return
+      }
+
+      // update previous selections to current selections
+      previousDestinationRideId = destinationRideId
+      previousReturnRideId = returnRideId
+      
+      alert('Ride selections updated')
+    } catch (err) {
+      console.error(err)
+      alert('An error occurred while updating ride selections')
+    }
   }
 
   /** @type {number | null} */
