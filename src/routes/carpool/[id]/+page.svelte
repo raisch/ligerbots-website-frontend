@@ -90,8 +90,9 @@
       // update previous selections to current selections
       previousDestinationRideId = destinationRideId
       previousReturnRideId = returnRideId
-      
+
       alert('Ride selections updated')
+      window.location.reload()
     } catch (err) {
       console.error(err)
       alert('An error occurred while updating ride selections')
