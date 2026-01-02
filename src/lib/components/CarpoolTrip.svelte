@@ -1,4 +1,5 @@
 <script>
+
     /** 
      * @type {{ 
      *   trip: import('$lib/server/trip').Trip,
@@ -11,15 +12,17 @@
      * }} 
      */
     let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying } = $props();
+    console.log(isAdmin)
 </script>
-<div>
+<div style="position: relative;">
     {#if trip}
         {@const {item} = trip}
         {@const rides = trip.item.rides}
-        <span style="flex-basis: 100%;">
-            <span>From {item.departs_from} to {item.destination}</span>
-            <span>From {item.departs_from} to {item.destination}</span>
-        </span>
+        <span style={isAdmin ? "flex-basis: 100%;" : ""}>From {item.departs_from} to {item.destination}</span>
+        {#if isAdmin}
+            <span class="editButton">Edit</span>
+        {/if}
+        
         <span style="flex-basis: 100%;">Date: {item.departs_on}</span>
         <span>Departs at {item.departs_at}</span>
         <span>Arrives at {item.arrives_at}</span>
@@ -52,6 +55,40 @@
     {/if}
 </div>
 <style>
+    .AddButton {
+    border: 1px solid rgb(100,100,100); 
+    height: 60px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    background-color: rgb(235, 235, 235);
+    line-height: 60px; 
+    text-align: center; 
+    font-size: 30px; 
+    color: rgb(130,130,130);
+    font-weight: 600; 
+    cursor: pointer;
+  }
+
+  .editButton {
+    right: 10px;
+    top: 10px;
+    position: absolute;
+    border: 1px solid rgb(100,100,100); 
+    width: 50px;
+    height: 30px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    background-color: rgb(235, 235, 235);
+    line-height: 30px; 
+    text-align: center; 
+    font-size: 15px;
+    color: rgb(130,130,130);
+    cursor: pointer;
+  }
+
+  .editButton:hover {
+    background-color: rgb(225, 225, 225);
+  }
     div {
         border: 1px solid #ccc;
         border-radius: 8px;
