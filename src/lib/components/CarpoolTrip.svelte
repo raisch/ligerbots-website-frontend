@@ -5,16 +5,21 @@
      *   RideId: number | null,
      *   SetId: (rideId: number | null) => void
      *  previousDestinationRideId: number | null,
-     *  previousReturnRideId: number | null
+     *  previousReturnRideId: number | null,
+     *  isAdmin: boolean,
+     *  modifying: Record<string, any> | null
      * }} 
      */
-    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId } = $props();
+    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying } = $props();
 </script>
 <div>
     {#if trip}
         {@const {item} = trip}
         {@const rides = trip.item.rides}
-        <span style="flex-basis: 100%;">From {item.departs_from} to {item.destination}</span>
+        <span style="flex-basis: 100%;">
+            <span>From {item.departs_from} to {item.destination}</span>
+            <span>From {item.departs_from} to {item.destination}</span>
+        </span>
         <span style="flex-basis: 100%;">Date: {item.departs_on}</span>
         <span>Departs at {item.departs_at}</span>
         <span>Arrives at {item.arrives_at}</span>

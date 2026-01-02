@@ -3,6 +3,7 @@
   // path: /carpool/[id]
   import { goto } from '$app/navigation';
   import CarpoolTrip from '$lib/components/CarpoolTrip.svelte';
+   import CreateOrModifySignup from '$lib/components/CreateOrModifySignup.svelte';
   import { onMount } from 'svelte';
 
   /**
@@ -40,6 +41,8 @@
 
   let destinationRideId = $state(/** @type {number | null} */ (null));
   let returnRideId = $state(/** @type {number | null} */ (null));
+
+  let modifying = $state(null)
   
   //@ts-ignore
   function setDestinationRideId(rideId) {
@@ -76,7 +79,7 @@
         returnRideId,
         previousDestinationRideId,
         previousReturnRideId,
-        userId: user.id
+        userId: `${user.id}`
       }
 
       const res = await fetch('/api/carpool/confirm', {
@@ -109,9 +112,9 @@
   /** @type {number | null} */
   let previousReturnRideId = null;
 
-  let isAdmin = false;
-  /** @type String*/
-  let userId = "";
+  let isAdmin = true;
+  /** @type number*/
+  let userId = 0;
 
   onMount(() => {
     const user = sessionStorage.getItem('user');
@@ -119,9 +122,7 @@
     if (user) {
       const parsedUser = JSON.parse(user);
       isAdmin = parsedUser.is_admin;
-      userId = parsedUser.id;
-
-      console.log(parsedUser)
+      userId = parseInt(parsedUser.id);
     }
 
     if (userId) {
@@ -132,7 +133,7 @@
           const riders = ride.item.riders;
           for (let k = 0; k < riders.length; k++) {
             const rider = riders[k];
-            if (rider.item.id === userId) {
+            if (parseInt(rider.item.id) === userId) {
               if (trip.collection === 'destination_trip') {
                 destinationRideId = parseInt(ride.item.id);
                 previousDestinationRideId = parseInt(ride.item.id);
@@ -159,6 +160,12 @@
 
 
 <div class="container mt-4">
+  {#if modifying}
+    <CreateOrModifySignup Subject={modifying} />
+    <div style="display: flex; justify-content: center; margin-top: 10px;">
+      <button class="confirm" onclick={() => modifying = null}>Back to Event Details</button>
+    </div>
+  {/if}
   <h1>Carpool Event Detail Page</h1>
 
   <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
@@ -184,9 +191,13 @@
                     ></div>
                     <div style="font-size: 12px;">Opt Out</div>
                   </div>
-                  
+
+                  {#if isAdmin}
+                    <div class="AddButton">+</div>
+                  {/if}
+
                   {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} />
+                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying}/>
                   {/each}
                 </div>
                 <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
@@ -198,8 +209,13 @@
                     ></div>
                     <div style="font-size: 12px;">Opt Out</div>
                   </div>
+
+                  {#if isAdmin}
+                    <div class="AddButton">+</div>
+                  {/if}
+
                   {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} />
+                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} />
                   {/each}
                 </div>
               </div>
@@ -219,6 +235,24 @@
 </div>
 
 <style lang="css">
+
+  .AddButton {
+    border: 1px solid rgb(100,100,100); 
+    height: 60px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    background-color: rgb(235, 235, 235);
+    line-height: 60px; 
+    text-align: center; 
+    font-size: 30px; 
+    color: rgb(130,130,130);
+    font-weight: 600; 
+    cursor: pointer;
+  }
+
+  .AddButton:hover {
+    background-color: rgb(225, 225, 225);
+  }
   .badge-success {
     background-color: #28a745;
   }
