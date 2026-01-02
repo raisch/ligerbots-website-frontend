@@ -1,14 +1,25 @@
 <script>
-    /** 
-     * Props shape: an optional `Subject` object (or null).
-     * @type {{ Subject: Record<string, any> | null }}
+    /**
+     * Props
      */
-    let { Subject } = $props();
+    /** @type {Record<string, any> | null} */
+    export let Subject = null
+    console.log(Subject)
 </script>
 <div>
-   
+   <div class="modifyBody">
+        hello
+   </div>
 </div>
 <style>
+    .modifyBody {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+        position: absolute;
+        width: 100px;
+        height: 100px;
+    }
     div {
         border: 1px solid #ccc;
         border-radius: 8px;

@@ -42,7 +42,17 @@
   let destinationRideId = $state(/** @type {number | null} */ (null));
   let returnRideId = $state(/** @type {number | null} */ (null));
 
+  /** @type {Record<string, any> | null} */
   let modifying = $state(null)
+
+  /**
+     * Set the current modifying subject if none is set.
+     * @param {Record<string, any> | null} subject
+     * @returns {void}
+     */
+  function setModifying(subject) {
+    modifying = subject
+  }
   
   //@ts-ignore
   function setDestinationRideId(rideId) {
@@ -162,9 +172,6 @@
 <div class="container mt-4">
   {#if modifying}
     <CreateOrModifySignup Subject={modifying} />
-    <div style="display: flex; justify-content: center; margin-top: 10px;">
-      <button class="confirm" onclick={() => modifying = null}>Back to Event Details</button>
-    </div>
   {/if}
   <h1>Carpool Event Detail Page</h1>
 
@@ -197,7 +204,7 @@
                   {/if}
 
                   {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying}/>
+                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
                   {/each}
                 </div>
                 <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
@@ -215,7 +222,7 @@
                   {/if}
 
                   {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} />
+                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
                   {/each}
                 </div>
               </div>

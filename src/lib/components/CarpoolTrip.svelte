@@ -4,23 +4,35 @@
      * @type {{ 
      *   trip: import('$lib/server/trip').Trip,
      *   RideId: number | null,
-     *   SetId: (rideId: number | null) => void
-     *  previousDestinationRideId: number | null,
-     *  previousReturnRideId: number | null,
-     *  isAdmin: boolean,
-     *  modifying: Record<string, any> | null
+     *   SetId: (rideId: number | null) => void,
+     *   previousDestinationRideId: number | null,
+     *   previousReturnRideId: number | null,
+     *   isAdmin: boolean,
+     *   modifying: Record<string, any> | null,
+     *   SetModifying: (subject: Record<string, any> | null) => void
      * }} 
      */
-    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying } = $props();
-    console.log(isAdmin)
+    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, SetModifying } = $props();
+
+    /**
+     * Set the current modifying subject if none is set.
+     * @param {Record<string, any> | null} newSubject
+     * @returns {void}
+     */
+    function setSubject(newSubject) {
+        // notify parent to set the modifying subject rather than mutating the prop locally
+        if (typeof SetModifying === 'function') {
+            SetModifying(newSubject)
+        }
+    }
 </script>
 <div style="position: relative;">
     {#if trip}
         {@const {item} = trip}
         {@const rides = trip.item.rides}
-        <span style={isAdmin ? "flex-basis: 100%;" : ""}>From {item.departs_from} to {item.destination}</span>
+        <span style="flex-basis: 100%;">From {item.departs_from} to {item.destination}</span>
         {#if isAdmin}
-            <span class="editButton">Edit</span>
+            <span class="editButton" onclick={() => setSubject(trip)}>Edit</span>
         {/if}
         
         <span style="flex-basis: 100%;">Date: {item.departs_on}</span>
