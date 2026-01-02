@@ -51,6 +51,11 @@
     returnRideId = returnRideId === rideId ? null : rideId;
   }
 
+  function undoChanges() {
+    destinationRideId = previousDestinationRideId;
+    returnRideId = previousReturnRideId;
+  }
+
   async function updateRideSelections() {
     try {
       // get user from sessionStorage or cookie
@@ -198,7 +203,11 @@
                   {/each}
                 </div>
               </div>
-              <button class="confirm" disabled={destinationRideId === null || returnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={updateRideSelections}>Confirm</button>
+              <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+                <button class="undoChanges" disabled={previousDestinationRideId === null || previousReturnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={undoChanges}>Undo Changes</button>
+                <button class="confirm" disabled={destinationRideId === null || returnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={updateRideSelections}>Confirm</button>
+              </div>
+              
             {:else}
               <p>No trips available for this event.</p>
             {/if}
@@ -223,17 +232,18 @@
     border-radius: 15px;
   }
 
-  .confirm {
+  .confirm,
+  .undoChanges {
     background-color: #3375a6;
     cursor: pointer;
     color: white;
     border-radius: 5px;
     border: none;
-    padding: 5px;
-    min-width: 120px;
+    padding: 5px 15px;
     align-self: center;
   }
-  .confirm:disabled {
+  .confirm:disabled,
+  .undoChanges:disabled {
     background-color: #808080;
     cursor: not-allowed;
   }
