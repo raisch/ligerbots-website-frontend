@@ -12,22 +12,37 @@
      */
     let { Subject, SetModifying, eventId } = $props();
 
-    // initialize fields from Subject.item when modal opens (use $state rune)
+    // initialize fields with safe defaults; $effect will populate when Subject arrives
     let fields = $state({
-        destination: Subject?.item?.destination || '',
-        departs_from: Subject?.item?.departs_from || '',
-        departs_on: Subject?.item?.departs_on || '',
-        departs_at: Subject?.item?.departs_at || '',
-        arrives_at: Subject?.item?.arrives_at || ''
+        destination: '',
+        departs_from: '',
+        departs_on: '',
+        departs_at: '',
+        arrives_at: ''
     })
 
     $effect(() => {
         if (!Subject) return;
-        fields.destination = Subject?.item?.destination || '';
-        fields.departs_from = Subject?.item?.departs_from || '';
-        fields.departs_on = Subject?.item?.departs_on || '';
-        fields.departs_at = Subject?.item?.departs_at || '';
-        fields.arrives_at = Subject?.item?.arrives_at || '';
+
+        // If creating a new trip, provide sensible defaults
+        const now = new Date();
+        const today = now.toISOString().slice(0, 10); // YYYY-MM-DD
+        const defaultDepartTime = '09:00';
+        const defaultArriveTime = '10:00';
+
+        if (Subject.mode === 'create') {
+            fields.destination = Subject?.item?.destination || '';
+            fields.departs_from = Subject?.item?.departs_from || '';
+            fields.departs_on = Subject?.item?.departs_on || today;
+            fields.departs_at = Subject?.item?.departs_at || defaultDepartTime;
+            fields.arrives_at = Subject?.item?.arrives_at || defaultArriveTime;
+        } else {
+            fields.destination = Subject?.item?.destination || '';
+            fields.departs_from = Subject?.item?.departs_from || '';
+            fields.departs_on = Subject?.item?.departs_on || '';
+            fields.departs_at = Subject?.item?.departs_at || '';
+            fields.arrives_at = Subject?.item?.arrives_at || '';
+        }
     });
 
     async function handleSubmit() {
@@ -60,7 +75,7 @@
             }
 
             // close modal and let parent refresh
-            SetModifying(null, "create")
+            SetModifying && SetModifying(null, "create")
             // simple refresh of page to show changes
             location.reload()
         } catch (err) {

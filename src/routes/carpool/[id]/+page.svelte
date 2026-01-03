@@ -138,6 +138,7 @@
       const parsedUser = JSON.parse(user);
       isAdmin = parsedUser.is_admin;
       userId = parseInt(parsedUser.id);
+      console.log(parsedUser)
     }
 
     if (userId) {
@@ -205,7 +206,7 @@
                   </div>
 
                   {#if isAdmin}
-                    <div class="AddButton">+</div>
+                    <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'destination_trip', item: {} }, 'create')}>+</div>
                   {/if}
 
                   {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
@@ -223,7 +224,7 @@
                   </div>
 
                   {#if isAdmin}
-                    <div class="AddButton">+</div>
+                    <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'return_trip', item: {} }, 'create')}>+</div>
                   {/if}
 
                   {#each trips.filter(trip => trip.collection === 'return_trip') as trip}

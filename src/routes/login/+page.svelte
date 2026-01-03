@@ -11,10 +11,10 @@
   setContext('user', user)
 
   /** @type {String}*/
-  let email = $state()
+  let email = $state("")
 
   /** @type {String}*/
-  let password = $state()
+  let password = $state("")
 
   async function handleSubmit(/** @type {Event} */ evt) {
     let loginFields = { email, password }
