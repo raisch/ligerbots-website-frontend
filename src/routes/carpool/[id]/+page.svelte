@@ -132,13 +132,21 @@
   let userId = 0;
 
   onMount(() => {
-    const user = sessionStorage.getItem('user');
+    let user = sessionStorage.getItem('user');
 
     if (user) {
       const parsedUser = JSON.parse(user);
       isAdmin = parsedUser.is_admin;
       userId = parseInt(parsedUser.id);
       console.log(parsedUser)
+    }
+    else {
+      
+      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+      let parsedUser =JSON.parse(decodeURIComponent(m[1]))
+
+      isAdmin = parsedUser?.is_admin;
+      userId = parseInt(parsedUser?.id);
     }
 
     if (userId) {
