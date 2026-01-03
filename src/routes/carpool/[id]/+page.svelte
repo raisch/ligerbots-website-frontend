@@ -143,10 +143,18 @@
     else {
       
       const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
-      let parsedUser =JSON.parse(decodeURIComponent(m[1]))
+      const raw = m?.[1]
+      let parsedUser = null
+      if (raw) {
+        try {
+          parsedUser = JSON.parse(decodeURIComponent(raw))
+        } catch (e) {
+          console.warn('Failed to parse user cookie', e)
+        }
+      }
 
-      isAdmin = parsedUser?.is_admin;
-      userId = parseInt(parsedUser?.id);
+      isAdmin = parsedUser?.is_admin ?? isAdmin;
+      userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;
     }
 
     if (userId) {
