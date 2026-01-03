@@ -319,56 +319,54 @@ const queries = {
 
   // GraphQL mutation for creating a destination trip
   CREATE_DESTINATION_TRIP_MUTATION: `mutation ($trip: create_destination_trip_input!) {
-    create_destination_trip_item(data: $trip) {
-      id
-      destination
-      departs_from
-      departs_on
-      departs_at
-      status
-      event {
-        id
-      }
-    }
+  create_destination_trip_item(data: $trip) {
+    id
+    destination
+    departs_from
+    departs_on
+    departs_at
+    arrives_at
+    status
+  }
 }`,
 
   // GraphQL mutation for updating a destination trip
   UPDATE_DESTINATION_TRIP_MUTATION: `mutation ($id: ID!, $trip: update_destination_trip_input!) {
-    update_destination_trip_item(id: $id, data: $trip) {
-      id
-      destination
-      departs_from
-      departs_on
-      departs_at
-      status
-    }
+  update_destination_trip_item(id: $id, data: $trip) {
+    id
+    destination
+    departs_from
+    departs_on
+    departs_at
+    arrives_at
+    status
+  }
 }`,
 
   // GraphQL mutation for creating a return trip
   CREATE_RETURN_TRIP_MUTATION: `mutation ($trip: create_return_trip_input!) {
-    create_return_trip_item(data: $trip) {
-      id
-      destination
-      departs_from
-      departs_on
-      departs_at
-      status
-      event {
-        id
-      }
-    }
+  create_return_trip_item(data: $trip) {
+    id
+    destination
+    departs_from
+    departs_on
+    departs_at
+    arrives_at
+    status
+  }
 }`,
 
   // GraphQL mutation for updating a return trip
   UPDATE_RETURN_TRIP_MUTATION: `mutation ($id: ID!, $trip: update_return_trip_input!) {
-    update_return_trip_item(id: $id, data: $trip) {
-      id
-      destination
-      departs_from
-      departs_on
-      departs_at
-      status
-    }
+  update_return_trip_item(id: $id, data: $trip) {
+    id
+    destination
+    departs_from
+    departs_on
+    departs_at
+    arrives_at
+    status
+  }
 }`,
 
   // GraphQL mutation for deleting a trip (works for both destination and return trips)

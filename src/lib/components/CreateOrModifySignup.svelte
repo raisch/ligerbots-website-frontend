@@ -70,7 +70,9 @@
 
             const result = await res.json()
             if (!res.ok) {
-                alert(result?.error || 'Failed to save')
+                const err = result?.error ?? result
+                const message = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err)
+                alert(message || 'Failed to save')
                 return
             }
 
