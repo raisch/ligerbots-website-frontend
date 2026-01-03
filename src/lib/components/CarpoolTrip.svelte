@@ -26,6 +26,8 @@
             SetModifying(newSubject, mode)
         }
     }
+
+    let confirm = $state(false);
 </script>
 <div style="position: relative;">
     {#if trip}
@@ -33,6 +35,16 @@
         {@const rides = trip.item.rides}
         <span style="flex-basis: 100%;">From {item.departs_from} to {item.destination}</span>
         {#if isAdmin}
+            <span class="deleteButton" onclick={() => {
+                if (confirm) {
+
+                } else {
+                    confirm = true;
+                    setTimeout(() => {
+                        confirm = false;
+                    }, 2000);
+                }
+            }}>{confirm ? "Confirm?" : "Delete"}</span>
             <span class="editButton" onclick={() => setSubject(trip, "edit")}>Edit</span>
         {/if}
         
@@ -68,6 +80,23 @@
     {/if}
 </div>
 <style>
+
+    .deleteButton {
+        right: 70px;
+        top: 10px;
+        position: absolute;
+        border: 1px solid rgb(111, 0, 0); 
+    height: 30px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    background-color: rgba(95, 0, 0, 0.2);    
+    line-height: 30px; 
+    text-align: center; 
+    font-size: 15px;
+    color: rgb(111, 0, 0);
+    cursor: pointer;
+    padding: 0 10px;
+    }
     .AddButton {
     border: 1px solid rgb(100,100,100); 
     height: 60px; 

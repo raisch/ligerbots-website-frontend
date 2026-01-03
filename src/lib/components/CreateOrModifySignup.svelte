@@ -115,8 +115,8 @@
          {/if}
 
          <div style="margin-top:12px; display:flex; gap:8px;">
-            <button on:click={handleSubmit}>{Subject?.mode === 'edit' ? 'Save' : 'Create'}</button>
-            <button on:click={() => SetModifying(null, "create")} type="button">Cancel</button>
+            <button onclick={handleSubmit}>{Subject?.mode === 'edit' ? 'Save' : 'Create'}</button>
+            <button onclick={() => SetModifying(null, "create")} type="button">Cancel</button>
          </div>
    </div>
 </div>
