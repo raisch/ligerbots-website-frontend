@@ -128,7 +128,7 @@
   let previousReturnRideId = null;
 
   let isAdmin = true;
-  /** @type number*/
+  /** @type {number} */
   let userId = 0;
 
   onMount(() => {
@@ -176,7 +176,7 @@
 
 <div class="container mt-4">
   {#if modifying}
-    <CreateOrModifySignup Subject={modifying} />
+    <CreateOrModifySignup Subject={modifying} SetModifying={setModifying} eventId={event?.id} />
   {/if}
   <h1>Carpool Event Detail Page</h1>
 
