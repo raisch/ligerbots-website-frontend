@@ -44,7 +44,123 @@ export const EVENT_BY_ID_QUERY = `{  event_by_id(id: "{{id}}") {
           description
           status
           location
-          trips
+          trips {
+              item {
+                  ... on destination_trip {
+                      destination
+                      departs_from
+                      departs_on
+                      departs_at
+                      status
+                      rides {
+                          item {
+                              ... on trip_ride {
+                                  id
+                                  ride {
+                                      vehicle_type
+                                      name
+                                      seats
+                                      driver {
+                                          item {
+                                              ... on users {
+                                                  id
+                                                  firstname
+                                                  lastname
+                                                  email_address
+                                                  phone_number
+                                                  photo {
+                                                      id
+                                                      filename_disk
+                                                      filename_download
+                                                  }
+                                              }
+                                          }
+                                          id
+                                          collection
+                                      }
+                                      id
+                                  }
+                                  riders {
+                                      item {
+                                          ${RIDER_USER_FIELDS}
+                                      }
+                                      id
+                                      collection
+                                  }
+                                  id
+                                  riders_func {
+                                      count
+                                  }
+                              }
+                          }
+                          collection
+                      }
+                      id
+                      status
+                      rides_func {
+                          count
+                      }
+                  }
+                  ... on return_trip {
+                      id
+                      status
+                      destination
+                      departs_from
+                      departs_on
+                      departs_at
+                      rides {
+                          item {
+                              ... on trip_ride {
+                                  id
+                                  ride {
+                                      vehicle_type
+                                      name
+                                      seats
+                                      driver {
+                                          item {
+                                              ... on users {
+                                                  id
+                                                  firstname
+                                                  lastname
+                                                  email_address
+                                                  phone_number
+                                                  photo {
+                                                      id
+                                                      filename_disk
+                                                      filename_download
+                                                  }
+                                              }
+                                          }
+                                          id
+                                          collection
+                                      }
+                                      id
+                                  }
+                                  riders {
+                                      item {
+                                          ${RIDER_USER_FIELDS}
+                                      }
+                                      id
+                                      collection
+                                  }
+                                  id
+                                  riders_func {
+                                      count
+                                  }
+                              }
+                          }
+                          collection
+                      }
+                      id
+                      status
+                      rides_func {
+                          count
+                      }
+                  }
+              }
+              id
+              collection
+          }
 }}`
 
 /**

@@ -1,6 +1,8 @@
 import Joi from 'joi';
 import { command } from '$app/server'
 import Rider from '$lib/server/rider';
+import createDebugMessages from 'debug';
+const debug = createDebugMessages('APP:lib/server/event')
 
 /**
  * @typedef RideRegistrationFormSchema
@@ -27,16 +29,17 @@ const RideRemoveFormSchema = Joi.object({
 })
 
 export const updateRideSelections = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides}) => {
+  debug(`updateRideSelections(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
   Object.entries(rides).forEach(async ([, selection]) => {
+    Rider.removeRiderFromTrip(event, user); // prevent duplicates
     if (selection) {
       await Rider.addRiderToRide(selection, user)
-    } else {
-      Rider.removeRiderFromTrip(event, user);
     }
   })
 })
 
 export const removeFromRide = command('unchecked', async (/** @type {RideRemoveFormSchema} */ {user, event, rides}) => {
+  debug(`updateRideSelections(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
   if (event) {
     if (rides) {
       rides.forEach(async type => {

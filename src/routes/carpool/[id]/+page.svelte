@@ -55,12 +55,14 @@
   }
 
   function updateSelections() {
+    console.log('updating selections', {destinationRideId, returnRideId})
     updateRideSelections({user: data?.userId, event: event?.id || '-1', rides: {
       destination_trip: destinationRideId?.toString() ?? null,
       return_trip: returnRideId?.toString() ?? null
     }})
   }
   function removeSelections() {
+    console.log('removing selections', {destinationRideId, returnRideId})
     removeFromRide({user: data?.userId, event: event?.id || '-1', rides: ['destination_trip', 'return_trip']})
   }
 </script>

@@ -60,7 +60,7 @@ export const REMOVE_RIDER_MUTATION = `mutation ($relationshipId: ID!) {
 }`
 
 export const GET_TRIP_RIDES_BY_RIDER_QUERY = `query ($userId: String!) {
-  trip_ride(filter: { riders: { item: { id: $userId } } }) {
+  trip_ride {
     id
     ride {
       id
