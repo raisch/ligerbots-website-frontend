@@ -20,8 +20,16 @@ const config = {
     },
     csrf: {
       checkOrigin: true
+    },
+    experimental: {
+      remoteFunctions: true
     }
-  }
+  },
+	compilerOptions: {
+		experimental: {
+			async: true
+		}
+	}
 }
 
 export default config

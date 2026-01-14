@@ -59,8 +59,49 @@ export const REMOVE_RIDER_MUTATION = `mutation ($relationshipId: ID!) {
   }
 }`
 
+export const GET_TRIP_RIDES_BY_RIDER_QUERY = `query ($userId: String!) {
+  trip_ride(filter: { riders: { item: { id: $userId } } }) {
+    id
+    ride {
+      id
+      vehicle_type
+      name
+      seats
+      driver {
+        item {
+          ... on users {
+            id
+            firstname
+            lastname
+            email_address
+            phone_number
+            photo {
+              id
+              filename_disk
+              filename_download
+            }
+          }
+        }
+        id
+        collection
+      }
+    }
+    riders {
+      item {
+        ${RIDER_USER_FIELDS}
+      }
+      id
+      collection
+    }
+    riders_func {
+      count
+    }
+  }
+}`
+
 export default {
   RIDER_USER_FIELDS,
   ADD_RIDER_MUTATION,
+  GET_TRIP_RIDES_BY_RIDER_QUERY,
   REMOVE_RIDER_MUTATION
 }

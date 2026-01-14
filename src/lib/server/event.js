@@ -77,7 +77,7 @@ export default class Event {
    *
    * @throws {Error} if failed to retrieve events.
    */
-  static async getEvents(status = 'published', query = Queries.EVENT_QUERY) {
+  static async getEvents(status = 'published', query = EVENT_QUERY) {
     const client = await getBackendClient()
 
     if (!client) {
@@ -104,10 +104,10 @@ export default class Event {
    * Get a single event by ID.
    *
    * @param {string} id - The ID of the event to retrieve.
-   * @param {string} [query=Queries.EVENT_BY_ID_QUERY] - The GraphQL query to use. It should contain a placeholder for the ID.
+   * @param {string} [query=EVENT_BY_ID_QUERY] - The GraphQL query to use. It should contain a placeholder for the ID.
    * @returns {Promise<EventRecord|undefined>} - The event record if found, otherwise undefined.
    */
-  static async getEventById(id, query = Queries.EVENT_BY_ID_QUERY) {
+  static async getEventById(id, query = EVENT_BY_ID_QUERY) {
     if (!id) {
       throw new Error('Event ID is required')
     }

@@ -3,7 +3,7 @@
 import Event from '$lib/server/event.js'
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params }) {
+export async function load({ params, cookies }) {
   const id = params.id
   let event
   try {
@@ -14,5 +14,5 @@ export async function load({ params }) {
 
   // console.log('event:', event)
 
-  return { event }
+  return { event, userId: JSON.parse(decodeURIComponent(cookies.get('user') ?? '')).id || null }
 }

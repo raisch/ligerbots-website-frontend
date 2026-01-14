@@ -45,7 +45,7 @@ export const EVENT_BY_ID_QUERY = `{  event_by_id(id: "{{id}}") {
           status
           location
           trips
-  }`
+}}`
 
 /**
  * GraphQL query for fetching a single event by ID, including all of its trips, rides, and riders.

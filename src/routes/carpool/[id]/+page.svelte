@@ -2,7 +2,9 @@
   // List Carpool Event Details
   // path: /carpool/[id]
   import { goto } from '$app/navigation';
+  import { page } from '$app/state';
   import CarpoolTrip from '$lib/components/CarpoolTrip.svelte';
+  import { removeFromRide, updateRideSelections } from './ride.remote';
 
   /**
    * @typedef {Object} EventRecord
@@ -17,7 +19,7 @@
    * @property {string} start_date - The start date of the event
    * @property {string} end_date - The end date of the event
    * @property {string} location - The location of the event
-   * @property {Array<Trip>} trips - An array of trips associated with the event
+   * @property {Array<Trip>=} trips - An array of trips associated with the event
    */
 
   /**
@@ -28,8 +30,9 @@
    * @typedef {Array<Trip>} Trips
    */
 
-  /** @type {{ data?: EventRecord }} */
+  /** @typ e {{ data?: EventRecord }} */
   let { data } = $props();
+  
 
   /** @type {Event|undefined} */
   let event = $derived(data?.event);
@@ -51,7 +54,15 @@
     returnRideId = returnRideId === rideId ? null : rideId;
   }
 
-  function updateRideSelections() {}
+  function updateSelections() {
+    updateRideSelections({user: data?.userId, event: event?.id || '-1', rides: {
+      destination_trip: destinationRideId?.toString() ?? null,
+      return_trip: returnRideId?.toString() ?? null
+    }})
+  }
+  function removeSelections() {
+    removeFromRide({user: data?.userId, event: event?.id || '-1', rides: ['destination_trip', 'return_trip']})
+  }
 </script>
 
 
@@ -100,10 +111,12 @@
                   {/each}
                 </div>
               </div>
-              <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateRideSelections}>Confirm</button>
+              <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
+              <button onclick={removeSelections}>Test: Leave</button>
             {:else}
               <p>No trips available for this event.</p>
             {/if}
+            <button onclick={removeSelections}>Test: Leave all</button>
           </div>
         </div>
       </div>

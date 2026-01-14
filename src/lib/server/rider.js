@@ -2,7 +2,7 @@
 import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
-import { ADD_RIDER_MUTATION, REMOVE_RIDER_MUTATION } from '$lib/server/graphql/rider.js'
+import { ADD_RIDER_MUTATION, GET_TRIP_RIDES_BY_RIDER_QUERY, REMOVE_RIDER_MUTATION } from '$lib/server/graphql/rider.js'
 import { GET_TRIP_RIDE_BY_ID_QUERY } from '$lib/server/graphql/trip_ride.js'
 import TripRideRidersModelSchema from '$lib/server/models/trip_ride_riders.model.js'
 
@@ -98,6 +98,220 @@ export default class Rider {
   }
 
   /**
+   * Remove a rider from a ride.
+   *
+   * @param {string} tripRideId - The ID of the trip_ride to remove the rider from.
+   * @param {string} userId - The ID of the user to remove as a rider.
+   * @param {string} [mutation=ADD_RIDER_MUTATION] - Optional custom GraphQL mutation.
+   *
+   * @returns {Promise<Object>} - The relationship record, including basic user info.
+   *
+   * @throws {Error} if required parameters are missing or the backend call fails.
+   */
+  static async removeRiderFromRide(tripRideId, userId, query = GET_TRIP_RIDES_BY_RIDER_QUERY, mutation = REMOVE_RIDER_MUTATION) {
+    if (!tripRideId) {
+      throw new Error('Trip ride ID is required')
+    }
+
+    if (!userId) {
+      throw new Error('User ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    let result
+    try {
+      result = await client.query(query, { userId })
+      debug(
+        `removeRiderFromRide(tripRideId=${tripRideId}, userId=${userId}) resp1: ${JSON.stringify(
+          result
+        )}`
+      )
+
+      const relationshipId = result //TODO
+
+      result = await client.query(mutation, { relationshipId })
+      debug(
+        `removeRiderFromRide(tripRideId=${tripRideId}, userId=${userId}) resp2: ${JSON.stringify(
+          result
+        )}`
+      )
+      result = result?.create_trip_ride_riders_item || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to add rider to trip ride: ${JSON.stringify(err)}`)
+    }
+
+    // Validate the relationship record using the TripRideRiders model schema.
+    const relationForValidation = {
+      id: result.id,
+      trip_ride_id: result.trip_ride_id?.id ?? result.trip_ride_id,
+      item: result.item?.id ?? result.item,
+      collection: result.collection
+    }
+
+    const { error } = TripRideRidersModelSchema.validate(relationForValidation, {
+      allowUnknown: true
+    })
+    if (error) {
+      debug(
+        `removeRiderFromRide(tripRideId=${tripRideId}, userId=${userId}) validation error: ${error.message}`
+      )
+    }
+
+    debug(
+      `removeRiderFromRide(tripRideId=${tripRideId}, userId=${userId}) result: ${JSON.stringify(
+        result
+      )}`
+    )
+    return result
+  }
+
+  /**
+   * Remove a rider from a ride.
+   *
+   * @param {string} tripId - The ID of the trip to remove the rider from.
+   * @param {string} userId - The ID of the user to remove as a rider.
+   * @param {string} [mutation=ADD_RIDER_MUTATION] - Optional custom GraphQL mutation.
+   *
+   * @returns {Promise<Object>} - The relationship record, including basic user info.
+   *
+   * @throws {Error} if required parameters are missing or the backend call fails.
+   */
+  static async removeRiderFromTrip(tripId, userId, query = GET_TRIP_RIDES_BY_RIDER_QUERY, mutation = REMOVE_RIDER_MUTATION) {
+    if (!tripId) {
+      throw new Error('Trip ride ID is required')
+    }
+
+    if (!userId) {
+      throw new Error('User ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    let result
+    try {
+      result = await client.query(query, { userId })
+      debug(
+        `removeRiderFromTrip(tripId=${tripId}, userId=${userId}) resp1: ${JSON.stringify(
+          result
+        )}`
+      )
+
+      const relationshipId = result //TODO
+
+      result = await client.query(mutation, { relationshipId })
+      debug(
+        `removeRiderFromTrip(tripId=${tripId}, userId=${userId}) resp2: ${JSON.stringify(
+          result
+        )}`
+      )
+      result = result?.create_trip_ride_riders_item || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to add rider to trip ride: ${JSON.stringify(err)}`)
+    }
+
+    // Validate the relationship record using the TripRideRiders model schema.
+    const relationForValidation = {
+      id: result.id,
+      trip_ride_id: result.trip_ride_id?.id ?? result.trip_ride_id,
+      item: result.item?.id ?? result.item,
+      collection: result.collection
+    }
+
+    const { error } = TripRideRidersModelSchema.validate(relationForValidation, {
+      allowUnknown: true
+    })
+    if (error) {
+      debug(
+        `removeRiderFromTrip(tripId=${tripId}, userId=${userId}) validation error: ${error.message}`
+      )
+    }
+
+    debug(
+      `removeRiderFromTrip(tripId=${tripId}, userId=${userId}) result: ${JSON.stringify(
+        result
+      )}`
+    )
+    return result
+  }
+
+  /**
+   * Remove a rider from all trips and rides.
+   *
+   * @param {string} userId - The ID of the user to remove as a rider.
+   * @param {string} [mutation=ADD_RIDER_MUTATION] - Optional custom GraphQL mutation.
+   *
+   * @returns {Promise<Object>} - The relationship record, including basic user info.
+   *
+   * @throws {Error} if required parameters are missing or the backend call fails.
+   */
+  static async removeRiderFromAll(userId, query = GET_TRIP_RIDES_BY_RIDER_QUERY, mutation = REMOVE_RIDER_MUTATION) {
+    if (!userId) {
+      throw new Error('User ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    let result
+    try {
+      result = await client.query(query, { userId })
+      debug(
+        `removeRiderFromAll(userId=${userId}) resp: ${JSON.stringify(
+          result
+        )}`
+      )
+
+      const relationshipId = result //TODO
+
+      result = await client.query(mutation, { relationshipId })
+      debug(
+        `removeRiderFromAll(userId=${userId}) resp: ${JSON.stringify(
+          result
+        )}`
+      )
+      result = result?.create_trip_ride_riders_item || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to add rider to trip ride: ${JSON.stringify(err)}`)
+    }
+
+    // Validate the relationship record using the TripRideRiders model schema.
+    const relationForValidation = {
+      id: result.id,
+      trip_ride_id: result.trip_ride_id?.id ?? result.trip_ride_id,
+      item: result.item?.id ?? result.item,
+      collection: result.collection
+    }
+
+    const { error } = TripRideRidersModelSchema.validate(relationForValidation, {
+      allowUnknown: true
+    })
+    if (error) {
+      debug(
+        `removeRiderFromAll(userId=${userId}) validation error: ${error.message}`
+      )
+    }
+
+    debug(
+      `removeRiderFromAll(userId=${userId}) result: ${JSON.stringify(
+        result
+      )}`
+    )
+    return result
+  }
+
+  /**
    * Get riders (users) for a given trip ride.
    *
    * @param {string} tripRideId - The ID of the trip_ride whose riders to fetch.
@@ -154,7 +368,7 @@ export default class Rider {
    *
    * @throws {Error} if required parameters are missing or the backend call fails.
    */
-  static async removeRiderFromRide(relationshipId, mutation = REMOVE_RIDER_MUTATION) {
+  static async removeRiderFromRideById(relationshipId, mutation = REMOVE_RIDER_MUTATION) {
     if (!relationshipId) {
       throw new Error('Relationship ID is required')
     }
@@ -170,10 +384,10 @@ export default class Rider {
     }
 
     debug(
-      `removeRiderFromRide(relationshipId=${relationshipId}) mutation: ${mutation}`
+      `removeRiderFromRideById(relationshipId=${relationshipId}) mutation: ${mutation}`
     )
     debug(
-      `removeRiderFromRide(relationshipId=${relationshipId}) variables: ${JSON.stringify(
+      `removeRiderFromRideById(relationshipId=${relationshipId}) variables: ${JSON.stringify(
         variables
       )}`
     )
@@ -182,7 +396,7 @@ export default class Rider {
     try {
       result = await client.query(mutation, variables)
       debug(
-        `removeRiderFromRide(relationshipId=${relationshipId}) resp: ${JSON.stringify(
+        `removeRiderFromRideById(relationshipId=${relationshipId}) resp: ${JSON.stringify(
           result
         )}`
       )
@@ -192,7 +406,7 @@ export default class Rider {
     }
 
     debug(
-      `removeRiderFromRide(relationshipId=${relationshipId}) result: ${JSON.stringify(
+      `removeRiderFromRideById(relationshipId=${relationshipId}) result: ${JSON.stringify(
         result
       )}`
     )
