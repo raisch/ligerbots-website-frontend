@@ -61,7 +61,7 @@
             
 
 	        <div 
-                style="flex-basis: 100%; display: flex; align-items: center; width: 100%; cursor: {remaining > 0 || RideId === id ? 'pointer' : 'not-allowed'}; {RideId === id ? 'outline: 2px solid #3375a6;' : ''}"
+                style="flex-basis: 100%; display: flex; align-items: center; width: 100%; cursor: {remaining > 0 || RideId === id ? 'pointer' : 'not-allowed'}; {RideId === id ? 'outline: 2px solid #3375a6;     background-color: #3375a61f;' : ''}"
                 onclick={() => {
                         if (remaining <= 0 || RideId === id) return; // User cannot select a full ride, user cannot re-select the same ride
                         SetId(id)

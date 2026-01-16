@@ -221,12 +221,9 @@
                   <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
                   <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
                     <div 
-                    style={`width: 15px; height: 15px; background-color: ${destinationRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
-                    onclick={() => {
-                      setDestinationRideId(-1)
-                    }}
-                    ></div>
-                    <div style="font-size: 12px;">Opt Out</div>
+                      class="optout{destinationRideId === -1 ? ' optout-selected' : ''}"
+                      onclick={() => setDestinationRideId(-1)}
+                    >Opt Out</div>
                   </div>
 
                   {#if isAdmin}
@@ -241,10 +238,9 @@
                   <div style="font-size: 25px; padding-bottom: 5px;">Return Trips</div>
                   <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
                     <div 
-                      style={`width: 15px; height: 15px; background-color: ${returnRideId === -1 ? '#3375a6' :  'transparent'}; border-radius: 5px; border: 1.5px solid #3375a6; margin-left: 2px;`}
+                      class="optout{returnRideId === -1 ? ' optout-selected' : ''}"
                       onclick={() => setReturnRideId(-1)}
-                    ></div>
-                    <div style="font-size: 12px;">Opt Out</div>
+                    >Opt Out</div>
                   </div>
 
                   {#if isAdmin}
@@ -329,5 +325,18 @@
   :is(.confirm, .remove):disabled {
     background-color: #808080;
     cursor: not-allowed;
+  }
+
+  .optout {
+    height: 2em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-left: 2px;
+    padding: 0 10px;
+    cursor: pointer;
+  }
+  .optout.optout-selected {
+    outline: 2px solid #3375a6;
+    background-color: #3375a61f;
   }
 </style>
