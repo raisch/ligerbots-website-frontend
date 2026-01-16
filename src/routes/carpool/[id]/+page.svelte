@@ -61,7 +61,6 @@
 
   //@ts-ignore
   function setDestinationRideId(rideId) {
-    console.log(typeof(rideId))
     destinationRideId = destinationRideId === rideId ? null : rideId;
   }
 
@@ -110,6 +109,9 @@
 
 
 <div class="container mt-4">
+  {#if modifying}
+    <CreateOrModifySignup Subject={modifying} SetModifying={setModifying} eventId={event?.id} />
+  {/if}
   <h1>Carpool Event Detail Page</h1>
 
   <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
@@ -135,9 +137,13 @@
                     ></div>
                     <div style="font-size: 12px;">Opt Out</div>
                   </div>
-                  
+
+                  {#if isAdmin}
+                    <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'destination_trip', item: {} }, 'create')}>+</div>
+                  {/if}
+
                   {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} />
+                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
                   {/each}
                 </div>
                 <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
@@ -149,8 +155,13 @@
                     ></div>
                     <div style="font-size: 12px;">Opt Out</div>
                   </div>
+
+                  {#if isAdmin}
+                    <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'return_trip', item: {} }, 'create')}>+</div>
+                  {/if}
+
                   {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} />
+                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
                   {/each}
                 </div>
               </div>
@@ -177,6 +188,24 @@
 </div>
 
 <style lang="css">
+
+  .AddButton {
+    border: 1px solid rgb(100,100,100); 
+    height: 60px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    background-color: rgb(235, 235, 235);
+    line-height: 60px; 
+    text-align: center; 
+    font-size: 30px; 
+    color: rgb(130,130,130);
+    font-weight: 600; 
+    cursor: pointer;
+  }
+
+  .AddButton:hover {
+    background-color: rgb(225, 225, 225);
+  }
   .badge-success {
     background-color: #28a745;
   }
@@ -195,8 +224,7 @@
     color: white;
     border-radius: 5px;
     border: none;
-    padding: 5px;
-    min-width: 120px;
+    padding: 5px 15px;
     align-self: center;
   }
 
