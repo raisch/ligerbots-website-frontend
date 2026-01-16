@@ -216,8 +216,8 @@
           <p class="card-text"><strong>Location:</strong> {event?.location}</p>
           <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
             {#if trips.length > 0}
-              <div style="display: flex; justify-content: space-between;">
-                <div style="list-style-type: none; padding: 0; float: left; width: 49%;">
+              <div class="trip-box-container" style="display: flex; justify-content: space-between;">
+                <div class="trip-box">
                   <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
                   <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
                     <div 
@@ -234,7 +234,7 @@
                     <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
                   {/each}
                 </div>
-                <div style="list-style-type: none; padding: 0; float: right; width: 49%;">
+                <div class="trip-box">
                   <div style="font-size: 25px; padding-bottom: 5px;">Return Trips</div>
                   <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
                     <div 
@@ -276,6 +276,22 @@
 </div>
 
 <style lang="css">
+  .trip-box {
+    list-style-type: none;
+    padding: 0;
+    float: left;
+    width: 49%;
+  }
+
+  @media (max-width: 768px) {
+    .trip-box-container {
+      flex-direction: column;
+    }
+    .trip-box {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  }
 
   .AddButton {
     border: 1px solid rgb(100,100,100); 
