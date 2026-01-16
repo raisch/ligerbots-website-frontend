@@ -4,6 +4,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import CarpoolTrip from '$lib/components/CarpoolTrip.svelte';
+  import { refresh } from '@directus/sdk';
   import { removeFromRide, updateRideSelections } from './ride.remote';
 
   /**
@@ -30,12 +31,11 @@
    * @typedef {Array<Trip>} Trips
    */
 
-  /** @typ e {{ data?: EventRecord }} */
+  /** @type {{ data?: {event: Event, userId?: string, existingRides?: {id: string}[]} }} */
   let { data } = $props();
-  
 
-  /** @type {Event|undefined} */
   let event = $derived(data?.event);
+  $inspect(page.url.hash, event);
 
   /** @type {Trips} */
   let trips = $derived(event?.trips || []);
@@ -43,6 +43,22 @@
   let destinationRideId = $state(/** @type {number | null} */ (null));
   let returnRideId = $state(/** @type {number | null} */ (null));
   
+  let existingRides = $derived(data?.existingRides?.map(ride => ride.id) || [])
+
+  console.log('existingRides', existingRides)
+  for (let trip of trips) {
+    console.log(trip)
+    if (trip.collection === 'destination_trip') {
+      let ride = trip.item.rides.find((/** @type {{ item: {id: string} }} */ ride) => (console.log(ride), existingRides.includes(ride.item?.id)))
+      console.log('found destination ride', ride)
+      if (ride?.item !== undefined) destinationRideId = parseInt(ride.item.id);
+    } else if (trip.collection === 'return_trip') {
+      let ride = trip.item.rides.find((/** @type {{ item: {id: string} }} */ ride) => existingRides.includes(ride.item?.id))
+      console.log('found return ride', ride)
+      if (ride?.item !== undefined) returnRideId = parseInt(ride.item.id);
+    }
+  }
+
   //@ts-ignore
   function setDestinationRideId(rideId) {
     console.log(typeof(rideId))
@@ -54,16 +70,41 @@
     returnRideId = returnRideId === rideId ? null : rideId;
   }
 
-  function updateSelections() {
-    console.log('updating selections', {destinationRideId, returnRideId})
-    updateRideSelections({user: data?.userId, event: event?.id || '-1', rides: {
-      destination_trip: destinationRideId?.toString() ?? null,
-      return_trip: returnRideId?.toString() ?? null
-    }})
+  async function updateSelections() {
+    console.log('updating selections', {destinationRideId, returnRideId, event})
+    try {
+      await updateRideSelections({user: data?.userId ?? '-1', event: event?.id ?? '-1', rides: {
+        destination_trip: destinationRideId?.toString() ?? null,
+        return_trip: returnRideId?.toString() ?? null
+      }})
+      alert('1')
+      goto('#success-add', {invalidateAll: true})
+    } catch (e) {
+      goto('#error-add', {invalidateAll: true})
+      alert('Error updating selections: ' + e)
+    }
   }
-  function removeSelections() {
-    console.log('removing selections', {destinationRideId, returnRideId})
-    removeFromRide({user: data?.userId, event: event?.id || '-1', rides: ['destination_trip', 'return_trip']})
+  async function removeSelections() {
+    console.log('removing selections', {destinationRideId, returnRideId, event})
+    try {
+      await removeFromRide({user: data?.userId ?? '-1', event: event?.id ?? '-1'})
+      alert('1')
+      goto('#success-remove', {invalidateAll: true})
+    } catch (e) {
+      goto('#error-remove', {invalidateAll: true})
+      alert('Error removing selections: ' + e)
+    }
+  }
+  async function removeAllSelections() {
+    console.log('removing selections', {destinationRideId, returnRideId, event})
+    try {
+      await removeFromRide({user: data?.userId ?? '-1', event: null})
+      alert('1')
+      goto('#success-remove', {invalidateAll: true})
+    } catch (e) {
+      goto('#error-remove', {invalidateAll: true})
+      alert('Error removing selections: ' + e)
+    }
   }
 </script>
 
@@ -113,12 +154,21 @@
                   {/each}
                 </div>
               </div>
-              <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
-              <button onclick={removeSelections}>Test: Leave</button>
+              <div style="justify-content: center; display: flex; gap: 10px; margin: 10px 0;">
+                <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
+                <button class="remove" onclick={removeSelections}>Test: Leave</button>
+              </div>
             {:else}
               <p>No trips available for this event.</p>
             {/if}
-            <button onclick={removeSelections}>Test: Leave all</button>
+            <button class="remove" onclick={removeAllSelections}>Test: Leave all</button>
+
+            <div id="message">
+              <div hidden={page.url.hash !== "#success-add"} style="color: green;">Successfully updated ride selections!</div>
+              <div hidden={page.url.hash !== "#error-add"} style="color: red;">Error updating ride selections.</div>
+              <div hidden={page.url.hash !== "#success-remove"} style="color: green;">Successfully removed from rides!</div>
+              <div hidden={page.url.hash !== "#error-remove"} style="color: red;">Error removing from rides.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -140,8 +190,7 @@
     border-radius: 15px;
   }
 
-  .confirm {
-    background-color: #3375a6;
+  .confirm, .remove {
     cursor: pointer;
     color: white;
     border-radius: 5px;
@@ -150,7 +199,14 @@
     min-width: 120px;
     align-self: center;
   }
-  .confirm:disabled {
+
+  .confirm {
+    background-color: #3375a6;
+  }
+  .remove {
+    background-color: #dc3545;
+  }
+  :is(.confirm, .remove):disabled {
     background-color: #808080;
     cursor: not-allowed;
   }

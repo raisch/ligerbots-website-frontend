@@ -20,33 +20,38 @@ const RideRegistrationFormSchema = Joi.object({
  * @typedef RideRemoveFormSchema
  * @prop {string} user
  * @prop {string?} event
- * @prop {Array<'destination_trip' | 'return_trip'>?} rides
  */
 const RideRemoveFormSchema = Joi.object({
   user: Joi.string().pattern(/^[0-9]+$/).required(),
   event: Joi.string().pattern(/^[0-9]+$/).allow(null),
-  rides: Joi.array().items(Joi.valid("destination_trip", "return_trip")).required().allow(null),
 })
 
 export const updateRideSelections = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides}) => {
   debug(`updateRideSelections(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
+  /**
+   * @type {any[]}
+   */
+  let r = []
   Object.entries(rides).forEach(async ([, selection]) => {
-    Rider.removeRiderFromTrip(event, user); // prevent duplicates
+    r.push(await Rider.removeRiderFromTrip(event, user).catch(console.error)); // prevent duplicates
     if (selection) {
-      await Rider.addRiderToRide(selection, user)
+      r.push(await Rider.addRiderToRide(selection, user).catch(console.error))
     }
   })
+  return r
 })
 
-export const removeFromRide = command('unchecked', async (/** @type {RideRemoveFormSchema} */ {user, event, rides}) => {
-  debug(`updateRideSelections(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
+export const removeFromRide = command('unchecked', async (/** @type {RideRemoveFormSchema} */ {user, event}) => {
+  debug(`removeFromRide(event=${event}, user=${user})`)
+  console.log(`removeFromRide(event=${event}, user=${user})`)
+  /**
+   * @type {any[]}
+   */
+  let r = []
   if (event) {
-    if (rides) {
-      rides.forEach(async type => {
-        
-      })
-    }
+    r.push(await Rider.removeRiderFromTrip(event, user).catch(console.error));
   } else {
-    Rider.removeRiderFromAll(user);
+    r.push(await Rider.removeRiderFromAll(user).catch(console.error));
   }
+  return r
 })
