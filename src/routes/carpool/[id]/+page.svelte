@@ -6,6 +6,8 @@
   import CarpoolTrip from '$lib/components/CarpoolTrip.svelte';
   import { refresh } from '@directus/sdk';
   import { removeFromRide, updateRideSelections } from './ride.remote';
+  import { onMount } from 'svelte';
+  import CreateOrModifySignup from '$lib/components/CreateOrModifySignup.svelte';
 
   /**
    * @typedef {Object} EventRecord
@@ -59,6 +61,28 @@
     }
   }
 
+  /** @type {Record<string, any> | null} */
+  let modifying = $state(null)
+
+  /**
+     * Set the current modifying subject if none is set.
+     * @param {Record<string, any> | null} subject
+     * @param {string} mode
+     * @returns {void}
+     */
+  function setModifying(subject, mode) {
+    if (subject) {
+      subject.mode = mode
+    }
+    
+    modifying = subject
+  }
+
+  function undoChanges() {
+    destinationRideId = previousDestinationRideId;
+    returnRideId = previousReturnRideId;
+  }
+
   //@ts-ignore
   function setDestinationRideId(rideId) {
     destinationRideId = destinationRideId === rideId ? null : rideId;
@@ -105,6 +129,73 @@
       alert('Error removing selections: ' + e)
     }
   }
+
+  /** @type {number | null} */
+  let previousDestinationRideId = $state(null);
+  /** @type {number | null} */
+  let previousReturnRideId = $state(null);
+
+  let isAdmin = true;
+  /** @type {number} */
+  let userId = 0;
+
+  onMount(() => {
+    let user = sessionStorage.getItem('user');
+
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      isAdmin = parsedUser.is_admin;
+      userId = parseInt(parsedUser.id);
+      console.log(parsedUser)
+    }
+    else {
+      
+      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+      const raw = m?.[1]
+      let parsedUser = null
+      if (raw) {
+        try {
+          parsedUser = JSON.parse(decodeURIComponent(raw))
+        } catch (e) {
+          console.warn('Failed to parse user cookie', e)
+        }
+      }
+
+      isAdmin = parsedUser?.is_admin ?? isAdmin;
+      userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;
+    }
+
+    if (userId) {
+      for (let i = 0; i < trips?.length; i++) { // finding user's current rides
+        const trip = trips[i];
+        for (let j = 0; j < trip.item.rides.length; j++) {
+          const ride = trip.item.rides[j];
+          const riders = ride.item.riders;
+          for (let k = 0; k < riders.length; k++) {
+            const rider = riders[k];
+            if (parseInt(rider.item.id) === userId) {
+              if (trip.collection === 'destination_trip') {
+                destinationRideId = parseInt(ride.item.id);
+                previousDestinationRideId = parseInt(ride.item.id);
+              } else if (trip.collection === 'return_trip') {
+                returnRideId = parseInt(ride.item.id);
+                previousReturnRideId = parseInt(ride.item.id);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (previousDestinationRideId && !previousReturnRideId) {
+      previousReturnRideId = -1;
+      returnRideId = -1;
+    }
+    if (!previousDestinationRideId && previousReturnRideId) {
+      previousDestinationRideId = -1;
+      destinationRideId = -1;
+    }
+  });
 </script>
 
 
