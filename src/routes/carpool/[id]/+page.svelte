@@ -100,7 +100,6 @@
         destination_trip: destinationRideId?.toString() ?? null,
         return_trip: returnRideId?.toString() ?? null
       }})
-      alert('1')
       goto('#success-add', {invalidateAll: true})
     } catch (e) {
       goto('#error-add', {invalidateAll: true})
@@ -111,7 +110,6 @@
     console.log('removing selections', {destinationRideId, returnRideId, event})
     try {
       await removeFromRide({user: data?.userId ?? '-1', event: event?.id ?? '-1'})
-      alert('1')
       goto('#success-remove', {invalidateAll: true})
     } catch (e) {
       goto('#error-remove', {invalidateAll: true})
@@ -122,7 +120,6 @@
     console.log('removing selections', {destinationRideId, returnRideId, event})
     try {
       await removeFromRide({user: data?.userId ?? '-1', event: null})
-      alert('1')
       goto('#success-remove', {invalidateAll: true})
     } catch (e) {
       goto('#error-remove', {invalidateAll: true})
@@ -135,12 +132,13 @@
   /** @type {number | null} */
   let previousReturnRideId = $state(null);
 
-  let isAdmin = true;
+  let isAdmin = $state(false);
   /** @type {number} */
   let userId = 0;
 
   onMount(() => {
     let user = sessionStorage.getItem('user');
+
 
     if (user) {
       const parsedUser = JSON.parse(user);
@@ -164,6 +162,7 @@
       isAdmin = parsedUser?.is_admin ?? isAdmin;
       userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;
     }
+
 
     if (userId) {
       for (let i = 0; i < trips?.length; i++) { // finding user's current rides
@@ -195,6 +194,7 @@
       previousDestinationRideId = -1;
       destinationRideId = -1;
     }
+
   });
 </script>
 
@@ -257,13 +257,14 @@
                 </div>
               </div>
               <div style="justify-content: center; display: flex; gap: 10px; margin: 10px 0;">
+                <button class="undoChanges" disabled={previousDestinationRideId === null || previousReturnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={undoChanges}>Undo Changes</button>
                 <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
-                <button class="remove" onclick={removeSelections}>Test: Leave</button>
+                <button class="remove" onclick={removeSelections} hidden={existingRides.length === 0}>Cancel event registration</button>
               </div>
             {:else}
               <p>No trips available for this event.</p>
             {/if}
-            <button class="remove" onclick={removeAllSelections}>Test: Leave all</button>
+            <!-- <button class="remove" onclick={removeAllSelections}>Test: Leave all</button> -->
 
             <div id="message">
               <div hidden={page.url.hash !== "#success-add"} style="color: green;">Successfully updated ride selections!</div>
