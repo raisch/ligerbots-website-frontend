@@ -8,6 +8,7 @@
   import { removeFromRide, updateRideSelections } from './ride.remote';
   import { onMount } from 'svelte';
   import CreateOrModifySignup from '$lib/components/CreateOrModifySignup.svelte';
+  import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
 
   /**
    * @typedef {Object} EventRecord
@@ -136,6 +137,8 @@
   /** @type {number} */
   let userId = 0;
 
+  let confirm = $state(false);
+
   onMount(() => {
     let user = sessionStorage.getItem('user');
 
@@ -201,9 +204,15 @@
 
 
 <div class="container mt-4">
-  {#if modifying}
-    <CreateOrModifySignup Subject={modifying} SetModifying={setModifying} eventId={event?.id} />
-  {/if}
+  <div class="modifying-box">
+    {#if modifying}
+      {#if modifying.mode === 'editEvent'}
+        <CreateOrModifyEventSignup Subject={modifying} SetModifying={setModifying} eventId={event?.id} />
+      {:else}
+        <CreateOrModifySignup Subject={modifying} SetModifying={setModifying} eventId={event?.id} />
+      {/if}
+    {/if}
+  </div>
   <h1>Carpool Event Detail Page</h1>
 
   <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
@@ -215,6 +224,21 @@
           <p class="card-text"><strong>Start Date:</strong> {event?.start_date}</p>
           <p class="card-text"><strong>End Date:</strong> {event?.end_date}</p>
           <p class="card-text"><strong>Location:</strong> {event?.location}</p>
+          
+          {#if isAdmin}
+            <span class="deleteButton" onclick={() => {
+                if (confirm) {
+
+                } else {
+                    confirm = true;
+                    setTimeout(() => {
+                        confirm = false;
+                    }, 2000);
+                }
+            }}>{confirm ? "Confirm?" : "Delete"}</span>
+            <span class="editButton" onclick={() => setModifying({ item: event }, "editEvent")}>Edit</span>
+          {/if}
+
           <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
             {#if trips.length > 0}
               <div class="trip-box-container" style="display: flex; justify-content: space-between;">
@@ -277,6 +301,17 @@
 </div>
 
 <style lang="css">
+  .card-body {
+    position: relative;
+  }
+  /* .modifying-box {
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translate(-50%);
+    z-index: 99999;
+  } */
+
   .trip-box {
     list-style-type: none;
     padding: 0;
@@ -311,6 +346,43 @@
   .AddButton:hover {
     background-color: rgb(225, 225, 225);
   }
+  .deleteButton {
+    right: 70px;
+    top: 10px;
+    position: absolute;
+    border: 1px solid rgb(111, 0, 0); 
+    height: 30px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    background-color: rgba(95, 0, 0, 0.2);    
+    line-height: 30px; 
+    text-align: center; 
+    font-size: 15px;
+    color: rgb(111, 0, 0);
+    cursor: pointer;
+    padding: 0 10px;
+    }
+  .editButton {
+    right: 10px;
+    top: 10px;
+    position: absolute;
+    border: 1px solid rgb(100,100,100); 
+    width: 50px;
+    height: 30px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    background-color: rgb(235, 235, 235);
+    line-height: 30px; 
+    text-align: center; 
+    font-size: 15px;
+    color: rgb(130,130,130);
+    cursor: pointer;
+  }
+
+  .editButton:hover {
+    background-color: rgb(225, 225, 225);
+  }
+
   .badge-success {
     background-color: #28a745;
   }

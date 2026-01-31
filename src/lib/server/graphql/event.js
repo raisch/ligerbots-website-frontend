@@ -1,3 +1,5 @@
+import { RIDER_USER_FIELDS } from "./rider"
+
 const queries = {
   EVENT_QUERY: `{
     event(filter: { status: { _eq: "{{status}}" } }) {
@@ -162,6 +164,140 @@ const queries = {
           }
       }
   }`,
+    /**
+ * GraphQL query for fetching a single event by ID, including all of its trips, rides, and riders.
+ *
+ * Replace `{{id}}` with the Directus event ID.
+ */
+    EVENT_COMPLETE_BY_ID_QUERY: `{
+        event_complete_by_id: event_trips_by_id(id: "{{id}}") {
+            id
+            start_date
+            end_date
+            name
+            description
+            status
+            location
+            trips {
+                item {
+                    ... on destination_trip {
+                        destination
+                        departs_from
+                        departs_on
+                        departs_at
+                        status
+                        rides {
+                            item {
+                                ... on trip_ride {
+                                    id
+                                    ride {
+                                        vehicle_type
+                                        name
+                                        seats
+                                        driver {
+                                            item {
+                                                ... on users {
+                                                    id
+                                                    firstname
+                                                    lastname
+                                                    email_address
+                                                    phone_number
+                                                    photo {
+                                                        id
+                                                        filename_disk
+                                                        filename_download
+                                                    }
+                                                }
+                                            }
+                                            id
+                                            collection
+                                        }
+                                        id
+                                    }
+                                    riders {
+                                        item {
+                                            ${RIDER_USER_FIELDS}
+                                        }
+                                        id
+                                        collection
+                                    }
+                                    id
+                                    riders_func {
+                                        count
+                                    }
+                                }
+                            }
+                            collection
+                        }
+                        id
+                        status
+                        rides_func {
+                            count
+                        }
+                    }
+                    ... on return_trip {
+                        id
+                        status
+                        destination
+                        departs_from
+                        departs_on
+                        departs_at
+                        rides {
+                            item {
+                                ... on trip_ride {
+                                    id
+                                    ride {
+                                        vehicle_type
+                                        name
+                                        seats
+                                        driver {
+                                            item {
+                                                ... on users {
+                                                    id
+                                                    firstname
+                                                    lastname
+                                                    email_address
+                                                    phone_number
+                                                    photo {
+                                                        id
+                                                        filename_disk
+                                                        filename_download
+                                                    }
+                                                }
+                                            }
+                                            id
+                                            collection
+                                        }
+                                        id
+                                    }
+                                    riders {
+                                        item {
+                                            ${RIDER_USER_FIELDS}
+                                        }
+                                        id
+                                        collection
+                                    }
+                                    id
+                                    riders_func {
+                                        count
+                                    }
+                                }
+                            }
+                            collection
+                        }
+                        id
+                        status
+                        rides_func {
+                            count
+                        }
+                    }
+                }
+                id
+                collection
+            }
+        }
+    }`,
+
   // GraphQL mutation for creating a new event
   CREATE_EVENT_MUTATION: `mutation ($event: create_event_input!) {
     create_event_item(data: $event) {
