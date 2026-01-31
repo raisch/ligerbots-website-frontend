@@ -132,7 +132,7 @@
   /** @type {number | null} */
   let previousReturnRideId = $state(null);
 
-  let isAdmin = $state(false);
+  let isAdmin = $state(true);
   /** @type {number} */
   let userId = 0;
 
@@ -147,7 +147,6 @@
       console.log(parsedUser)
     }
     else {
-      
       const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
       const raw = m?.[1]
       let parsedUser = null
@@ -158,6 +157,8 @@
           console.warn('Failed to parse user cookie', e)
         }
       }
+
+      console.log('user', parsedUser)
 
       isAdmin = parsedUser?.is_admin ?? isAdmin;
       userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;

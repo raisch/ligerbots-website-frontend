@@ -3,14 +3,7 @@ import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
 
-import {
-  EVENT_QUERY,
-  EVENT_BY_ID_QUERY,
-  EVENT_COMPLETE_BY_ID_QUERY,
-  CREATE_EVENT_MUTATION,
-  UPDATE_EVENT_MUTATION,
-  DELETE_EVENT_MUTATION
-} from '$lib/server/graphql/event'
+import Queries from '$lib/server/graphql/event'
 
 import {
   CREATE_DESTINATION_TRIP_MUTATION,
@@ -77,7 +70,7 @@ export default class Event {
    *
    * @throws {Error} if failed to retrieve events.
    */
-  static async getEvents(status = 'published', query = EVENT_QUERY) {
+  static async getEvents(status = 'published', query = Queries.EVENT_QUERY) {
     const client = await getBackendClient()
 
     if (!client) {
@@ -107,7 +100,7 @@ export default class Event {
    * @param {string} [query=EVENT_BY_ID_QUERY] - The GraphQL query to use. It should contain a placeholder for the ID.
    * @returns {Promise<EventRecord|undefined>} - The event record if found, otherwise undefined.
    */
-  static async getEventById(id, query = EVENT_BY_ID_QUERY) {
+  static async getEventById(id, query = Queries.EVENT_BY_ID_QUERY) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -139,7 +132,7 @@ export default class Event {
    * @returns {Promise<EventRecord|undefined>} - The complete event record if found, otherwise undefined,
    *   with its `trips` array hydrated to include destination and return trips, rides, and riders.
    */
-  static async getCompleteEventById(id, query = EVENT_COMPLETE_BY_ID_QUERY) {
+  static async getCompleteEventById(id, query = Queries.EVENT_COMPLETE_BY_ID_QUERY) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -204,7 +197,7 @@ export default class Event {
    *
    * @throws {Error} if failed to create the event.
    */
-  static async createEvent(eventData, mutation = CREATE_EVENT_MUTATION) {
+  static async createEvent(eventData, mutation = Queries.CREATE_EVENT_MUTATION) {
     if (!eventData.name) {
       throw new Error('Event name is required')
     }
@@ -262,7 +255,7 @@ export default class Event {
    *
    * @throws {Error} if failed to update the event.
    */
-  static async updateEvent(id, eventData, mutation = UPDATE_EVENT_MUTATION) {
+  static async updateEvent(id, eventData, mutation = Queries.UPDATE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -339,7 +332,7 @@ export default class Event {
    *
    * @throws {Error} if failed to archive the event.
    */
-  static async archiveEvent(id, mutation = UPDATE_EVENT_MUTATION) {
+  static async archiveEvent(id, mutation = Queries.UPDATE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -357,7 +350,7 @@ export default class Event {
    *
    * @throws {Error} if failed to delete the event.
    */
-  static async deleteEvent(id, mutation = DELETE_EVENT_MUTATION) {
+  static async deleteEvent(id, mutation = Queries.DELETE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
