@@ -27,17 +27,45 @@
         }
     }
 
+    /**
+     * Delete a trip by its ID.
+     * @param {number} id - The ID of the trip to delete.
+     * @param {string} collection - The collection the trip belongs to.
+     */
+    function deleteTrip(id, collection) {
+        const url = collection ? `/api/carpool/trip/${id}?collection=${encodeURIComponent(collection)}` : `/api/carpool/trip/${id}`
+        fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(async (res) => {
+                        if (res.ok) {
+                            // Successfully deleted, refresh the page or navigate away
+                            location.reload();
+                        } else {
+                            const result = await res.json();
+                            const err = result?.error ?? result;
+                            const message = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err);
+                            alert(message || 'Failed to delete trip');
+                        }
+                    }).catch((error) => {
+                        alert('Error deleting trip: ' + (error && error.message ? error.message : String(error)));
+                    });
+    }
+
     let confirm = $state(false);
 </script>
 <div style="position: relative;">
     {#if trip}
         {@const {item} = trip}
-        {@const rides = trip.item.rides}
-        <span style="flex-basis: 100%;">From {item.departs_from} to {item.destination}</span>
-        {#if isAdmin}
+        {@const rides = trip?.item?.rides}
+        <span style="flex-basis: 100%;">From {item?.departs_from} to {item?.destination}</span>
+            {#if isAdmin}
             <span class="deleteButton" onclick={() => {
                 if (confirm) {
-
+                    // Perform deletion
+                    deleteTrip(parseInt(item.id), trip.collection);
                 } else {
                     confirm = true;
                     setTimeout(() => {
@@ -48,9 +76,10 @@
             <span class="editButton" onclick={() => setSubject(trip, "edit")}>Edit</span>
         {/if}
         
-        <span style="flex-basis: 100%;">Date: {item.departs_on}</span>
-        <span>Departs at {item.departs_at}</span>
-        <span>Arrives at {item.arrives_at}</span>
+        <span style="flex-basis: 100%;">Date: {item?.departs_on}</span>
+        <span>Departs at {item?.departs_at}</span>
+        <span>Arrives at {item?.arrives_at}</span>
+        {#if rides}
         {#each rides as ride}
             {@const { item } = ride}
             {@const id = parseInt(item.id)}
@@ -72,6 +101,7 @@
                 >{RideId === id ? "Selected" : (remaining > 0 ? 'Select' : 'Full')}</span>
 	        </div>
         {/each}
+        {/if}
 
 
         
