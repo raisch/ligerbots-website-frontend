@@ -4,7 +4,7 @@ import Queries from '$lib/server/graphql/event'
 
 export async function POST({ request }) {
   const body = await request.json()
-  const { mode, item, eventId } = body || {}
+  const { mode, item } = body || {}
 
   const client = await getBackendClient()
 

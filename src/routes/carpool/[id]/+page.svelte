@@ -220,7 +220,7 @@
       <div class="card mb-6">
         <div class="card-body">
           <h2 class="card-title">{event?.name}</h2>
-          <p class="card-text">{event?.description}</p>
+          <p class="card-text event-description">{event?.description}</p>
           <p class="card-text"><strong>Start Date:</strong> {event?.start_date}</p>
           <p class="card-text"><strong>End Date:</strong> {event?.end_date}</p>
           <p class="card-text"><strong>Location:</strong> {event?.location}</p>
@@ -327,6 +327,10 @@
       width: 100%;
       margin-bottom: 20px;
     }
+  }
+
+  .event-description {
+    white-space: pre-wrap;
   }
 
   .AddButton {
