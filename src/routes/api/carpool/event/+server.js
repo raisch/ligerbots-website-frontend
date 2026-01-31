@@ -11,18 +11,18 @@ export async function POST({ request }) {
   try {
     if (mode === 'createEvent') {
       /** @type {Record<string, any>} */
-      const tripData = {
+      const eventData = {
         status: 'published'
       }
       
-      if (item.name && item.name.trim()) tripData.name = item.name.trim()
-      if (item.description && item.description.trim()) tripData.description = item.description.trim()
-      if (item.start_date) tripData.start_date = item.start_date
-      if (item.end_date) tripData.end_date = item.end_date
-      if (item.location) tripData.location = item.location
-      if (item.status) tripData.status = item.status
+      if (item.name && item.name.trim()) eventData.name = item.name.trim()
+      if (item.description && item.description.trim()) eventData.description = item.description.trim()
+      if (item.start_date) eventData.start_date = item.start_date
+      if (item.end_date) eventData.end_date = item.end_date
+      if (item.location) eventData.location = item.location
+      if (item.status) eventData.status = item.status
       
-      const variables = { event: tripData }
+      const variables = { event: eventData }
       const resp = await client.query(Queries.CREATE_EVENT_MUTATION, variables)
       
       if (resp?.errors) {
@@ -34,16 +34,16 @@ export async function POST({ request }) {
       
     } else if (mode === 'editEvent') {
       /** @type {Record<string, any>} */
-      const tripData = {}
+      const eventData = {}
       
-      if (item.name !== undefined) tripData.name = item.name
-      if (item.description !== undefined) tripData.description = item.description
-      if (item.start_date !== undefined) tripData.start_date = item.start_date
-      if (item.end_date !== undefined) tripData.end_date = item.end_date
-      if (item.location !== undefined) tripData.location = item.location
-      if (item.status !== undefined) tripData.status = item.status
+      if (item.name !== undefined) eventData.name = item.name
+      if (item.description !== undefined) eventData.description = item.description
+      if (item.start_date !== undefined) eventData.start_date = item.start_date
+      if (item.end_date !== undefined) eventData.end_date = item.end_date
+      if (item.location !== undefined) eventData.location = item.location
+      if (item.status !== undefined) eventData.status = item.status
       
-      const variables = { id: String(item.id), trip: tripData }
+      const variables = { id: String(item.id), event: eventData }
       const resp = await client.query(Queries.UPDATE_EVENT_MUTATION, variables)
       
       if (resp?.errors) {
