@@ -81,10 +81,15 @@
                 return
             }
 
-            console.log('created event', result)
+            if (Subject.mode === 'editEvent') {
+                // // close modal and let parent refresh
+                SetModifying && SetModifying(null, `editEvent`)
+                location.reload()
+                return
+            }
 
-            // close modal and let parent refresh
-            SetModifying && SetModifying(null, "createEvent")
+            // close modal
+            SetModifying && SetModifying(null, 'createEvent')
             // show event page
             goto(`/carpool/${result.create_event_item.id}`)
         } catch (err) {

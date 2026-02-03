@@ -97,7 +97,7 @@
 
               {#if isAdmin}
                 <div class="bg-light p-2 rounded">
-                  <button class="btn btn-secondary" onclick={() => goto(`/carpool/${event.id}/edit`)}>Edit Event</button>
+                  <button class="btn btn-secondary" onclick={() => setModifying({ mode: 'editEvent', item: event }, 'editEvent')}>Edit Event</button>
                   <button class="btn btn-danger" onclick={() => deleteEvent(event.id)}>Delete Event</button>
                 </div>
               {/if}
