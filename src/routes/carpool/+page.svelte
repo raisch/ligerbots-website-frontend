@@ -3,6 +3,8 @@
   // path: /carpool
 
   import { goto } from '$app/navigation'
+  import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
+  import { onMount } from 'svelte';
 
   /**
    * Navigate to the event details page when an event is clicked
@@ -12,37 +14,62 @@
     goto(`/carpool/${eventId}`)
   }
 
-  import { onMount } from 'svelte';
 
-  let isAdmin = false;
+  let isAdmin = $state(true);
 
   onMount(() => {
     const user = sessionStorage.getItem('user');
 
     if (user) {
       const parsedUser = JSON.parse(user);
-      console.log(parsedUser);
       isAdmin = parsedUser.is_admin;
+      console.log(parsedUser)
+    } else {
+      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+      const raw = m?.[1]
+      let parsedUser = null
+      if (raw) {
+        try {
+          parsedUser = JSON.parse(decodeURIComponent(raw))
+        } catch (e) {
+          console.warn('Failed to parse user cookie', e)
+        }
+      }
+
+      isAdmin = parsedUser?.is_admin ?? isAdmin;
     }
   });
 
-  export let data
-  export let events = data?.events || []
+  let { data } = $props();
+  let { events = [] } = $derived(data)
 
+  let modifying: Record<string, any> | null = $state(null)
+
+  function setModifying(subject: Record<string, any> | null, mode: string) {
+    if (subject) {
+      subject.mode = mode
+    }
+    
+    modifying = subject
+  }
   function deleteEvent(eventId: any) {
     alert("havent implemented yet cuz im lazy - ray")
   }
+
 </script>
 
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Carpool Events</h1>
     {#if isAdmin}
+      {#if modifying}
+        <CreateOrModifyEventSignup Subject={modifying} SetModifying={setModifying} />
+      {/if}
       <div class="admin-actions">
-        <button class="btn btn-success me-2" on:click={() => goto('/carpool/admin')}>
+        <button class="btn btn-success me-2" onclick={()=>{}}>
           Manage Cars
         </button>
-        <button class="btn btn-primary" on:click={() => goto('/carpool/create')}>
+        <button class="btn btn-primary" onclick={() => setModifying({ mode: 'createEvent', item: {} }, 'createEvent')}>
           Create Event
         </button>
       </div>
@@ -66,12 +93,12 @@
               <p class="card-text"><strong>Start Date:</strong> {event.start_date}</p>
               <p class="card-text"><strong>End Date:</strong> {event.end_date}</p>
               <p class="card-text"><strong>Location:</strong> {event.location}</p>
-              <button class="btn btn-primary" on:click={() => goToDetails(event.id)}>View Trips</button>
+              <button class="btn btn-primary" onclick={() => goToDetails(event.id)}>View Trips</button>
 
               {#if isAdmin}
                 <div class="bg-light p-2 rounded">
-                  <button class="btn btn-secondary" on:click={() => goto(`/carpool/${event.id}/edit`)}>Edit Event</button>
-                  <button class="btn btn-danger" on:click={() => deleteEvent(event.id)}>Delete Event</button>
+                  <button class="btn btn-secondary" onclick={() => goto(`/carpool/${event.id}/edit`)}>Edit Event</button>
+                  <button class="btn btn-danger" onclick={() => deleteEvent(event.id)}>Delete Event</button>
                 </div>
               {/if}
             </div>

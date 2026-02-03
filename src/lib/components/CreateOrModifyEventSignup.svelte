@@ -1,4 +1,6 @@
 <script>
+  import { goto } from "$app/navigation";
+
     /**
      * Props
      */
@@ -7,10 +9,10 @@
      * @type {{
      *   Subject: { mode?: 'editEvent'|'createEvent', collection?: string, item?: { id?: number|string, [key: string]: any } } | null,
      *   SetModifying: (subject: Record<string, any> | null, mode: string) => void,
-     *   eventId: string|number|undefined
+     *   eventId?: string|number|undefined
      * }}
      */
-    let { Subject, SetModifying, eventId } = $props();
+    let { Subject, SetModifying } = $props();
 
     // initialize fields with safe defaults; $effect will populate when Subject arrives
     let fields = $state({
@@ -61,7 +63,6 @@
         const payload = {
             mode: Subject.mode || 'createEvent',
             item: itemPayload,
-            eventId
         }
 
         try {
@@ -80,10 +81,12 @@
                 return
             }
 
+            console.log('created event', result)
+
             // close modal and let parent refresh
-            SetModifying && SetModifying(null, "create")
-            // simple refresh of page to show changes
-            location.reload()
+            SetModifying && SetModifying(null, "createEvent")
+            // show event page
+            goto(`/carpool/${result.create_event_item.id}`)
         } catch (err) {
             console.error(err)
             alert('Error saving')

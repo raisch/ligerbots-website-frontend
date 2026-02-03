@@ -48,16 +48,16 @@
   
   let existingRides = $derived(data?.existingRides?.map(ride => ride.id) || [])
 
-  console.log('existingRides', existingRides)
+  //console.log('existingRides', existingRides)
   for (let trip of trips) {
-    console.log(trip)
+    //console.log(trip)
     if (trip.collection === 'destination_trip') {
-      let ride = trip.item.rides.find((/** @type {{ item: {id: string} }} */ ride) => (console.log(ride), existingRides.includes(ride.item?.id)))
-      console.log('found destination ride', ride)
+      let ride = trip.item.rides.find((/** @type {{ item: {id: string} }} */ ride) => existingRides.includes(ride.item?.id))
+      //console.log('found destination ride', ride)
       if (ride?.item !== undefined) destinationRideId = parseInt(ride.item.id);
     } else if (trip.collection === 'return_trip') {
       let ride = trip.item.rides.find((/** @type {{ item: {id: string} }} */ ride) => existingRides.includes(ride.item?.id))
-      console.log('found return ride', ride)
+      //console.log('found return ride', ride)
       if (ride?.item !== undefined) returnRideId = parseInt(ride.item.id);
     }
   }
@@ -137,10 +137,10 @@
   /** @type {number} */
   let userId = 0;
 
-  let confirm = $state(false);
+  let confirmDelete = $state(false);
 
   onMount(() => {
-    let user = sessionStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
 
 
     if (user) {
@@ -148,8 +148,7 @@
       isAdmin = parsedUser.is_admin;
       userId = parseInt(parsedUser.id);
       console.log(parsedUser)
-    }
-    else {
+    } else {
       const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
       const raw = m?.[1]
       let parsedUser = null
@@ -160,8 +159,6 @@
           console.warn('Failed to parse user cookie', e)
         }
       }
-
-      console.log('user', parsedUser)
 
       isAdmin = parsedUser?.is_admin ?? isAdmin;
       userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;
@@ -227,15 +224,20 @@
           
           {#if isAdmin}
             <span class="deleteButton" onclick={() => {
-                if (confirm) {
-
+                if (confirmDelete) {
+                  // TODO create better dialog
+                  let deletionConfirmed = confirm('Are you sure you want to delete this event?\nThis action cannot be undone.');
+                  if (deletionConfirmed) {
+                    // TODO create api for this
+                  }
+                  confirmDelete = false;
                 } else {
-                    confirm = true;
+                    confirmDelete = true;
                     setTimeout(() => {
-                        confirm = false;
+                        confirmDelete = false;
                     }, 2000);
                 }
-            }}>{confirm ? "Confirm?" : "Delete"}</span>
+            }}>{confirmDelete ? "Confirm?" : "Delete"}</span>
             <span class="editButton" onclick={() => setModifying({ item: event }, "editEvent")}>Edit</span>
           {/if}
 
