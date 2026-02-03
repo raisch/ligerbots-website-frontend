@@ -242,43 +242,43 @@
           {/if}
 
           <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
-            {#if trips.length > 0}
-              <div class="trip-box-container" style="display: flex; justify-content: space-between;">
-                <div class="trip-box">
-                  <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
-                  <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
-                    <div 
-                      class="optout{destinationRideId === -1 ? ' optout-selected' : ''}"
-                      onclick={() => setDestinationRideId(-1)}
-                    >Opt Out</div>
-                  </div>
-
-                  {#if isAdmin}
-                    <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'destination_trip', item: {} }, 'create')}>+</div>
-                  {/if}
-
-                  {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                    <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
-                  {/each}
+            <div class="trip-box-container" style="display: flex; justify-content: space-between;">
+              <div class="trip-box">
+                <div style="font-size: 25px; padding-bottom: 5px;">Destination Trips</div>
+                <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
+                  <div 
+                    class="optout{destinationRideId === -1 ? ' optout-selected' : ''}"
+                    onclick={() => setDestinationRideId(-1)}
+                  >Opt Out</div>
                 </div>
-                <div class="trip-box">
-                  <div style="font-size: 25px; padding-bottom: 5px;">Return Trips</div>
-                  <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
-                    <div 
-                      class="optout{returnRideId === -1 ? ' optout-selected' : ''}"
-                      onclick={() => setReturnRideId(-1)}
-                    >Opt Out</div>
-                  </div>
 
-                  {#if isAdmin}
-                    <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'return_trip', item: {} }, 'create')}>+</div>
-                  {/if}
+                {#if isAdmin}
+                  <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'destination_trip', item: {} }, 'create')}>+</div>
+                {/if}
 
-                  {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                    <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
-                  {/each}
-                </div>
+                {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
+                  <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
+                {/each}
               </div>
+              <div class="trip-box">
+                <div style="font-size: 25px; padding-bottom: 5px;">Return Trips</div>
+                <div style="display: flex; gap: 5px; padding-bottom: 5px; align-items: center;">
+                  <div 
+                    class="optout{returnRideId === -1 ? ' optout-selected' : ''}"
+                    onclick={() => setReturnRideId(-1)}
+                  >Opt Out</div>
+                </div>
+
+                {#if isAdmin}
+                  <div class="AddButton" onclick={() => setModifying({ mode: 'create', collection: 'return_trip', item: {} }, 'create')}>+</div>
+                {/if}
+
+                {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
+                  <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
+                {/each}
+              </div>
+            </div>
+            {#if trips.length > 0}
               <div style="justify-content: center; display: flex; gap: 10px; margin: 10px 0;">
                 <button class="undoChanges" disabled={previousDestinationRideId === null || previousReturnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={undoChanges}>Undo Changes</button>
                 <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
