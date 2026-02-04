@@ -9,15 +9,6 @@ import TripRideRidersModelSchema from '$lib/server/models/trip_ride_riders.model
 const debug = createDebugMessages('APP:lib/server/rider')
 
 /**
- * @typedef RiderType
- * @property {string} id
- * @property {"trip_ride_riders"} collection
- * @property {Object} item
- * @property {string} item.id
- * @property {string} item.trip_ride_id
- */
-
-/**
  * Rider service for managing riders associated with a trip ride.
  *
  * This class uses:

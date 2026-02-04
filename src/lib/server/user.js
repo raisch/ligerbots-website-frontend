@@ -17,6 +17,18 @@ import { error, redirect } from '@sveltejs/kit'
 
 const debug = createDebugMessages('APP:$lib/server/user')
 
+
+/**
+ * @typedef UserType
+ * @property {string} id
+ * @property {Object} item
+ * @property {string} item.id
+ * @property {string} item.firstname
+ * @property {string} item.lastname
+ * @property {string} item.email_address
+ * @property {string} item.phone_number
+ */
+
 export default class User {
   /**
    * Get a list of all users.
