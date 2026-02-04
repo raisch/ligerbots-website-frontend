@@ -13,6 +13,18 @@ import RideModelSchema from '$lib/server/models/ride.model.js'
 
 const debug = createDebugMessages('APP:lib/server/ride')
 
+/**
+ * @typedef RideType
+ * @property {Object} item
+ * @property {string} item.id
+ * @property {import('./rider').RiderType[]} item.riders
+ * @property {Object} item.riders_func
+ * @property {number} item.riders_func.count
+ * @property {Object} item.ride
+ * @property {string} item.ride.name
+ * @property {number} item.ride.seats
+ */
+
 /** @class */
 export default class Ride {
   /**

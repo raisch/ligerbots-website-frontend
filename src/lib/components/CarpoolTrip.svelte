@@ -2,7 +2,7 @@
 
     /** 
      * @type {{ 
-     *   trip: import('$lib/server/trip').Trip,
+     *   trip: import('$lib/server/trip').TripType,
      *   RideId: number | null,
      *   SetId: (rideId: number | null) => void,
      *   previousDestinationRideId: number | null,

@@ -27,7 +27,7 @@
    */
 
   /**
-   * @typedef {import('$lib/server/trip').Trip} Trip
+   * @typedef {import('$lib/server/trip').TripType} Trip
    */
 
   /**

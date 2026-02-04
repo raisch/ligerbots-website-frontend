@@ -27,6 +27,21 @@ function getTripSchema(type) {
   return null
 }
 
+/** 
+ * @typedef TripType
+ * @property {string} id
+ * @property {"destination_trip"|"return_trip"} collection
+ * @property {Object} item
+ * @property {string} item.id
+ * @property {string} item.event_id
+ * @property {string} item.departs_at
+ * @property {string} item.departs_on
+ * @property {string} item.arrives_at
+ * @property {string} item.destination
+ * @property {string} item.departs_from
+ * @property {Array<import('./ride').RideType>} item.rides
+ */
+
 /** @class */
 export default class Trip {
   /**

@@ -17,7 +17,10 @@
 
   let isAdmin = $state(true);
 
+  console.log('page is loading')
   onMount(() => {
+    console.log('onmount called')
+
     const user = sessionStorage.getItem('user');
 
     if (user) {
@@ -56,6 +59,7 @@
     alert("havent implemented yet cuz im lazy - ray")
   }
 
+  //console.log('events?:', events)
 </script>
 
 <div class="container mt-4">
