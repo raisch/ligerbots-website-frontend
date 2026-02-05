@@ -2,22 +2,23 @@
   import RiderListRide from './RiderListRide.svelte';
 
   import type { TripType } from "$lib/server/trip";
+  import { formatDate, prettyDate, prettyTime } from '$lib/util';
 
-  let {trip}: { trip: TripType } = $props();
+  let { trip, printMode = false }: { trip: TripType, printMode?: boolean } = $props();
 
   const {item: {departs_from, destination, departs_on, departs_at, arrives_at, rides}} = trip
 </script>
 
 <div class="trip-item">
-  <h3>{departs_from} to {destination}</h3>
-  <p>{departs_on} from {departs_at} to {arrives_at}</p>
+  <h4>{departs_from} to {destination}</h4>
+  <p>{prettyDate(departs_on)} from {prettyTime(`${departs_on} ${departs_at}`)} to {prettyTime(`${departs_on} ${arrives_at}`)}</p>
   <div class="riders">
     {#if rides && rides.length > 0}
       {#each rides as ride}
-        <RiderListRide {ride}/>
+        <RiderListRide {ride} {printMode} />
       {/each}
     {:else}
-      <p>No rides for this trip</p>
+      <p><i>No rides for this trip</i></p>
     {/if}
   </div>
 </div>
