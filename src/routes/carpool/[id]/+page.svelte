@@ -240,6 +240,9 @@
             }}>{confirmDelete ? "Confirm?" : "Delete"}</span>
             <span class="editButton" onclick={() => setModifying({ item: event }, "editEvent")}>Edit</span>
           {/if}
+          <div class="riderlistButtonBlock">
+            <a class="riderlistButton btn-primary" href="/carpool/{event?.id}/riderlist">View Riders</a>
+          </div>
 
           <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
             <div class="trip-box-container" style="display: flex; justify-content: space-between;">
@@ -281,8 +284,8 @@
             {#if trips.length > 0}
               <div style="justify-content: center; display: flex; gap: 10px; margin: 10px 0;">
                 <button class="undoChanges" disabled={previousDestinationRideId === null || previousReturnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={undoChanges}>Undo Changes</button>
-                <button class="confirm" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
-                <button class="remove" onclick={removeSelections} hidden={existingRides.length === 0}>Cancel event registration</button>
+                <button class="confirm btn-primary" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
+                <button class="remove btn-danger" onclick={removeSelections} hidden={existingRides.length === 0}>Cancel event registration</button>
               </div>
             {:else}
               <p>No trips available for this event.</p>
@@ -389,6 +392,20 @@
     background-color: rgb(225, 225, 225);
   }
 
+  .riderlistButtonBlock {
+    position: absolute;
+    right: 10px;
+    top: 50px;
+ }
+  .riderlistButton {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    /* background: #3375a6; */
+  }
+  
+
   .badge-success {
     background-color: #28a745;
   }
@@ -411,12 +428,6 @@
     align-self: center;
   }
 
-  .confirm {
-    background-color: #3375a6;
-  }
-  .remove {
-    background-color: #dc3545;
-  }
   :is(.confirm, .remove):disabled {
     background-color: #808080;
     cursor: not-allowed;
