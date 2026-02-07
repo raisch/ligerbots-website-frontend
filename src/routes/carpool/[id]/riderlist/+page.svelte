@@ -1,20 +1,22 @@
 <script lang="ts">
   import RiderList from "$lib/components/RiderList.svelte";
   import type { TripType } from "$lib/server/trip";
-  import { onMount } from "svelte";
+  import { onMount, setContext } from "svelte";
 
   let { data }: { data: { trips: TripType[] } } = $props();
   let { trips } = $derived(data);
 
-  let printMode = $state(false);
+  let hideContactInfo = $state('none');
 
   onMount(() => {
     let params = new URLSearchParams(location.search);
-    if (params.has('print')) printMode = true;
+    if (params.has('hide-contact')) hideContactInfo = params.get('hide-contact') || 'none';
   });
 </script>
 
-<RiderList {trips} {printMode} />
+<div class="rider-list-container" data-hide-contact={hideContactInfo}>
+  <RiderList {trips} />
+</div>
 
 <style>
 
@@ -25,6 +27,13 @@
 
     p, li {
       font-size: 14px;
+    }
+    
+    [data-hide-contact=email] .contact-email {
+      display: none;
+    }
+    [data-hide-contact=all] .contact-info {
+      display: none;
     }
 
     @media print {
@@ -46,9 +55,6 @@
 
       /*  */
 
-      .contact-email {
-        display: none;
-      }
       .contact-info a[href]::after {
         content: "";
       }

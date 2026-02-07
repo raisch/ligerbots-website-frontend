@@ -241,7 +241,8 @@
             <span class="editButton" onclick={() => setModifying({ item: event }, "editEvent")}>Edit</span>
           {/if}
           <div class="riderlistButtonBlock">
-            <a class="riderlistButton btn-primary" href="/carpool/{event?.id}/riderlist">View Riders</a>
+            <a class="riderlistButton btn-primary" href="/carpool/{event?.id}/riderlist" target="_blank">View Riders</a>
+            <a class="riderlistButton btn-success" href="/carpool/{event?.id}/export" target="_blank">Export Spreadsheet</a>
           </div>
 
           <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
@@ -396,6 +397,8 @@
     position: absolute;
     right: 10px;
     top: 50px;
+    display: flex;
+    gap: 10px;
  }
   .riderlistButton {
     display: inline-block;
@@ -444,5 +447,27 @@
   .optout.optout-selected {
     outline: 2px solid #3375a6;
     background-color: #3375a61f;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
   }
 </style>
