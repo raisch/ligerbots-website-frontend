@@ -5,6 +5,8 @@ import { getBackendClient } from '$lib/server/client'
 import { ADD_RIDER_MUTATION, GET_TRIP_RIDES_BY_RIDER_QUERY2 as GET_TRIP_RIDES_BY_RIDER_QUERY, GET_TRIP_RIDES_QUERY, REMOVE_RIDER_MUTATION } from '$lib/server/graphql/rider.js'
 import { GET_TRIP_RIDE_BY_ID_QUERY } from '$lib/server/graphql/trip_ride.js'
 import TripRideRidersModelSchema from '$lib/server/models/trip_ride_riders.model.js'
+import Event from './event'
+import queries from './graphql/event'
 
 const debug = createDebugMessages('APP:lib/server/rider')
 
@@ -182,7 +184,7 @@ export default class Rider {
    *
    * @throws {Error} if required parameters are missing or the backend call fails.
    */
-  static async removeRiderFromTrip(eventId, userId, query = GET_TRIP_RIDES_BY_RIDER_QUERY, mutation = REMOVE_RIDER_MUTATION) {
+  static async removeRiderFromTrip(eventId, userId, query = queries.EVENT_BY_ID_QUERY, mutation = REMOVE_RIDER_MUTATION) {
     if (!eventId) {
       throw new Error('Event ID is required')
     }
@@ -197,19 +199,27 @@ export default class Rider {
       throw new Error('Backend client is not available')
     }
 
-    /** @type {{event_by_id: {trips: {item: {rides: { ride: {riders: {item: {id: string}, id: string}[]}}[]}}[]}}} */
+    /** @type {import('./event').EventType} */
     let result1
     /** @type {PromiseSettledResult<{id: string}>[]} */
     let result2
     try {
-      result1 = await client.query(query, { eventId })
+      result1 = /** @type {import('./event').EventType} */(await Event.getEventById(eventId, query))
       debug(
         `removeRiderFromTrip(eventId=${eventId}, userId=${userId}) resp1: ${JSON.stringify(
           result1
         )}`
       )
 
-      const relationshipIds = result1.event_by_id.trips.map(trip => trip.item.rides ?? []).flat().map(ride => (ride?.ride?.riders ?? []).find(rider => rider?.item?.id === userId)?.id).filter(id => id !== undefined)  //TODO
+      // console.log(JSON.stringify(result1, null, 1))
+      const relationshipIds = result1?.trips
+        ?.map((/** @type {import('./trip').TripType} */ trip) => trip.item.rides ?? [])
+        .flat()
+        .map(ride => (ride?.item?.riders ?? []).filter(rider => rider?.item?.id === userId).map(rider => rider?.id))
+        .flat()
+        .filter(id => id !== undefined) ?? []  //TODO
+
+      console.log('relationship ids', relationshipIds)
 
       result2 = await Promise.allSettled(relationshipIds.map(async id => await Rider.removeRiderFromRideById(id, mutation)))
     } catch (/** @type {any} */ err) {
@@ -221,10 +231,12 @@ export default class Rider {
         result2
       )}`
     )
+
     return result2
   }
 
   /**
+   * [DO NOT USE]  
    * Remove a rider from all trips and rides.
    *
    * @param {string} userId - The ID of the user to remove as a rider.
@@ -253,7 +265,6 @@ export default class Rider {
     try {
       console.log(userId) // debug
       result1 = await client.query(query)
-      console.log(result1, '----')
       debug(
         `removeRiderFromAll(userId=${userId}) resp: ${JSON.stringify(
           result1
@@ -277,6 +288,7 @@ export default class Rider {
         result2
       )}`
     )
+
     return result2
   }
 
@@ -353,7 +365,7 @@ export default class Rider {
       throw new Error('Backend client is not available')
     }
 
-    /** @type {{event_by_id: {trips: {item: {rides: { ride: {riders: {item: {id: string}, id: string}[]}}[]}}[]}}} */
+    /** @type {{event_by_id: import('./event').EventType}} */
     let result1
     /** @type {{riders: {id: string, item: {id: string}}[]}[]} */
     let result2
@@ -364,8 +376,13 @@ export default class Rider {
           result1
         )}`
       )
+      result2 = result1.event_by_id.trips
+        ?.map((/** @type {import('./trip').TripType} */trip) => trip.item.rides ?? [])
+        .flat()
+        .filter(ride => (ride?.item?.riders ?? []).some(rider => rider?.item?.id === userId))
+        .map(ride => ride.item) ?? [] //TODO
 
-      result2 = result1.event_by_id.trips.map(trip => trip.item.rides ?? []).flat().filter(ride => (ride?.ride?.riders ?? []).some(rider => rider?.item?.id === userId)).map(ride => ride?.ride)  //TODO
+      //console.log(result2, '----')
 
     } catch (/** @type {any} */ err) {
       throw new Error(`Failed to get rides for rider: ${JSON.stringify(err)}`)
@@ -408,7 +425,6 @@ export default class Rider {
     try {
       console.log(userId) // debug
       result1 = await client.query(query)
-      console.log(result1, '----')
       debug(
         `getAllRidesForRider(userId=${userId}) resp: ${JSON.stringify(
           result1

@@ -286,7 +286,7 @@
               <div style="justify-content: center; display: flex; gap: 10px; margin: 10px 0;">
                 <button class="undoChanges" disabled={previousDestinationRideId === null || previousReturnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={undoChanges}>Undo Changes</button>
                 <button class="confirm btn-primary" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
-                <button class="remove btn-danger" onclick={removeSelections} hidden={existingRides.length === 0}>Cancel event registration</button>
+                <button class="remove btn-danger" onclick={removeSelections} hidden={previousDestinationRideId === null && previousReturnRideId === null}>Cancel event registration</button>
               </div>
             {:else}
               <p>No trips available for this event.</p>

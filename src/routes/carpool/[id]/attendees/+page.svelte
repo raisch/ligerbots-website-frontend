@@ -1,9 +1,11 @@
 <script lang="ts">
-  import RiderList from "$lib/components/RiderList.svelte";
-  import type { EventCarpoolOptOut, EventType } from "$lib/server/event";
+  import OptOutList from "$lib/components/OptOutList.svelte";
+  import UserList from "$lib/components/UserList.svelte";
+  import type { EventType } from "$lib/server/event";
   import { onMount } from "svelte";
 
-  let { data }: { data: { event: EventType, optout: EventCarpoolOptOut } } = $props();
+  let { data }: { data: { event: EventType } } = $props();
+  let { event } = $derived(data);
 
   let hideContactInfo = $state('none');
 
@@ -13,8 +15,8 @@
   });
 </script>
 
-<div class="rider-list-container" data-hide-contact={hideContactInfo}>
-  <RiderList {...data} />
+<div class="attendee-list-container" data-hide-contact={hideContactInfo}>
+  <OptOutList users={event.attendees ?? []} />
 </div>
 
 <style>

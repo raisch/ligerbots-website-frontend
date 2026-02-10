@@ -56,7 +56,7 @@ export async function createCarpoolSheet(eventId) {
     Object.entries(rows).forEach(([rowId, cells]) => {
       const row = sheet.getRow(Number(rowId));
       cells.forEach((data, index) => {
-        console.log(data, rowId, index + 1)
+        //console.log(data, rowId, index + 1)
         const cell = row.getCell(index + 1);
         let font, color;
         switch (data.type) {
@@ -106,6 +106,33 @@ export async function createCarpoolSheet(eventId) {
   return file;
 }
 
+
+/**
+ * Used for opt out carpools
+ * @param {string} location
+ * @param {string} timeRange
+ * @param {string} name
+ * @param {{ users_id: { firstname: any; lastname: any; }; }[]} riders
+ */
+function createFakeCarpoolTrip(location, timeRange, name, riders) {
+  return {
+    location,
+    timeRange,
+    maxSize: riders.length,
+    rides: [{
+        name,
+        riders: riders.map(({ users_id: { firstname, lastname } }) => ({
+          name: `${firstname} ${lastname}`,
+          driver: false
+        })),
+        seats: riders.length,
+        totalSeats: riders.length,
+        maxSeats: riders.length,
+        totalMaxSeats: riders.length
+    }]
+  }
+}
+
 /**
  * @param {string} eventId
  */
@@ -121,13 +148,15 @@ async function getRiderListData(eventId) {
     return new Response('Could not create spreadsheet for event: Event not found', { status: 404 });
   }
 
+  let optout = Event.getOptOutEventAttendees(/** @type {import('./event').EventType} */(event));
+
   return {
     name: event.name || 'Carpool Event',
     timeRange: `${prettyDate(event.start_date)} to ${prettyDate(event.end_date)}`,
     location: event.location,
-    trips: event.trips?.sort(
+    trips: (event.trips?.sort(
       (a, b) => a.item.departs_on.localeCompare(b.item.departs_on)
-    ).map((/** @type {import("./trip").TripType} */ { item: { departs_from, destination, departs_on, departs_at, arrives_at, rides } }) => {
+    ).map(({ item: { departs_from, destination, departs_on, departs_at, arrives_at, rides } }) => {
       let max = 0;
       let tripData = {
         location: `${departs_from} to ${destination}`,
@@ -154,7 +183,10 @@ async function getRiderListData(eventId) {
       };
       tripData.maxSize = max;
       return tripData;
-    }) || []
+    }) || []).concat([
+      createFakeCarpoolTrip('Opted Out (destination trip)', 'To event', 'Opt Out', optout.to),
+      createFakeCarpoolTrip('Opted Out (return trip)', 'From event', 'Opt Out', optout.from)
+    ])
   };
 }
 
@@ -178,13 +210,13 @@ function createRows({ location, maxSize, rides, timeRange }, startRow) {
     let count = Math.max(maxSeats, seats);
     let pages = [riders.slice(0, MAX_RIDE_COLUMN_SIZE)];
     let pageId = 0;
-    console.log(`Ride "${name}" has ${seats} riders (max ${maxSeats})`);
-    console.log(count, pages.at(-1))
+    //console.log(`Ride "${name}" has ${seats} riders (max ${maxSeats})`);
+    //console.log(count, pages.at(-1))
     while (count > MAX_RIDE_COLUMN_SIZE) {
       pageId++;
       pages.push(riders.slice(pageId * MAX_RIDE_COLUMN_SIZE, (pageId + 1) * MAX_RIDE_COLUMN_SIZE));
       count -= MAX_RIDE_COLUMN_SIZE;
-      console.log(count, pages.at(-1))
+      //console.log(count, pages.at(-1))
     }
     return pages.map((page, i) => ({ name: i === 0 ? `${name} [${maxSeats}${seats > maxSeats ? '!' + seats : ''}]` : '', riders: page, count: page.length }));
   }).flat();
@@ -205,7 +237,7 @@ function createRows({ location, maxSize, rides, timeRange }, startRow) {
     let rowId = i + startRow + 3;
     rows[rowId] = [{ text: '|', type: 'none' }];
     ridePages.forEach(({ riders, count }) => {
-      console.log(riders[i], count, i)
+      //console.log(riders[i], count, i)
       if (count > i)
         rows[rowId].push({ text: riders[i].name || '', type: riders[i].driver ? 'driver' : 'rider' });
     })

@@ -49,7 +49,7 @@ export default class Trip {
    *
    * @param {string} eventId
    * @param {"destination_trip"|"return_trip"} [tripType="destination_trip"]
-   * @returns {Promise<Trip[]>}
+   * @returns {Promise<TripType[]>}
    */
   static async getTrips(eventId, tripType = 'destination_trip') {
     if (!eventId) {

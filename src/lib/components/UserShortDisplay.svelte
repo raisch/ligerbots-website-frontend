@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { UserType } from "$lib/server/user";
+  import type { EventUserRecord } from "$lib/server/event";
 
-  let { rider, driver = false, printMode = false }: { rider: UserType, driver?: boolean, printMode?: boolean } = $props();
+  let { user, driver = false }: { user: EventUserRecord, driver?: boolean } = $props();
 
   // svelte-ignore state_referenced_locally
-  const {item} = rider
-  const {firstname = "null", lastname = "", email_address = "", phone_number = ""} = item || {}
+  const {firstname = "null", lastname = "", email_address = "", phone_number = ""} = user || {}
 </script>
 
 

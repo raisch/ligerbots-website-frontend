@@ -234,6 +234,9 @@
         margin-bottom: 0;
         flex-direction: column;
         cursor: initial;
+        border: none;
+        padding: 5px;
+        margin-top: 5px;
     }
     .info-box div {
         border: none;
