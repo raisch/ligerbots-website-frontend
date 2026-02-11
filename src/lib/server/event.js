@@ -1118,13 +1118,14 @@ export default class Event {
     if (!event) {
       throw new Error('Event is required')
     }
+
     let optoutTo = event.attendees?.filter(attendee => 
       !event.trips?.filter((/** @type {import('$lib/server/trip.js').TripType} */ trip) => trip.collection === 'destination_trip')
-        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.id === attendee.users_id.id)))
+        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item.id === attendee.users_id.id)))
     ) ?? [];
     let optoutFrom = event.attendees?.filter(attendee => 
       !event.trips?.filter((/** @type {import('$lib/server/trip.js').TripType} */ trip) => trip.collection === 'return_trip')
-        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.id === attendee.users_id.id)))
+        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item.id === attendee.users_id.id)))
     ) ?? [];
     console.log(event)
     return {
