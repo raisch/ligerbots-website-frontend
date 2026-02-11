@@ -16,7 +16,7 @@
 </script>
 
 <div class="attendee-list-container" data-hide-contact={hideContactInfo}>
-  <OptOutList users={event.attendees ?? []} />
+  <UserList users={event.attendees?.map(attendee => attendee.users_id) ?? []} />
 </div>
 
 <style>
