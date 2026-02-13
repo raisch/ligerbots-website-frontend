@@ -4,8 +4,12 @@ import { getBackendClient } from '$lib/server/client'
 import joi from 'joi'
 
 import {
+  ADD_RIDE_TO_TRIP_MUTATION,
+  DELETE_TRIP_MUTATION,
   GET_DESTINATION_TRIPS_QUERY,
   GET_RETURN_TRIPS_QUERY,
+  GET_TRIP_BY_ID_QUERY,
+  REMOVE_RIDE_FROM_TRIP_MUTATION,
   UPDATE_DESTINATION_TRIP_MUTATION,
   UPDATE_RETURN_TRIP_MUTATION
 } from '$lib/server/graphql/trip'
@@ -164,5 +168,29 @@ export default class Trip {
 
     debug(`updateTrip(tripId=${tripData.id}) result: ${JSON.stringify(result)}`)
     return result
+  }
+
+  /**
+   * @param {string} tripId
+   * @return {Promise<import('./event').TripRecord>}
+   */
+  static async getTripById(tripId, query = GET_TRIP_BY_ID_QUERY) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+    const client = await getBackendClient()
+    let result = await client.query(query, { id: tripId })
+    return result?.trip_by_id
+  }
+  /**
+   * @param {string} tripId
+   */
+  static async deleteTrip(tripId, mutation = DELETE_TRIP_MUTATION) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+    const client = await getBackendClient()
+    let result = await client.query(mutation, { id: tripId })
+    return result?.trip_by_id
   }
 }

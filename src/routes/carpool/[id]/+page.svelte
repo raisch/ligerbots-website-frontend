@@ -5,14 +5,13 @@
   import { page } from '$app/state';
   import CarpoolTrip from '$lib/components/CarpoolTrip.svelte';
   import { refresh } from '@directus/sdk';
-  import { removeFromRide, updateRideSelections } from './ride.remote';
+  import { removeFromRide, updateRideSelections } from '../ride.remote';
   import { onMount } from 'svelte';
   import CreateOrModifySignup from '$lib/components/CreateOrModifySignup.svelte';
   import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
 
   /**
-   * @typedef {Object} EventRecord
-   * @property {Event} event - The event details
+   * @typedef {import('$lib/server/event').RideRecord} RideRecord
    */
 
   /**
@@ -34,7 +33,7 @@
    * @typedef {Array<Trip>} Trips
    */
 
-  /** @type {{ data?: {event: Event, userId?: string, existingRides?: {id: string}[]} }} */
+  /** @type {{ data?: {event: Event, userId?: string, existingRides?: {id: string}[], cars?: { allCars: RideRecord[], userOwnedCars: RideRecord[], userCanHaveCar: boolean } } }} */
   let { data } = $props();
 
   let event = $derived(data?.event);
@@ -47,6 +46,8 @@
   let returnRideId = $state(/** @type {number | null} */ (null));
   
   let existingRides = $derived(data?.existingRides?.map(ride => ride.id) || [])
+
+  let cars = $derived(data?.cars ?? { allCars: [], userOwnedCars: [], userCanHaveCar: false });
 
   //console.log('existingRides', existingRides)
   for (let trip of trips) {
@@ -260,7 +261,7 @@
                 {/if}
 
                 {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                  <CarpoolTrip {trip} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
+                  <CarpoolTrip {trip} {cars} {userId} RideId={destinationRideId} SetId={setDestinationRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying}  />
                 {/each}
               </div>
               <div class="trip-box">
@@ -277,7 +278,7 @@
                 {/if}
 
                 {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                  <CarpoolTrip {trip} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
+                  <CarpoolTrip {trip} {cars} {userId} RideId={returnRideId} SetId={setReturnRideId} previousDestinationRideId={previousDestinationRideId} previousReturnRideId={previousReturnRideId} isAdmin={isAdmin} modifying={modifying} SetModifying={setModifying} />
                 {/each}
               </div>
             </div>

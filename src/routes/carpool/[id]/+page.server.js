@@ -1,7 +1,9 @@
 /** @module routes/carpool/[id] */
 
 import Event from '$lib/server/event.js'
+import Ride from '$lib/server/ride'
 import Rider from '$lib/server/rider'
+import User from '$lib/server/user'
 import { redirect } from '@sveltejs/kit'
 
 /** @type {import('./$types').PageServerLoad} */
@@ -21,7 +23,11 @@ export async function load({ params, cookies }) {
   
   const existingRides = await Rider.getRidesForRider(event?.id ?? '-1', userId)
 
+  const allCars = await Ride.getAllRides()
+  const userOwnedCars = allCars.filter(ride => ride.driver?.some(driver => driver.id === userId))
+  const userCanHaveCar = (await User.findById(userId))?.carpool_driver_eligible ?? false;
+
   // console.log('event:', event)
 
-  return { event, userId, existingRides }
+  return { event, userId, existingRides, cars: { allCars, userOwnedCars, userCanHaveCar } }
 }

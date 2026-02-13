@@ -1,9 +1,15 @@
 <script lang="ts">
+  //////// COPIED FROM /carpool/[id]/+page.svelte ////////
+  // TODO rewrite to change to vehicle creation and editing page
+
+
+
   // List Active Carpool Events
   // path: /carpool
 
   import { goto } from '$app/navigation'
   import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
+  import CreateOrModifyVehicle from '$lib/components/CreateOrModifyVehicle.svelte';
   import { onMount } from 'svelte';
 
   /**
@@ -14,37 +20,8 @@
     goto(`/carpool/${eventId}`)
   }
 
-
-  let isAdmin = $state(true);
-
-  console.log('page is loading')
-  onMount(() => {
-    console.log('onmount called')
-
-    const user = sessionStorage.getItem('user');
-
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      isAdmin = parsedUser.is_admin;
-      console.log(parsedUser)
-    } else {
-      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
-      const raw = m?.[1]
-      let parsedUser = null
-      if (raw) {
-        try {
-          parsedUser = JSON.parse(decodeURIComponent(raw))
-        } catch (e) {
-          console.warn('Failed to parse user cookie', e)
-        }
-      }
-
-      isAdmin = parsedUser?.is_admin ?? isAdmin;
-    }
-  });
-
   let { data } = $props();
-  let { events = [] } = $derived(data)
+  let { cars, userId, isAdmin, eligibleDrivers } = data;
 
   let modifying: Record<string, any> | null = $state(null)
 
@@ -67,14 +44,11 @@
     <h1>Carpool Events</h1>
     {#if isAdmin}
       {#if modifying}
-        <CreateOrModifyEventSignup Subject={modifying} SetModifying={setModifying} />
+        <CreateOrModifyVehicle {userId} {isAdmin} {eligibleDrivers} Subject={modifying} SetModifying={setModifying} />
       {/if}
       <div class="admin-actions">
-        <button class="btn btn-success me-2" onclick={() => goto('/carpool/vehicles')}>
-          Manage Vehicles
-        </button>
-        <button class="btn btn-primary" onclick={() => setModifying({ mode: 'createEvent', item: {} }, 'createEvent')}>
-          Create Event
+        <button class="btn btn-primary" onclick={() => setModifying({ mode: 'create', item: {} }, 'create')}>
+          Create Vehicle
         </button>
       </div>
     {/if}
@@ -82,22 +56,21 @@
 
   {#if isAdmin}
     <div class="alert alert-info">
-      <strong>Admin Access:</strong> You have admin access to manage carpool events and cars.
+      <strong>Admin Access:</strong> You have admin access to manage vehicles.
     </div>
   {/if}
 
-  {#if events.length > 0}
+  {#if cars.length > 0}
     <div class="row events-list">
-      {#each events as event}
+      {#each cars as car}
         <div class="col-md-6">
           <div class="card mb-6">
             <div class="card-body">
-              <h2 class="card-title"><a href="/carpool/{event.id}">{event.name}</a></h2>
-              <p class="card-text">{event.description}</p>
-              <p class="card-text"><strong>Start Date:</strong> {event.start_date}</p>
-              <p class="card-text"><strong>End Date:</strong> {event.end_date}</p>
-              <p class="card-text"><strong>Location:</strong> {event.location}</p>
-              <button class="btn btn-primary" onclick={() => goToDetails(event.id)}>View Trips</button>
+              <h2 class="card-title"><a href="/carpool/{car.id}">{car.name}</a></h2>
+              <!-- <p class="card-text">{car.description}</p> -->
+              <p class="card-text"><strong>Type:</strong> {car.vehicle_type}</p>
+              <p class="card-text"><strong>Seats:</strong> {car.seats}</p>
+              <p class="card-text"><strong>Driver:</strong> <UserShortDisplay /></p>
 
               {#if isAdmin}
                 <div class="bg-light p-2 rounded">

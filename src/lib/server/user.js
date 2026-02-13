@@ -135,6 +135,54 @@ export default class User {
   }
 
   /**
+   * List all people who are allowed to drive a car for carpools.
+   *
+   * @param {Filters=} filter 
+   * @returns {Promise.<Array.<DirectoryUserRecord>>} - The list of users.
+   */
+  static async listEligibleCarpoolDrivers(filter) {
+    const client = await getBackendClient()
+    const query = `
+      query Users {
+        users(limit: -1, filter: { carpool_driver_eligible: { _eq: "true" } }) {
+          id
+          status
+          firstname
+          lastname
+          phone_number
+          email_address
+          address
+          school
+          groups
+          carpool_driver_eligible
+        }
+      }`
+
+    debug(`listEligibleCarpoolDrivers: query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      throw new Error(`Failed to list users: ${err}`)
+    }
+
+    if (!(result && result.users && Array.isArray(result.users))) {
+      return []
+    }
+
+    /** @type {DirectoryUserRecord[]} */
+    let users = result.users
+
+    if (filter) {
+      if (filter.type === 'coaches') {
+        users = users.filter(user => user.groups.includes('Coach') || user.groups.includes('Mentor'))
+      }
+    }
+    return users
+  }
+
+  /**
    * List all published users with photos for the /facebook route.
    *
    * @returns {Promise.<Array.<FacebookUserRecord>>} - The list of users.
@@ -206,6 +254,7 @@ export default class User {
           slug
           last_login
           is_admin
+          carpool_driver_eligible
         }
       }`
 
@@ -220,6 +269,54 @@ export default class User {
     const users = result?.users || []
     if (!(Array.isArray(users) && users.length === 1)) {
       debug(`findByEmail: no user found for email: ${email}`)
+      return null
+    }
+    return users[0]
+  }
+
+  /**
+   * Find a user by ID.
+   *
+   * @param {String} id - The ID of the user to find.
+   *
+   * @returns {Promise.<UserRecord | null>} - The user record if found, null otherwise.
+   *
+   * @throws {Error} If the Directus client is not valid.
+   * @throws {Error} If the query fails.
+   */
+  static async findById(id) {
+    const client = await getBackendClient()
+    const query = `
+      query Users($id: ID!) {
+        users_by_id(id: $id) {
+          id
+          status
+          firstname
+          lastname
+          email_address
+          groups
+          school
+          graduation_year
+          password
+          fullname
+          slug
+          last_login
+          is_admin
+          carpool_driver_eligible
+        }
+      }`
+
+    debug(`findById(${id}): query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query, { id })
+    } catch (err) {
+      throw new Error(`Failed to find user with ID "${id}": ${err}`)
+    }
+    const users = result?.users_by_id || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`findById: no user found for ID: ${id}`)
       return null
     }
     return users[0]
@@ -316,6 +413,8 @@ export default class User {
  * @property {String} fullname
  * @property {String} slug
  * @property {String} last_login
+ * @property {Boolean} is_admin
+ * @property {Boolean} carpool_driver_eligible
  */
 
 /**

@@ -191,6 +191,26 @@ export const DELETE_TRIP_MUTATION = `mutation ($collection: String!, $id: ID!) {
     }
 }`
 
+
+export const ADD_RIDE_TO_TRIP_MUTATION = `mutation ($tripRide: create_trip_ride_input!) {
+    create_trip_ride_item(data: $tripRide) {
+      id
+      ride {
+        id
+        vehicle_type
+        name
+        seats
+      }
+    }
+}`
+
+export const REMOVE_RIDE_FROM_TRIP_MUTATION = `mutation ($id: ID!) {
+    delete_trip_ride_item(id: $id) {
+      id
+    }
+}`
+
+
 export default {
   GET_DESTINATION_TRIPS_QUERY,
   GET_RETURN_TRIPS_QUERY,

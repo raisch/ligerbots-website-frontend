@@ -2,6 +2,9 @@ import Joi from 'joi';
 import { command } from '$app/server'
 import Rider from '$lib/server/rider';
 import createDebugMessages from 'debug';
+import Ride from '$lib/server/ride';
+import Event from '$lib/server/event';
+import Trip from '$lib/server/trip';
 const debug = createDebugMessages('APP:lib/server/event')
 
 /**
@@ -26,6 +29,18 @@ const RideRemoveFormSchema = Joi.object({
   event: Joi.string().pattern(/^[0-9]+$/).allow(null),
 })
 
+/**
+ * @typedef AddCarToTripSchema
+ * @prop {string} tripId
+ * @prop {string} tripCollection
+ * @prop {string} rideId
+ */
+/**
+ * @typedef RemoveCarFromTripSchema
+ * @prop {string} tripRideId
+ */
+
+
 export const updateRideSelections = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides}) => {
   debug(`updateRideSelections(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
   /**
@@ -44,14 +59,26 @@ export const updateRideSelections = command('unchecked', async (/** @type {RideR
 export const removeFromRide = command('unchecked', async (/** @type {RideRemoveFormSchema} */ {user, event}) => {
   debug(`removeFromRide(event=${event}, user=${user})`)
   console.log(`removeFromRide(event=${event}, user=${user})`)
-  /**
-   * @type {any[]}
-   */
-  let r = []
   if (event) {
-    r.push(await Rider.removeRiderFromTrip(event, user).catch(console.error));
+    return Rider.removeRiderFromTrip(event, user).catch(console.error);
   } else {
-    r.push(await Rider.removeRiderFromAll(user).catch(console.error));
+    return Rider.removeRiderFromAll(user).catch(console.error);
   }
-  return r
+})
+
+
+
+export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripSchema} */ { tripId, tripCollection, rideId }) => {
+  debug(`addCarToTrip()`)
+  let trip = await Trip.getTripById(tripId);
+  if (trip.rides?.some(ride => ride.ride.id === rideId)) return;
+  let ride = await Ride.getRideById(rideId);
+  if (!ride) return;
+
+  Event.createTripRide(tripId, tripCollection, {ride})
+})
+
+export const removeCarFromTrip = command('unchecked', async (/** @type {RemoveCarFromTripSchema} */ { tripRideId }) => {
+  debug(`addCarToTrip()`)
+  Event.deleteTripRide(tripRideId)
 })

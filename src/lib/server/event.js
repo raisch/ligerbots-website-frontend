@@ -664,12 +664,7 @@ export default class Event {
    * @param {string} tripId - The ID of the trip to create a ride for.
    * @param {string} tripCollection - The collection name ('destination_trip' or 'return_trip').
    * @param {Object} rideData - The ride data.
-   * @param {Object} rideData.ride - The ride information.
-   * @param {string} rideData.ride.vehicle_type - The type of vehicle.
-   * @param {string} rideData.ride.name - The name of the ride.
-   * @param {number} rideData.ride.seats - The number of seats available.
-   * @param {Object} [rideData.ride.driver] - The driver information.
-   * @param {string} rideData.ride.driver.id - The ID of the driver user.
+   * @param {RideRecord} rideData.ride - The ride information.
    * @param {string} [mutation=CREATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
    *
    * @returns {Promise<Object>} - The created trip ride.
@@ -1013,7 +1008,7 @@ export default class Event {
  * @property {string} vehicle_type
  * @property {string} name
  * @property {number} seats
- * @property {Object} [driver]
+ * @property {UserRecord[]} [driver]
  */
 
 /**

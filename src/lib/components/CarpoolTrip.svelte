@@ -9,10 +9,12 @@
      *   previousReturnRideId: number | null,
      *   isAdmin: boolean,
      *   modifying: Record<string, any> | null,
-     *   SetModifying: (subject: Record<string, any> | null, mode: string) => void
+     *   SetModifying: (subject: Record<string, any> | null, mode: string) => void,
+     *   cars: { allCars: import('$lib/server/event').RideRecord[], userOwnedCars: import('$lib/server/event').RideRecord[], userCanHaveCar: boolean },
+     *   userId: number | null
      * }} 
      */
-    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, SetModifying } = $props();
+    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, SetModifying, cars, userId } = $props();
 
     /**
      * Set the current modifying subject if none is set.
@@ -55,6 +57,17 @@
     }
 
     let confirm = $state(false);
+
+    /**
+     * @param {string} id
+     */
+    function addCarToTrip(id) {
+        
+    }
+    /**
+     * @param {string} id
+     */
+    function removeCarFromTrip(id) {}
 </script>
 <div style="position: relative;">
     {#if trip}
@@ -99,11 +112,40 @@
 		        <span
                 style="flex: 0 0 1rem; text-align: right; background-color: {remaining > 0 || RideId === id ? '#3375a6' : '#808080'}; border-radius: 5px; padding: 3px 5px; color: white;"
                 >{RideId === id ? "Selected" : (remaining > 0 ? 'Select' : 'Full')}</span>
+                <div class="RemoveButton">X</div>
 	        </div>
         {/each}
         {/if}
-
-
+        {#if cars.userCanHaveCar} <!-- Able to have car -->
+            {#if cars.userOwnedCars.length > 0} <!-- Has car -->
+                <div class="RemoveButton" onclick={() => {}}>Remove your car</div>
+            {:else}
+                <div class="AddButton" onclick={() => {}}>Add your car</div>
+                <div>
+                    {#each cars.userOwnedCars as car}
+                        <div>{car.name} ({car.vehicle_type} - {car.seats} seats)
+                            {#if (car.driver?.length ?? 0) > 1}
+                                <br>Also driven by {car.driver?.filter(driver => driver.id !== userId?.toString()).map(driver => `${driver.firstname} ${driver.lastname}`).join(', ')}
+                            {/if}
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+        {/if}
+        {#if isAdmin}
+            <div class="add-button-container">
+                <div class="AddButton" onclick={() => {}}>Add rides</div>
+                <div>
+                    {#each cars.allCars as car}
+                        <div>{car.name} ({car.vehicle_type} - {car.seats} seats)
+                            {#if (car.driver?.length ?? 0) > 0}
+                                <br>Driven by {car.driver?.map(driver => `${driver.firstname} ${driver.lastname}`).join(', ')}
+                            {/if}
+                        </div>
+                    {/each}
+                </div>
+            </div>
+        {/if}
         
     {:else}
         <p>Opt out of this trip</p>
@@ -129,16 +171,27 @@
     }
     .AddButton {
     border: 1px solid rgb(100,100,100); 
-    height: 60px; 
+    height: 30px; 
     border-radius: 5px; 
     margin-bottom: 10px; 
     background-color: rgb(235, 235, 235);
-    line-height: 60px; 
+    /* line-height: 30px;  */
     text-align: center; 
-    font-size: 30px; 
-    color: rgb(130,130,130);
+    /* font-size: 30px;  */
+    /* color: rgb(130,130,130); */
     font-weight: 600; 
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+  }
+  .RemoveButton {
+    /* position: absolute;
+    right: -30px;
+    top: calc(50% - 7.5px); */
+    height: 30px;
+    margin: 0 0 0 10px;
+    padding: 0 5px;
   }
 
   .editButton {
@@ -172,5 +225,10 @@
     }
     span {
         flex: 0 0 50%;
+    }
+
+    .add-button-container {
+        border: none;
+        padding: 0;
     }
 </style>
