@@ -30,13 +30,13 @@
         // If creating a new trip, provide sensible defaults
         const now = new Date();
         const today = now.toISOString().slice(0, 10); // YYYY-MM-DD
-        const defaultStartDate = '';
-        const defaultEndDate = '';
+        const defaultStartDate = today;
+        const defaultEndDate = today;
         const defaultStatus = 'published';
 
         if (Subject.mode === 'createEvent') {
             fields.name = Subject?.item?.name || '';
-            fields.description = Subject?.item?.description || today;
+            fields.description = Subject?.item?.description || '';
             fields.start_date = Subject?.item?.start_date || defaultStartDate;
             fields.end_date = Subject?.item?.end_date || defaultEndDate;
             fields.location = Subject?.item?.location || '';
