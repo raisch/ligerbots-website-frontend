@@ -162,6 +162,21 @@ const queries = {
               id
               collection
           }
+          attendees {
+            users_id {
+              id
+              firstname
+              lastname
+              email_address
+              phone_number
+              photo {
+                id
+                filename_disk
+                filename_download
+              }
+            }
+            id
+          }
       }
   }`,
     /**
@@ -711,6 +726,32 @@ const queries = {
 
   DELETE_RIDE_MUTATION: `mutation ($id: ID!) {
     delete_ride_item(id: $id) {
+      id
+    }
+  }`,
+
+  // ai generated so i don't know if it works
+  ADD_ATTENDEE_MUTATION: `mutation ($eventId: ID!, $userId: ID!) {
+    create_event_users_2_item(
+      data: {
+        event_id: { id: $eventId },
+        users_id: { id: $userId },
+      }) {
+      id
+      event_id {
+        id
+      }
+      users_id {
+        ... on users {
+          id
+          firstname
+          lastname
+        }
+      }
+    }
+  }`,
+  REMOVE_ATTENDEE_MUTATION: `mutation ($relationshipId: ID!) {
+    delete_event_users_2_item(id: $relationshipId) {
       id
     }
   }`

@@ -47,10 +47,15 @@ export const updateRideSelections = command('unchecked', async (/** @type {RideR
    * @type {any[]}
    */
   let r = []
-  Object.entries(rides).forEach(async ([, selection]) => {
+  let eventData = await Event.getEventById(event).catch(console.error);
+  if (eventData?.attendees?.some(attendee => attendee.users_id.id === user)) {
+    r.push(await Event.removeAttendeeFromEvent(event, user).catch(console.error));
     r.push(await Rider.removeRiderFromTrip(event, user).catch(console.error)); // prevent duplicates
+  }
+  r.push(await Event.addAttendeeToEvent(event, user).catch(console.error));
+  Object.entries(rides).forEach(async ([, selection]) => {
     if (selection) {
-      r.push(await Rider.addRiderToRide(selection, user).catch(console.error))
+      r.push(await Rider.addRiderToRide(selection, user).catch(console.error));
     }
   })
   return r
@@ -59,10 +64,15 @@ export const updateRideSelections = command('unchecked', async (/** @type {RideR
 export const removeFromRide = command('unchecked', async (/** @type {RideRemoveFormSchema} */ {user, event}) => {
   debug(`removeFromRide(event=${event}, user=${user})`)
   console.log(`removeFromRide(event=${event}, user=${user})`)
+  /**
+   * @type {any[]}
+   */
+  let r = []
   if (event) {
-    return Rider.removeRiderFromTrip(event, user).catch(console.error);
+    r.push(await Event.removeAttendeeFromEvent(event, user).catch(console.error));
+    r.push(await Rider.removeRiderFromTrip(event, user).catch(console.error));
   } else {
-    return Rider.removeRiderFromAll(user).catch(console.error);
+    //r.push(await Rider.removeRiderFromAll(user).catch(console.error));
   }
 })
 
@@ -71,7 +81,7 @@ export const removeFromRide = command('unchecked', async (/** @type {RideRemoveF
 export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripSchema} */ { tripId, tripCollection, rideId }) => {
   debug(`addCarToTrip()`)
   let trip = await Trip.getTripById(tripId);
-  if (trip.rides?.some(ride => ride.ride.id === rideId)) return;
+  if (trip.rides?.some(ride => ride.item.ride.id === rideId)) return;
   let ride = await Ride.getRideById(rideId);
   if (!ride) return;
 

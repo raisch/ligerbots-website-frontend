@@ -217,32 +217,39 @@
     <div class="">
       <div class="card mb-6">
         <div class="card-body">
-          <h2 class="card-title">{event?.name}</h2>
-          <p class="card-text event-description">{event?.description}</p>
-          <p class="card-text"><strong>Start Date:</strong> {event?.start_date}</p>
-          <p class="card-text"><strong>End Date:</strong> {event?.end_date}</p>
-          <p class="card-text"><strong>Location:</strong> {event?.location}</p>
-          
-          {#if isAdmin}
-            <span class="deleteButton" onclick={() => {
-                if (confirmDelete) {
-                  // TODO create better dialog
-                  let deletionConfirmed = confirm('Are you sure you want to delete this event?\nThis action cannot be undone.');
-                  if (deletionConfirmed) {
-                    // TODO create api for this
-                  }
-                  confirmDelete = false;
-                } else {
-                    confirmDelete = true;
-                    setTimeout(() => {
+          <div class="event-header">
+            <div>
+              <h2 class="card-title">{event?.name}</h2>
+              <p class="card-text event-description">{event?.description}</p>
+              <p class="card-text"><strong>Start Date:</strong> {event?.start_date}</p>
+              <p class="card-text"><strong>End Date:</strong> {event?.end_date}</p>
+              <p class="card-text"><strong>Location:</strong> {event?.location}</p>
+            </div>
+            <div class="header-button-block">
+              {#if isAdmin}
+                <div class="header-admin-buttons">
+                  <span class="deleteButton" onclick={() => {
+                      if (confirmDelete) {
+                        // TODO create better dialog
+                        let deletionConfirmed = confirm('Are you sure you want to delete this event?\nThis action cannot be undone.');
+                        if (deletionConfirmed) {
+                          // TODO create api for this
+                        }
                         confirmDelete = false;
-                    }, 2000);
-                }
-            }}>{confirmDelete ? "Confirm?" : "Delete"}</span>
-            <span class="editButton" onclick={() => setModifying({ item: event }, "editEvent")}>Edit</span>
-          {/if}
-          <div class="riderlistButtonBlock">
-            <a class="riderlistButton btn-primary" href="/carpool/{event?.id}/riderlist">View Riders</a>
+                      } else {
+                          confirmDelete = true;
+                          setTimeout(() => {
+                              confirmDelete = false;
+                          }, 2000);
+                      }
+                  }}>{confirmDelete ? "Confirm?" : "Delete"}</span>
+                  <span class="editButton" onclick={() => setModifying({ item: event }, "editEvent")}>Edit</span>
+                </div>
+              {/if}
+              <a class="riderlistButton btn-primary" href="/carpool/{event?.id}/attendees" target="_blank">View Attendees</a>
+              <a class="riderlistButton btn-primary" href="/carpool/{event?.id}/riderlist" target="_blank">View Riders</a>
+              <a class="riderlistButton btn-success" href="/carpool/{event?.id}/export" target="_blank">Export Spreadsheet</a>
+            </div>
           </div>
 
           <div style="display: flex; flex-wrap: wrap; flex-direction: column;">
@@ -286,7 +293,7 @@
               <div style="justify-content: center; display: flex; gap: 10px; margin: 10px 0;">
                 <button class="undoChanges" disabled={previousDestinationRideId === null || previousReturnRideId === null || (destinationRideId === previousDestinationRideId && returnRideId === previousReturnRideId)} onclick={undoChanges}>Undo Changes</button>
                 <button class="confirm btn-primary" disabled={destinationRideId === null || returnRideId === null} onclick={updateSelections}>Confirm</button>
-                <button class="remove btn-danger" onclick={removeSelections} hidden={existingRides.length === 0}>Cancel event registration</button>
+                <button class="remove btn-danger" onclick={removeSelections} hidden={previousDestinationRideId === null && previousReturnRideId === null}>Cancel event registration</button>
               </div>
             {:else}
               <p>No trips available for this event.</p>
@@ -325,16 +332,6 @@
     width: 49%;
   }
 
-  @media (max-width: 768px) {
-    .trip-box-container {
-      flex-direction: column;
-    }
-    .trip-box {
-      width: 100%;
-      margin-bottom: 20px;
-    }
-  }
-
   .event-description {
     white-space: pre-wrap;
   }
@@ -356,31 +353,30 @@
   .AddButton:hover {
     background-color: rgb(225, 225, 225);
   }
+
+  .header-admin-buttons {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: stretch;
+  }
+  .header-admin-buttons * {
+    flex: 1;
+  }
+
   .deleteButton {
-    right: 70px;
-    top: 10px;
-    position: absolute;
     border: 1px solid rgb(111, 0, 0); 
-    height: 30px; 
     border-radius: 5px; 
-    margin-bottom: 10px; 
     background-color: rgba(95, 0, 0, 0.2);    
     line-height: 30px; 
     text-align: center; 
     font-size: 15px;
     color: rgb(111, 0, 0);
     cursor: pointer;
-    padding: 0 10px;
-    }
+  }
   .editButton {
-    right: 10px;
-    top: 10px;
-    position: absolute;
     border: 1px solid rgb(100,100,100); 
-    width: 50px;
-    height: 30px; 
     border-radius: 5px; 
-    margin-bottom: 10px; 
     background-color: rgb(235, 235, 235);
     line-height: 30px; 
     text-align: center; 
@@ -392,17 +388,27 @@
   .editButton:hover {
     background-color: rgb(225, 225, 225);
   }
+  
+  .event-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
 
-  .riderlistButtonBlock {
-    position: absolute;
-    right: 10px;
-    top: 50px;
- }
+  .header-button-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .riderlistButton {
     display: inline-block;
     padding: 5px 10px;
     border-radius: 5px;
     text-decoration: none;
+    text-align: center;
     /* background: #3375a6; */
   }
   
@@ -445,5 +451,48 @@
   .optout.optout-selected {
     outline: 2px solid #3375a6;
     background-color: #3375a61f;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+  }
+
+  
+
+  @media (max-width: 768px) {
+    .trip-box-container {
+      flex-direction: column;
+    }
+    .trip-box {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .header-button-block {
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .riderlistButton {
+      min-width: calc(50% - 5px);
+    }
   }
 </style>
