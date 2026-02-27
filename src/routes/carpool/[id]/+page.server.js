@@ -16,16 +16,17 @@ export async function load({ params, cookies }) {
     console.error(error)
   }
 
-  const user = cookies.get('user')
+  const userCookie = cookies.get('user')
+  const user = userCookie ? await User.findByEmail(JSON.parse(decodeURIComponent(userCookie ?? '')).email_address) : null
   if (!user) redirect(303, `/login?redirect=/carpool/${id}`)
-  const userId = JSON.parse(decodeURIComponent(user ?? '')).id || null
+  const userId = user.id
   if (!userId) redirect(303, `/login?redirect=/carpool/${id}`)
   
   const existingRides = await Rider.getRidesForRider(event?.id ?? '-1', userId)
 
   const allCars = await Ride.getAllRides()
   const userOwnedCars = allCars.filter(ride => ride.driver?.some(driver => driver.id === userId))
-  const userCanHaveCar = (await User.findById(userId))?.carpool_driver_eligible ?? false;
+  const userCanHaveCar = user?.carpool_driver_eligible ?? false;
 
   // console.log('event:', event)
 

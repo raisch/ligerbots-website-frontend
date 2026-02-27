@@ -38,6 +38,8 @@ const RideRemoveFormSchema = Joi.object({
 /**
  * @typedef RemoveCarFromTripSchema
  * @prop {string} tripRideId
+ * @prop {string} relationshipId
+ * @prop {'destination_trip' | 'return_trip'} collection
  */
 
 
@@ -79,16 +81,34 @@ export const removeFromRide = command('unchecked', async (/** @type {RideRemoveF
 
 
 export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripSchema} */ { tripId, tripCollection, rideId }) => {
-  debug(`addCarToTrip()`)
-  let trip = await Trip.getTripById(tripId);
-  if (trip.rides?.some(ride => ride.item.ride.id === rideId)) return;
-  let ride = await Ride.getRideById(rideId);
-  if (!ride) return;
+  try {
+    debug(`addCarToTrip(tripId=${tripId}, tripCollection=${tripCollection}, rideId=${rideId})`)
+    console.log(`addCarToTrip(tripId=${tripId}, tripCollection=${tripCollection}, rideId=${rideId})`)
+    let trip = tripCollection === 'destination_trip' ? await Trip.getDestinationTripById(tripId) : await Trip.getReturnTripById(tripId);
+    if (trip.rides?.some(ride => ride.item.ride.id === rideId)) return;
+    let ride = await Ride.getRideById(rideId);
+    if (!ride) return;
 
-  Event.createTripRide(tripId, tripCollection, {ride})
+    Event.createTripRide(tripId, tripCollection, {ride: {id: ride.id, vehicle_type: ride.vehicle_type, name: ride.name, seats: ride.seats, driver: [{ id: ride.driver?.[0]?.id, item: JSON.stringify(ride.driver?.[0]?.item) }]}})
+
+    console.log(`Added ride ${rideId} to trip ${tripId} (${tripCollection})`)
+  } catch (error) {
+    debug(`addCarToTrip(tripId=${tripId}, tripCollection=${tripCollection}, rideId=${rideId}) error: ${error}`)
+    console.error(JSON.stringify(error, null, 2))
+  }
 })
 
-export const removeCarFromTrip = command('unchecked', async (/** @type {RemoveCarFromTripSchema} */ { tripRideId }) => {
-  debug(`addCarToTrip()`)
-  Event.deleteTripRide(tripRideId)
+export const removeCarFromTrip = command('unchecked', async (/** @type {RemoveCarFromTripSchema} */ { tripRideId, collection, relationshipId }) => {
+  try {
+    console.log(`removeCarFromTrip(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId})`)
+    debug(`removeCarFromTrip(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId})`)
+    if (!tripRideId && !relationshipId) {
+      return;
+    }
+    Event.deleteTripRide(tripRideId, collection, relationshipId)
+    // Event.clearNullTripRides()
+  } catch (error) {
+    debug(`removeCarFromTrip(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId}) error: ${error}`)
+    console.error(error)
+  }
 })

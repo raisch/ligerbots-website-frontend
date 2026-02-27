@@ -16,13 +16,15 @@ export async function load({ params, cookies }) {
   
   
 
-  const cars = await Ride.getAllRides()
+  let cars = await Ride.getAllRides()
   const isAdmin = (await User.findById(userId))?.is_admin ?? false;
   const eligibleDrivers = await User.listEligibleCarpoolDrivers();
+  if (!isAdmin) cars = cars.filter(ride => ride.driver?.some(driver => driver.id === userId))
+  const userCanHaveCar = (await User.findById(userId))?.carpool_driver_eligible ?? false;
 
-  if (!isAdmin) redirect(303, `/carpool`)
+  //if (!isAdmin) redirect(303, `/carpool`)
 
   // console.log('event:', event)
 
-  return { cars, userId, isAdmin, eligibleDrivers }
+  return { cars, userId, isAdmin, eligibleDrivers, userCanHaveCar }
 }

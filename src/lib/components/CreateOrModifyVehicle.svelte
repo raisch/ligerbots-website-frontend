@@ -21,7 +21,7 @@
         name: '',
         type: '',
         seats: '',
-        driver: userId,
+        driver: isAdmin ? '' : userId,
     })
 
     $effect(() => {
@@ -104,17 +104,15 @@
             Seats:
             <input bind:value={fields.seats} type="number" />
         </label>
-        {#if isAdmin}    
-            <label>
-                Driver:
-                <select bind:value={fields.driver}>
-                    <option value="" disabled>Select driver...</option>
-                    {#each eligibleDrivers as driver}
-                        <option value={driver.id}>{driver.name}</option>
-                    {/each}
-                </select>
-            </label>
-        {/if}
+        <label>
+            Driver:
+            <select bind:value={fields.driver} disabled={!isAdmin}> <!-- non-admins can only select themself -->
+                <option value="" disabled>Select driver...</option>
+                {#each eligibleDrivers as driver}
+                    <option value={driver.id}>{driver.name}</option>
+                {/each}
+            </select>
+        </label>
 
 
         <div style="margin-top:12px; display:flex; gap:8px;">

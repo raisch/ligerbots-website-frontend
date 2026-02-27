@@ -6,7 +6,9 @@ import joi from 'joi'
 import {
   ADD_RIDE_TO_TRIP_MUTATION,
   DELETE_TRIP_MUTATION,
+  GET_DESTINATION_TRIP_BY_ID_QUERY,
   GET_DESTINATION_TRIPS_QUERY,
+  GET_RETURN_TRIP_BY_ID_QUERY,
   GET_RETURN_TRIPS_QUERY,
   GET_TRIP_BY_ID_QUERY,
   REMOVE_RIDE_FROM_TRIP_MUTATION,
@@ -174,13 +176,25 @@ export default class Trip {
    * @param {string} tripId
    * @return {Promise<import('./event').TripRecord>}
    */
-  static async getTripById(tripId, query = GET_TRIP_BY_ID_QUERY) {
+  static async getDestinationTripById(tripId, query = GET_DESTINATION_TRIP_BY_ID_QUERY) {
     if (!tripId) {
       throw new Error('Trip ID is required')
     }
     const client = await getBackendClient()
     let result = await client.query(query, { id: tripId })
-    return result?.trip_by_id
+    return result?.destination_trip_by_id
+  }
+  /**
+   * @param {string} tripId
+   * @return {Promise<import('./event').TripRecord>}
+   */
+  static async getReturnTripById(tripId, query = GET_RETURN_TRIP_BY_ID_QUERY) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+    const client = await getBackendClient()
+    let result = await client.query(query, { id: tripId })
+    return result?.return_trip_by_id
   }
   /**
    * @param {string} tripId

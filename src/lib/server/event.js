@@ -17,7 +17,9 @@ import {
   CREATE_TRIP_RIDE_MUTATION,
   UPDATE_TRIP_RIDE_MUTATION,
   DELETE_TRIP_RIDE_MUTATION,
-  GET_TRIP_RIDE_BY_ID_QUERY
+  GET_TRIP_RIDE_BY_ID_QUERY,
+  DELETE_DESTINATION_TRIP_RIDE_MUTATION,
+  DELETE_RETURN_TRIP_RIDE_MUTATION
 } from '$lib/server/graphql/trip_ride'
 
 import rider, {
@@ -113,15 +115,23 @@ export default class Event {
       throw new Error('Event ID is required')
     }
     const client = await getBackendClient()
+    
+    try {
+      console.log('p', await client.query(`{ event_by_id(id: 1) { id name } }`))
+    } catch (e) {
+      console.error('e', e)
+    }
 
     if (!client) {
       throw new Error('Backend client is not available')
     }
-    query = query.replace('{{id}}', id)
+    // query = query.replace('{{id}}', id)
     debug(`getEventById(id=${id}) query: ${query}`)
     let result
+
     try {
-      result = await client.query(query)
+      result = await client.query(query.replace('{{id}}', id))
+      console.log(id, 'r', result)
       debug(`getEventById(id=${id}) resp: ${JSON.stringify(result)}`)
       result = result?.event_by_id || {} // ensure we have an empty object if no event found
     } catch (/** @type {any} */ err) {
@@ -680,6 +690,7 @@ export default class Event {
    * @throws {Error} if failed to create the trip ride.
    */
   static async createTripRide(tripId, tripCollection, rideData, mutation = CREATE_TRIP_RIDE_MUTATION) {
+    console.log(">>>>>>>>createTripRide", { tripId, tripCollection, rideData: rideData })
     if (!tripId) {
       throw new Error('Trip ID is required')
     }
@@ -688,9 +699,9 @@ export default class Event {
       throw new Error('Valid trip collection name is required (destination_trip or return_trip)')
     }
 
-    if (!rideData.ride || !rideData.ride.vehicle_type || !rideData.ride.name || !rideData.ride.seats) {
-      throw new Error('Ride vehicle type, name, and seats are required')
-    }
+    // if (!rideData.ride || !rideData.ride.vehicle_type || !rideData.ride.name || !rideData.ride.seats) {
+    //   throw new Error('Ride vehicle type, name, and seats are required')
+    // }
 
     const client = await getBackendClient()
 
@@ -699,16 +710,16 @@ export default class Event {
     }
 
     // Format the ride data for the mutation
-    const tripRideData = {
-      ride: rideData.ride,
-      trip: {
-        id: tripId,
-        collection: tripCollection
-      }
+    const tripRide = {
+      ...rideData,
+      // trip: {
+      //   id: tripId,
+      //   collection: tripCollection
+      // }
     }
 
     const variables = {
-      tripRide: tripRideData
+      tripRide
     }
 
     debug(`createTripRide(tripId=${tripId}) mutation: ${mutation}`)
@@ -717,6 +728,7 @@ export default class Event {
     let result
     try {
       result = await client.query(mutation, variables)
+    console.log(">>>>>>>>result", result)
       debug(`createTripRide(tripId=${tripId}) resp: ${JSON.stringify(result)}`)
       result = result?.create_trip_ride_item || {}
     } catch (/** @type {any} */ err) {
@@ -784,14 +796,16 @@ export default class Event {
    * Delete a trip ride.
    *
    * @param {string} tripRideId - The ID of the trip ride to delete.
-   * @param {string} [mutation=DELETE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
+   * @param {string} collection - The collection name ('destination_trip' or 'return_trip') the trip ride belongs to.
+   * @param {string} relationshipId - The ID of the relationship to remove (used for trip-to-tripride relationships).
+   * @param {string} [mutation2=DELETE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<{id: string}>} - Object containing the ID of the deleted trip ride.
+   * @returns {Promise<{id: string}[]>} - Object containing the ID of the deleted trip ride.
    *
    * @throws {Error} if failed to delete the trip ride.
    */
-  static async deleteTripRide(tripRideId, mutation = DELETE_TRIP_RIDE_MUTATION) {
-    if (!tripRideId) {
+  static async deleteTripRide(tripRideId, collection, relationshipId, mutation2 = DELETE_TRIP_RIDE_MUTATION) {
+    if (!tripRideId && !relationshipId) {
       throw new Error('Trip ride ID is required')
     }
 
@@ -801,25 +815,55 @@ export default class Event {
       throw new Error('Backend client is not available')
     }
 
-    const variables = {
+    const variables1 = {
+      id: relationshipId
+    }
+    const variables2 = {
       id: tripRideId
     }
 
-    debug(`deleteTripRide(tripRideId=${tripRideId}) mutation: ${mutation}`)
-    debug(`deleteTripRide(tripRideId=${tripRideId}) variables: ${JSON.stringify(variables)}`)
+    debug(`deleteTripRide(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId}) mutation: ${mutation2}`)
+    debug(`deleteTripRide(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId}) variables: ${JSON.stringify(variables2)}`)
 
-    let result
+    let result1, result2
     try {
-      result = await client.query(mutation, variables)
-      debug(`deleteTripRide(tripRideId=${tripRideId}) resp: ${JSON.stringify(result)}`)
-      result = result?.delete_trip_ride_item || {}
+      let mutation1 = collection === 'destination_trip' ? DELETE_DESTINATION_TRIP_RIDE_MUTATION : DELETE_RETURN_TRIP_RIDE_MUTATION
+      result1 = await client.query(mutation1, variables1)
+      debug(`deleteTripRide(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId}) resp: ${JSON.stringify(result1)}`)
+      result1 = result1
+      console.log('>>result1', JSON.stringify(result1))
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to delete trip ride: ${JSON.stringify(err)}`)
+    }
+    try {
+      result2 = await client.query(mutation2, variables2)
+      debug(`deleteTripRide(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId}) resp: ${JSON.stringify(result2)}`)
+      result2 = result2?.delete_trip_ride_item || {}
     } catch (/** @type {any} */ err) {
       throw new Error(`Failed to delete trip ride: ${JSON.stringify(err)}`)
     }
 
-    debug(`deleteTripRide(tripRideId=${tripRideId}) result: ${JSON.stringify(result)}`)
-    return result
+    debug(`deleteTripRide(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId}) result: ${JSON.stringify(result1)}; ${JSON.stringify(result2)}`)
+    return [result1, result2]
   }
+
+  static async clearNullTripRides() {
+    try {
+      const client = await getBackendClient()
+      const result = await client.query(`query {
+        destination_trip_rides(filter: { ride: { _null: true } }) { id }
+        return_trip_rides(filter: { ride: { _null: true } }) { id }
+      }`)
+
+      await client.query(`mutation {
+        ${result.destination_trip_rides.map((/** @type {{ id: string; }} */ ride) => `delete_trip_ride_item(id: "${ride.id}") { id }`).join('\n')}
+        ${result.return_trip_rides.map((/** @type {{ id: string; }} */ ride) => `delete_trip_ride_item(id: "${ride.id}") { id }`).join('\n')}
+      }`)
+    } catch (/** @type {any} */ err) {
+      console.error('Failed to clear null trip rides:', err)
+    }
+  }
+  
 
   /**
    * Add a rider to a trip ride.
@@ -1116,11 +1160,11 @@ export default class Event {
 
     let optoutTo = event.attendees?.filter(attendee => 
       !event.trips?.filter((/** @type {import('$lib/server/trip.js').TripType} */ trip) => trip.collection === 'destination_trip')
-        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item.id === attendee.users_id.id)))
+        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item?.id === attendee.users_id.id)))
     ) ?? [];
     let optoutFrom = event.attendees?.filter(attendee => 
       !event.trips?.filter((/** @type {import('$lib/server/trip.js').TripType} */ trip) => trip.collection === 'return_trip')
-        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item.id === attendee.users_id.id)))
+        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item?.id === attendee.users_id.id)))
     ) ?? [];
     console.log(event)
     return {
@@ -1178,7 +1222,7 @@ export default class Event {
  * @property {string} vehicle_type
  * @property {string} name
  * @property {number} seats
- * @property {UserRecord[]} [driver]
+ * @property {UserType[]} driver
  */
 
 /**

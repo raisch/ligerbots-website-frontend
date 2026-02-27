@@ -138,3 +138,11 @@ export function stringify(obj, replacer = null, space = 2) {
   cache = [] // Allow garbage collection
   return str
 }
+
+/**
+ * @param {string} query
+ * @param {string[]} values
+ */
+export function search(query, ...values) {
+  return !query || values.some(value => value.toLowerCase().includes(query.toLowerCase()));
+}

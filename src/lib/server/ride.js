@@ -21,10 +21,7 @@ const debug = createDebugMessages('APP:lib/server/ride')
  * @property {import('./user').EventUserType[]} item.riders
  * @property {Object} item.riders_func
  * @property {number} item.riders_func.count
- * @property {Object} item.ride
- * @property {string} item.ride.name
- * @property {number} item.ride.seats
- * @property {import('./user').EventUserType[]} item.ride.driver
+ * @property {import('./event').RideRecord} item.ride
  */
 
 /** @class */

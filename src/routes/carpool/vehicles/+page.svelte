@@ -10,6 +10,7 @@
   import { goto } from '$app/navigation'
   import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
   import CreateOrModifyVehicle from '$lib/components/CreateOrModifyVehicle.svelte';
+  import UserShortDisplay from '$lib/components/UserShortDisplay.svelte';
   import { onMount } from 'svelte';
 
   /**
@@ -21,7 +22,9 @@
   }
 
   let { data } = $props();
-  let { cars, userId, isAdmin, eligibleDrivers } = data;
+  let { cars, userId, isAdmin, eligibleDrivers, userCanHaveCar } = data;
+
+  
 
   let modifying: Record<string, any> | null = $state(null)
 
@@ -32,8 +35,8 @@
     
     modifying = subject
   }
-  function deleteEvent(eventId: any) {
-    alert("havent implemented yet cuz im lazy - ray")
+  function deleteVehicle(vehicleId: any) {
+    alert("havent implemented yet cuz im lazy - ~ray~ mitchell")
   }
 
   //console.log('events?:', events)
@@ -42,7 +45,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Carpool Events</h1>
-    {#if isAdmin}
+    {#if isAdmin || userCanHaveCar}
       {#if modifying}
         <CreateOrModifyVehicle {userId} {isAdmin} {eligibleDrivers} Subject={modifying} SetModifying={setModifying} />
       {/if}
@@ -50,6 +53,13 @@
         <button class="btn btn-primary" onclick={() => setModifying({ mode: 'create', item: {} }, 'create')}>
           Create Vehicle
         </button>
+      </div>
+    {:else}
+      <div>
+        You cannot create a vehicle because you do not meet the requirements to be a carpool driver.
+        To be a carpool driver, you must have a valid driver's license and complete a CORI and SORI form.
+
+        <i>If you believe this is an error, please contact an administrator to fix your issue.</i>
       </div>
     {/if}
   </div>
@@ -63,19 +73,21 @@
   {#if cars.length > 0}
     <div class="row events-list">
       {#each cars as car}
+        {@const { id, name, vehicle_type, seats, driver } = car}
         <div class="col-md-6">
           <div class="card mb-6">
             <div class="card-body">
-              <h2 class="card-title"><a href="/carpool/{car.id}">{car.name}</a></h2>
+              <h2 class="card-title"><a href="/carpool/{id}">{name}</a></h2>
               <!-- <p class="card-text">{car.description}</p> -->
-              <p class="card-text"><strong>Type:</strong> {car.vehicle_type}</p>
-              <p class="card-text"><strong>Seats:</strong> {car.seats}</p>
-              <p class="card-text"><strong>Driver:</strong> <UserShortDisplay /></p>
+              <p class="card-text"><strong>Type:</strong> {vehicle_type}</p>
+              <p class="card-text"><strong>Seats:</strong> {seats}</p>
+              <p class="card-text"><strong>Driver:</strong></p>
+              <ul>{#each driver as user}<UserShortDisplay user={user.item! ?? {}} />{/each}</ul>
 
               {#if isAdmin}
                 <div class="bg-light p-2 rounded">
-                  <button class="btn btn-secondary" onclick={() => setModifying({ mode: 'editEvent', item: event }, 'editEvent')}>Edit Event</button>
-                  <button class="btn btn-danger" onclick={() => deleteEvent(event.id)}>Delete Event</button>
+                  <button class="btn btn-secondary" onclick={() => setModifying({ mode: 'edit', item: car }, 'edit')}>Edit Vehicle</button>
+                  <button class="btn btn-danger" onclick={() => deleteVehicle(car.id)}>Delete Vehicle</button>
                 </div>
               {/if}
             </div>
@@ -84,7 +96,7 @@
       {/each}
     </div>
   {:else}
-    <p>No active carpool events available.</p>
+    <p>No vehicles available.</p>
   {/if}
 </div>
 

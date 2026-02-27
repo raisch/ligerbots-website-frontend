@@ -79,6 +79,26 @@ export const GET_TRIP_BY_ID_QUERY = `query ($id: ID!) {
     }
   }`
 
+export const GET_DESTINATION_TRIP_BY_ID_QUERY = `query ($id: ID!) {
+    destination_trip_by_id(id: $id) {
+      id
+      destination
+      departs_from
+      departs_on
+      departs_at
+      status
+    }
+  }`
+export const GET_RETURN_TRIP_BY_ID_QUERY = `query ($id: ID!) {
+    return_trip_by_id(id: $id) {
+      id
+      destination
+      departs_from
+      departs_on
+      departs_at
+      status
+    }
+  }`
 
 /** GraphQL query for fetching return trips for an event. */
 export const GET_RETURN_TRIPS_QUERY = `query ($event_id: ID!) {

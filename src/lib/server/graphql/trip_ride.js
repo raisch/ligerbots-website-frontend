@@ -45,6 +45,17 @@ export const DELETE_TRIP_RIDE_MUTATION = `mutation ($id: ID!) {
   }
 }`
 
+export const DELETE_DESTINATION_TRIP_RIDE_MUTATION = `mutation ($id: ID!) {
+  delete_destination_trip_rides_item(id: $id) {
+    id
+  }
+}`
+export const DELETE_RETURN_TRIP_RIDE_MUTATION = `mutation ($id: ID!) {
+  delete_return_trip_rides_item(id: $id) {
+    id
+  }
+}`
+
 export const GET_TRIP_RIDE_BY_ID_QUERY = `query ($id: ID!) {
   trip_ride_by_id(id: $id) {
     id

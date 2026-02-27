@@ -1,4 +1,8 @@
 <script>
+  import { goto, invalidate, invalidateAll } from '$app/navigation';
+  import { search } from '$lib/util';
+  import { addCarToTrip, removeCarFromTrip } from '../../routes/carpool/ride.remote';
+
 
 
     /** 
@@ -10,12 +14,16 @@
      *   previousReturnRideId: number | null,
      *   isAdmin: boolean,
      *   modifying: Record<string, any> | null,
+     *   activeCarEditor: string | null,
      *   SetModifying: (subject: Record<string, any> | null, mode: string) => void,
+     *   SetActiveCarEditor: (carId: string | null) => void,
      *   cars: { allCars: import('$lib/server/event').RideRecord[], userOwnedCars: import('$lib/server/event').RideRecord[], userCanHaveCar: boolean },
      *   userId: number | null
      * }} 
      */
-    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, SetModifying, cars, userId } = $props();
+    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, activeCarEditor, SetModifying, SetActiveCarEditor, cars, userId } = $props();
+
+    let filter = $state('');
 
     /**
      * Set the current modifying subject if none is set.
@@ -59,7 +67,8 @@
 
     let confirm = $state(false);
     let infoId = $state(-1);
-    $inspect(infoId);
+    // $inspect(infoId);
+    $inspect(trip);
 
     /**
    * @param {number} id
@@ -74,13 +83,35 @@
     /**
      * @param {string} id
      */
-    function addCarToTrip(id) {
-        
+    async function addCar(id) {
+        await addCarToTrip({ tripCollection: trip.collection, tripId: trip.item.id, rideId: id })
     }
     /**
      * @param {string} id
+     * @param {'destination_trip'|'return_trip'} collection
+     * @param {any} ride
      */
-    function removeCarFromTrip(id) {}
+    async function removeCar(id, collection = trip.collection, ride) {
+        alert("removeCar called with id: " + id + '\n' + Object.keys(ride) + '\n' + JSON.stringify(ride, null, 2))
+        const relationshipId = trip.item.rides.find(r => r.item?.id === id)?.id ?? '';
+        await removeCarFromTrip({ tripRideId: id, collection, relationshipId })
+    }
+
+    /** 
+     * @param {import('$lib/server/ride').RideType[]} rides
+     * @param {string} id
+     */
+    async function addCarIfNotPresent(rides, id) {
+        try {
+            const ride = rides.find(ride => ride.item?.ride.id === id);
+            if (ride) return alert('You have already added this car to the trip.');
+            const result = await addCar(id);
+            // alert(result)
+            invalidateAll();
+        } catch (error) {
+            alert(error)
+        }
+    }
 </script>
 <div style="position: relative;">
     {#if trip}
@@ -108,12 +139,12 @@
         {#if rides}
         {#each rides as ride}
             {@const { item } = ride}
-            {@const id = parseInt(item.id)}
-            {@const { riders, ride: { seats, driver: drivers, name: driverName } } = ride.item}
-	        {@const remaining = seats - item.riders_func.count - (RideId === id ? 1 : 0) + (previousDestinationRideId === id || previousReturnRideId === id ? 1 : 0)}
+            {@const id = parseInt(item?.id)}
+            {@const { riders = [], ride: { seats, driver: drivers = [], name: vehicheName, vehicle_type } } = ride.item ?? { ride: {} }}
+	        {@const remaining = seats - item?.riders_func.count - (RideId === id ? 1 : 0) + (previousDestinationRideId === id || previousReturnRideId === id ? 1 : 0)}
 	        {@const seatDisplay = remaining > 0 ? `${remaining}/${seats} Seats Remaining` : 'Full'}
             
-            {@const { driver: {} } = item.ride}
+            <!-- {@const { driver: {} } = item?.ride ?? {}} -->
 
 	        <div 
                 style="flex-basis: 100%; display: flex; align-items: center; width: 100%; cursor: {remaining > 0 || RideId === id ? 'pointer' : 'not-allowed'}; {RideId === id ? 'outline: 2px solid #3375a6;     background-color: #3375a61f;' : ''}"
@@ -121,13 +152,14 @@
                         if (remaining <= 0 || RideId === id) return; // User cannot select a full ride, user cannot re-select the same ride
                         SetId(id)
                 }}>
-		        <span style="flex: 1; text-align: left;">{driverName} – {#if RideId === id}*{/if}{remaining}/{seats}</span>
+		        <span style="flex: 1; text-align: left;">{vehicheName} – {#if RideId === id}*{/if}{remaining}/{seats}</span>
                 <div class="info-button" onclick={selectInfoBox(id)}>info</div>
 		        <span
                 style="flex: 0 0 1rem; text-align: right; background-color: {remaining > 0 || RideId === id ? '#3375a6' : '#808080'}; border-radius: 5px; padding: 3px 5px; color: white;"
                 >{RideId === id ? "Selected" : (remaining > 0 ? 'Select' : 'Full')}</span>
-                <div class="RemoveButton">X</div>
+                <button class="RemoveButton" onclick={e => { e.stopPropagation(); removeCar(ride.item?.id ?? null, trip.collection, ride); }}>X</button>
                 <div class="info-box" hidden={infoId !== id} onclick={e => e.stopPropagation()}>
+                    <span><b>Type:</b> {vehicle_type} - {seats} seats</span>
                     <b>Driver:</b>
                     <ul>
                         {#each drivers as driver}
@@ -157,36 +189,44 @@
             
         {/each}
         {/if}
-        {#if cars.userCanHaveCar} <!-- Able to have car -->
-            {#if cars.userOwnedCars.length > 0} <!-- Has car -->
-                <div class="RemoveButton" onclick={() => {}}>Remove your car</div>
-            {:else}
-                <div class="AddButton" onclick={() => {}}>Add your car</div>
-                <div>
+
+        <div class="add-button-container">
+            {#if (cars.userCanHaveCar) || isAdmin}
+                <button class="AddButton" onclick={() => SetActiveCarEditor(activeCarEditor && activeCarEditor === trip.id ? null : trip.id)}>Add or Remove Rides</button>
+            {/if}
+            {#if cars.userCanHaveCar} <!-- Able to have car -->
+                <div class="add-ride-menu" hidden={!activeCarEditor || activeCarEditor !== trip.id}>
+                    <p>Your Cars:</p>
                     {#each cars.userOwnedCars as car}
-                        <div>{car.name} ({car.vehicle_type} - {car.seats} seats)
+                        <button class="add-ride-option" onclick={() => addCarIfNotPresent(rides, car.id)} data-selected={rides?.some(ride => ride.item.ride.id === car.id)}>
+                            <span>{car.name} ({car.vehicle_type} - {car.seats} seats)</span>
                             {#if (car.driver?.length ?? 0) > 1}
-                                <br>Also driven by {car.driver?.filter(driver => driver.id !== userId?.toString()).map(driver => `${driver.firstname} ${driver.lastname}`).join(', ')}
+                                <span>Also driven by {car.driver?.filter(driver => driver.id !== userId?.toString()).map(driver => driver.item ? `${driver.item.firstname} ${driver.item.lastname}` : 'unknown').join(', ')}</span>
                             {/if}
-                        </div>
+                        </button>
+                    {/each}
+                    {#if cars.userOwnedCars.length === 0}
+                        <i>You have no cars.</i>
+                    {/if}
+                </div>
+            {/if}
+            {#if isAdmin}
+                <div class="add-ride-menu" hidden={!activeCarEditor || activeCarEditor !== trip.id}>
+                    <p>All Cars:</p>
+                    <input class="add-ride-search" placeholder="Filter rides..." bind:value={filter}/>
+                    {#each cars.allCars as car}
+                        <!-- {@const {id, item} = car} -->
+                        {@const driver = car.driver?.map(driver => driver.item ? `${driver.item.firstname} ${driver.item.lastname}` : `unknown[id:${driver.id}]`).join(', ')}
+                        <button hidden={!search(filter, car.name, car.vehicle_type, driver)} class="add-ride-option" onclick={() => addCarIfNotPresent(rides, car.id)} data-selected={rides?.some(ride => ride.item?.ride.id === car.id)}>
+                            <span>{car.name} ({car.vehicle_type} - {car.seats} seats)</span>
+                            {#if driver}
+                                <span>Driven by {driver}</span>
+                            {/if}
+                        </button>
                     {/each}
                 </div>
             {/if}
-        {/if}
-        {#if isAdmin}
-            <div class="add-button-container">
-                <div class="AddButton" onclick={() => {}}>Add rides</div>
-                <div>
-                    {#each cars.allCars as car}
-                        <div>{car.name} ({car.vehicle_type} - {car.seats} seats)
-                            {#if (car.driver?.length ?? 0) > 0}
-                                <br>Driven by {car.driver?.map(driver => `${driver.firstname} ${driver.lastname}`).join(', ')}
-                            {/if}
-                        </div>
-                    {/each}
-                </div>
-            </div>
-        {/if}
+        </div>
         
     {:else}
         <p>Opt out of this trip</p>
@@ -225,6 +265,7 @@
     display: flex;
     align-items: center;
     padding: 0 10px;
+    width: fit-content;
   }
   .RemoveButton {
     /* position: absolute;
@@ -255,7 +296,7 @@
   .editButton:hover {
     background-color: rgb(225, 225, 225);
   }
-    div {
+    div:not([hidden]) {
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 10px;
@@ -268,12 +309,51 @@
         flex: 0 0 50%;
     }
 
-    .add-button-container {
+    div.add-button-container {
         border: none;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
         padding: 0;
+        margin: 0;
+    }
+    .add-button-container > * {
+        padding: 5px;
+        margin: 0;
+    }
+    div.add-ride-menu:not([hidden]) {
+        margin: 5px 0 0;
+        padding: 5px;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .add-ride-menu > p {
+        margin: 0;
+    }
+    .add-ride-search {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    .add-ride-option:not([hidden]) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin: 0;
+        border-radius: 0;
+        width: 100%;
+        border: 1px solid #cfcfcf;
+        background-color: transparent;
+        text-align: left;
+    }
+    .add-ride-option[data-selected=true] {
+        background-color: #5fcf5f;
+    }
+    .add-ride-option > * {
+        /* max-width: 50%; */
     }
 
-    .info-button {
+    div.info-button {
         padding: 0 5px;
         margin-bottom: 0;
         margin-right: 10px;
@@ -286,13 +366,13 @@
         background-color: #3375a6;
     }
 
-    .info-box {
+    div.info-box {
         width: 100%;
         display: flex;
         margin-bottom: 0;
         flex-direction: column;
         cursor: initial;
-        border: none;
+        border-radius: 0;
         padding: 5px;
         margin-top: 5px;
     }

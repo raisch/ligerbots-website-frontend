@@ -21,7 +21,7 @@ const debug = createDebugMessages('APP:$lib/server/user')
 /**
  * @typedef EventUserType
  * @property {string} id
- * @property {import('./event.js').EventUserRecord} item
+ * @property {import('./event.js').EventUserRecord} [item]
  */
 /**
  * @typedef AttendeeUserType
@@ -264,7 +264,7 @@ export default class User {
     try {
       result = await client.query(query)
     } catch (err) {
-      throw new Error(`Failed to find user with email address "${email}": ${err}`)
+      throw new Error(`Failed to find user with email address "${email}": ${JSON.stringify(err)}`)
     }
     const users = result?.users || []
     if (!(Array.isArray(users) && users.length === 1)) {
@@ -279,7 +279,7 @@ export default class User {
    *
    * @param {String} id - The ID of the user to find.
    *
-   * @returns {Promise.<UserRecord | null>} - The user record if found, null otherwise.
+   * @returns {Promise.<FullUserRecord | null>} - The user record if found, null otherwise.
    *
    * @throws {Error} If the Directus client is not valid.
    * @throws {Error} If the query fails.

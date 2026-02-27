@@ -31,6 +31,7 @@ const queries = {
                       arrives_at
                       status
                       rides {
+                          id
                           item {
                               ... on trip_ride {
                                   id

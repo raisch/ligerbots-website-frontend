@@ -376,11 +376,11 @@ export default class Rider {
           result1
         )}`
       )
-      result2 = result1.event_by_id.trips
-        ?.map((/** @type {import('./trip').TripType} */trip) => trip.item.rides ?? [])
+      result2 = result1.event_by_id?.trips
+        ?.map((/** @type {import('./trip').TripType} */trip) => trip?.item?.rides ?? [])
         .flat()
         .filter(ride => (ride?.item?.riders ?? []).some(rider => rider?.item?.id === userId))
-        .map(ride => ride.item) ?? [] //TODO
+        .map(ride => ride?.item) ?? [] //TODO
 
       //console.log(result2, '----')
 

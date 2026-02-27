@@ -13,6 +13,18 @@ import RideModelSchema from '$lib/server/models/ride.model.js'
 
 const debug = createDebugMessages('APP:lib/server/vehicle')
 
+
+/**
+ * @typedef VehicleType
+ * @property {string} id
+ * @property {Object} item
+ * @property {string} item.name
+ * @property {number} item.seats
+ * @property {import('./user').EventUserType[]} item.driver
+ * @property {string} item.vehicle_type
+ * @property {string} item.id
+ */
+
 /**
  * Vehicle service for managing reusable vehicles (`ride` collection).
  *
