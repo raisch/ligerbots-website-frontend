@@ -47,6 +47,7 @@
   let { events = [] } = $derived(data)
 
   let modifying: Record<string, any> | null = $state(null)
+  let confirmDelete = $state(new Array(events.length).fill(false));
 
   function setModifying(subject: Record<string, any> | null, mode: string) {
     if (subject) {
@@ -55,8 +56,19 @@
     
     modifying = subject
   }
-  function deleteEvent(eventId: any) {
-    alert("havent implemented yet cuz im lazy - ray")
+  
+  async function deleteEvent(eventId: string) {
+    await fetch(`/api/carpool/event/${eventId}`, { method: 'DELETE' }).then(async (res) => {
+        if (res.ok) {
+            // Successfully deleted, refresh the page or navigate away
+            location.reload();
+        } else {
+            const result = await res.json();
+            const err = result?.error ?? result;
+            const message = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err);
+            alert(message || 'Failed to delete event');
+        }
+    }).catch(console.error);
   }
 
   //console.log('events?:', events)
@@ -88,7 +100,7 @@
 
   {#if events.length > 0}
     <div class="row events-list">
-      {#each events as event}
+      {#each events as event, index}
         <div class="col-md-6">
           <div class="card mb-6">
             <div class="card-body">
@@ -102,7 +114,21 @@
               {#if isAdmin}
                 <div class="bg-light p-2 rounded">
                   <button class="btn btn-secondary" onclick={() => setModifying({ mode: 'editEvent', item: event }, 'editEvent')}>Edit Event</button>
-                  <button class="btn btn-danger" onclick={() => deleteEvent(event.id)}>Delete Event</button>
+                  <button class="btn btn-danger" onclick={() => {
+                      if (confirmDelete[index]) {
+                        // TODO create better dialog
+                        let deletionConfirmed = confirm('Are you sure you want to delete this event?\nThis action cannot be undone.');
+                        if (deletionConfirmed) {
+                          deleteEvent(event.id);
+                        }
+                        confirmDelete[index] = false;
+                      } else {
+                          confirmDelete[index] = true;
+                          setTimeout(() => {
+                              confirmDelete[index] = false;
+                          }, 2000);
+                      }
+                  }}>{confirmDelete[index] ? "Confirm Event Deletion?" : "Delete Event"}</button>
                 </div>
               {/if}
             </div>

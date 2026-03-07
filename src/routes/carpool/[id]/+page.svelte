@@ -151,6 +151,20 @@
     }
   }
 
+  async function deleteEvent() {
+    await fetch(`/api/carpool/event/${event?.id}`, { method: 'DELETE' }).then(async (res) => {
+        if (res.ok) {
+            // Successfully deleted, refresh the page or navigate away
+            goto('/carpool')
+        } else {
+            const result = await res.json();
+            const err = result?.error ?? result;
+            const message = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err);
+            alert(message || 'Failed to delete event');
+        }
+    }).catch(console.error);
+  }
+
   /** @type {number | null} */
   let previousDestinationRideId = $state(null);
   /** @type {number | null} */
@@ -255,7 +269,7 @@
                         // TODO create better dialog
                         let deletionConfirmed = confirm('Are you sure you want to delete this event?\nThis action cannot be undone.');
                         if (deletionConfirmed) {
-                          // TODO create api for this
+                          deleteEvent();
                         }
                         confirmDelete = false;
                       } else {
