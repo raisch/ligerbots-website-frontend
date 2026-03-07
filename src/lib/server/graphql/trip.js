@@ -174,6 +174,17 @@ export const UPDATE_DESTINATION_TRIP_MUTATION = `mutation ($id: ID!, $trip: upda
       departs_on
       departs_at
       status
+      rides {
+        id
+        item {
+          ... on trip_ride {
+            id
+            ride {
+              name
+            }
+          }          
+        }
+      }
     }
 }`
 

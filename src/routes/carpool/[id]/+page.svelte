@@ -48,7 +48,7 @@
   let { data } = $props();
 
   let event = $derived(data?.event);
-  $inspect(page.url.hash, event);
+  // $inspect(page.url.hash, event);
 
   /** @type {Trips} */
   let trips = $derived(event?.trips || []);

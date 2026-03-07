@@ -68,7 +68,7 @@
     let confirm = $state(false);
     let infoId = $state(-1);
     // $inspect(infoId);
-    $inspect(trip);
+    // $inspect(JSON.stringify(trip.collection));
 
     /**
    * @param {number} id
@@ -84,7 +84,8 @@
      * @param {string} id
      */
     async function addCar(id) {
-        await addCarToTrip({ tripCollection: trip.collection, tripId: trip.item.id, rideId: id })
+        console.log('addCar(', id, ')')
+        await addCarToTrip({ collection: trip.collection, tripId: trip.item.id, rideId: id })
     }
     /**
      * @param {string} id

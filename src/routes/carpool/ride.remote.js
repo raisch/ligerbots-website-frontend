@@ -32,7 +32,7 @@ const RideRemoveFormSchema = Joi.object({
 /**
  * @typedef AddCarToTripSchema
  * @prop {string} tripId
- * @prop {string} tripCollection
+ * @prop {string} collection
  * @prop {string} rideId
  */
 /**
@@ -80,20 +80,29 @@ export const removeFromRide = command('unchecked', async (/** @type {RideRemoveF
 
 
 
-export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripSchema} */ { tripId, tripCollection, rideId }) => {
+export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripSchema} */ { tripId, collection, rideId }) => {
   try {
-    debug(`addCarToTrip(tripId=${tripId}, tripCollection=${tripCollection}, rideId=${rideId})`)
-    console.log(`addCarToTrip(tripId=${tripId}, tripCollection=${tripCollection}, rideId=${rideId})`)
-    let trip = tripCollection === 'destination_trip' ? await Trip.getDestinationTripById(tripId) : await Trip.getReturnTripById(tripId);
+    debug(`addCarToTrip(tripId=${tripId}, collection=${collection}, rideId=${rideId})`)
+    console.log(`addCarToTrip(tripId=${tripId}, collection=${collection}, rideId=${rideId})`)
+    let trip = collection === 'destination_trip' ? await Trip.getDestinationTripById(tripId) : await Trip.getReturnTripById(tripId);
     if (trip.rides?.some(ride => ride.item.ride.id === rideId)) return;
     let ride = await Ride.getRideById(rideId);
     if (!ride) return;
 
-    Event.createTripRide(tripId, tripCollection, {ride: {id: ride.id, vehicle_type: ride.vehicle_type, name: ride.name, seats: ride.seats, driver: [{ id: ride.driver?.[0]?.id, item: JSON.stringify(ride.driver?.[0]?.item) }]}})
+    let result = await Event.createTripRide({ ride: { id: rideId } })
+    // console.log('r1', result)
+    switch (collection) {
+      case 'destination_trip':
+        Event.createDestinationTripRide(tripId, result.id)
+        break;
+      case 'return_trip':
+        Event.createReturnTripRide(tripId, result.id)
+        break;
+    }
 
-    console.log(`Added ride ${rideId} to trip ${tripId} (${tripCollection})`)
+    console.log(`Added ride ${rideId} to trip ${tripId} (${collection})`)
   } catch (error) {
-    debug(`addCarToTrip(tripId=${tripId}, tripCollection=${tripCollection}, rideId=${rideId}) error: ${error}`)
+    debug(`addCarToTrip(tripId=${tripId}, collection=${collection}, rideId=${rideId}) error: ${error}`)
     console.error(JSON.stringify(error, null, 2))
   }
 })

@@ -19,7 +19,9 @@ import {
   DELETE_TRIP_RIDE_MUTATION,
   GET_TRIP_RIDE_BY_ID_QUERY,
   DELETE_DESTINATION_TRIP_RIDE_MUTATION,
-  DELETE_RETURN_TRIP_RIDE_MUTATION
+  DELETE_RETURN_TRIP_RIDE_MUTATION,
+  CREATE_RETURN_TRIP_RIDE_MUTATION,
+  CREATE_DESTINATION_TRIP_RIDE_MUTATION
 } from '$lib/server/graphql/trip_ride'
 
 import rider, {
@@ -32,6 +34,8 @@ import Trip from '$lib/server/trip.js'
 // import { EventSchema } from '$lib/schemata/event'
 import { EventModelSchema } from '$lib/server/models/event.model.js'
 import queries from '$lib/server/graphql/event'
+import Ride from './ride'
+import { createItem } from '@directus/sdk'
 
 
 const debug = createDebugMessages('APP:lib/server/event')
@@ -115,12 +119,6 @@ export default class Event {
       throw new Error('Event ID is required')
     }
     const client = await getBackendClient()
-    
-    try {
-      console.log('p', await client.query(`{ event_by_id(id: 1) { id name } }`))
-    } catch (e) {
-      console.error('e', e)
-    }
 
     if (!client) {
       throw new Error('Backend client is not available')
@@ -131,7 +129,7 @@ export default class Event {
 
     try {
       result = await client.query(query.replace('{{id}}', id))
-      console.log(id, 'r', result)
+      // console.log(id, 'r', result)
       debug(`getEventById(id=${id}) resp: ${JSON.stringify(result)}`)
       result = result?.event_by_id || {} // ensure we have an empty object if no event found
     } catch (/** @type {any} */ err) {
@@ -679,8 +677,6 @@ export default class Event {
   /**
    * Create a new trip ride for a trip.
    *
-   * @param {string} tripId - The ID of the trip to create a ride for.
-   * @param {string} tripCollection - The collection name ('destination_trip' or 'return_trip').
    * @param {Object} rideData - The ride data.
    * @param {RideRecord} rideData.ride - The ride information.
    * @param {string} [mutation=CREATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
@@ -689,18 +685,13 @@ export default class Event {
    *
    * @throws {Error} if failed to create the trip ride.
    */
-  static async createTripRide(tripId, tripCollection, rideData, mutation = CREATE_TRIP_RIDE_MUTATION) {
-    console.log(">>>>>>>>createTripRide", { tripId, tripCollection, rideData: rideData })
-    if (!tripId) {
-      throw new Error('Trip ID is required')
-    }
+  static async createTripRide(rideData, mutation = CREATE_TRIP_RIDE_MUTATION) {
+    // if (!tripId) {
+    //   throw new Error('Trip ID is required')
+    // }
 
-    if (!tripCollection || (tripCollection !== 'destination_trip' && tripCollection !== 'return_trip')) {
-      throw new Error('Valid trip collection name is required (destination_trip or return_trip)')
-    }
-
-    // if (!rideData.ride || !rideData.ride.vehicle_type || !rideData.ride.name || !rideData.ride.seats) {
-    //   throw new Error('Ride vehicle type, name, and seats are required')
+    // if (!tripCollection || (tripCollection !== 'destination_trip' && tripCollection !== 'return_trip')) {
+    //   throw new Error('Valid trip collection name is required (destination_trip or return_trip)')
     // }
 
     const client = await getBackendClient()
@@ -711,15 +702,110 @@ export default class Event {
 
     // Format the ride data for the mutation
     const tripRide = {
-      ...rideData,
-      // trip: {
-      //   id: tripId,
-      //   collection: tripCollection
-      // }
+      ...rideData
     }
 
     const variables = {
       tripRide
+    }
+
+    debug(`createTripRide(rideData=${JSON.stringify(tripRide)}) mutation: ${mutation}`)
+    debug(`createTripRide(rideData=${JSON.stringify(tripRide)}) variables: ${JSON.stringify(variables)}`)
+
+    let result
+    try {
+      result = await client.query(mutation, variables)
+      debug(`createTripRide(rideData=${JSON.stringify(tripRide)}) resp: ${JSON.stringify(result)}`)
+      result = result?.create_trip_ride_item || {}
+
+      console.log('r', result)
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to create trip ride: ${JSON.stringify(err)}`)
+    }
+
+    debug(`createTripRide(rideData=${JSON.stringify(tripRide)}) result: ${JSON.stringify(result)}`)
+    return result
+  }
+
+  /**
+   * Create a new trip ride for a trip.
+   *
+   * @param {string} tripId - The ID of the trip to create a ride for.
+   * @param {string} tripRideId - The ID of the trip ride to create.
+   * @param {string} [mutation=CREATE_DESTINATION_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
+   *
+   * @returns {Promise<Object>} - The created trip ride.
+   *
+   * @throws {Error} if failed to create the trip ride.
+   */
+  static async createDestinationTripRide(tripId, tripRideId, mutation = CREATE_DESTINATION_TRIP_RIDE_MUTATION) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+
+    // console.log('ride', rideId, '/', await Ride.getRideById(rideId))
+    const variables = {
+      tripRide: {
+        destination_trip_id: tripId,
+        collection: 'trip_ride',
+        item: tripRideId
+      }
+    }
+
+    debug(`createTripRide(tripId=${tripId}) mutation: ${mutation}`)
+    debug(`createTripRide(tripId=${tripId}) variables: ${JSON.stringify(variables)}`)
+
+    let result
+    try {
+      console.log('v', JSON.stringify(variables))
+      result = await client.query(mutation, variables)
+      debug(`createTripRide(tripId=${tripId}) resp: ${JSON.stringify(result)}`)
+      console.log('r', JSON.stringify(result, null, 2))
+      result = result?.create_destination_trip_rides_item || {}
+    } catch (/** @type {any} */ err) {
+      // console.error(err)
+      throw new Error(`Failed to create trip ride: ${JSON.stringify(err)}`)
+    }
+
+    debug(`createTripRide(tripId=${tripId}) result: ${JSON.stringify(result)}`)
+    return //result
+  }
+  /**
+   * Create a new trip ride for a trip.
+   *
+   * @param {string} tripId - The ID of the trip to create a ride for.
+   * @param {string} tripRideId - The ID of the trip ride to create.
+   * @param {string} [mutation=CREATE_DESTINATION_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
+   *
+   * @returns {Promise<Object>} - The created trip ride.
+   *
+   * @throws {Error} if failed to create the trip ride.
+   */
+  static async createReturnTripRide(tripId, tripRideId, mutation = CREATE_RETURN_TRIP_RIDE_MUTATION) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+
+    const variables = {
+      tripRide: {
+        return_trip_id: tripId,
+        collection: 'trip_ride',
+        ride: tripRideId
+      }
     }
 
     debug(`createTripRide(tripId=${tripId}) mutation: ${mutation}`)
@@ -728,9 +814,8 @@ export default class Event {
     let result
     try {
       result = await client.query(mutation, variables)
-    console.log(">>>>>>>>result", result)
       debug(`createTripRide(tripId=${tripId}) resp: ${JSON.stringify(result)}`)
-      result = result?.create_trip_ride_item || {}
+      result = result?.create_destination_trip_rides_item || {}
     } catch (/** @type {any} */ err) {
       throw new Error(`Failed to create trip ride: ${JSON.stringify(err)}`)
     }

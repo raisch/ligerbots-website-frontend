@@ -127,12 +127,12 @@ export function isDirectusClient(client) {
 }
 
 /**
- * @typedef {*}  DirectusClientBase - See {@link https://www.npmjs.com/package/@directus/sdk}
+ * @typedef {object}  DirectusClientBase - See {@link https://www.npmjs.com/package/@directus/sdk}
  *
  * @property {function} globals - get global settings
  * @property {function} login
- * @property {function} request - supports REST requests
- * @property {function} query - supports GraphQL queries
+ * @property {import('@directus/sdk').RestClient<any>['request']} request - supports REST requests
+ * @property {import('@directus/sdk').GraphqlClient<any>['query']} query - supports GraphQL queries
  */
 
 /**
