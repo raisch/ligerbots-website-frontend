@@ -62,6 +62,7 @@
 
   //console.log('existingRides', existingRides)
   for (let trip of trips) {
+    if (!trip.item) continue;
     //console.log(trip)
     if (trip.collection === 'destination_trip') {
       let ride = trip.item.rides.find((/** @type {{ item: {id: string} }} */ ride) => existingRides.includes(ride.item?.id))

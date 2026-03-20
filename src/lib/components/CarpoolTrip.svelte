@@ -40,11 +40,12 @@
 
     /**
      * Delete a trip by its ID.
+     * @param {number} relationshipId - The ID of the relationship to delete.
      * @param {number} id - The ID of the trip to delete.
      * @param {string} collection - The collection the trip belongs to.
      */
-    function deleteTrip(id, collection) {
-        const url = collection ? `/api/carpool/trip/${id}?collection=${encodeURIComponent(collection)}` : `/api/carpool/trip/${id}`
+    function deleteTrip(relationshipId, id, collection) {
+        const url = collection ? `/api/carpool/trip/${id}?collection=${encodeURIComponent(collection)}&relationship=${encodeURIComponent(relationshipId)}` : `/api/carpool/trip/${id}?relationship=${encodeURIComponent(relationshipId)}`;
         fetch(url, {
                         method: 'DELETE',
                         headers: {
@@ -123,7 +124,7 @@
             <span class="deleteButton" onclick={() => {
                 if (confirm) {
                     // Perform deletion
-                    deleteTrip(parseInt(item.id), trip.collection);
+                    deleteTrip(parseInt(trip.id), parseInt(item.id), trip.collection);
                 } else {
                     confirm = true;
                     setTimeout(() => {

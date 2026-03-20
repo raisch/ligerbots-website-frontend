@@ -521,12 +521,28 @@ const queries = {
   }
 }`,
 
-  // GraphQL mutation for deleting a trip (works for both destination and return trips)
+  DELETE_EVENT_TRIP_MUTATION: `mutation ($id: ID!) {
+    delete_event_trips_item(id: $id) {
+      id
+    }
+  }`,  
+
+// GraphQL mutation for deleting a trip (works for both destination and return trips)
   DELETE_TRIP_MUTATION: `mutation ($collection: String!, $id: ID!) {
     delete_item(collection: $collection, id: $id) {
       id
     }
-}`,
+  }`,
+  DELETE_DESTINATION_TRIP_MUTATION: `mutation ($id: ID!) {
+      delete_destination_trip_item(id: $id) {
+        id
+      }
+  }`,
+  DELETE_RETURN_TRIP_MUTATION: `mutation ($id: ID!) {
+      delete_return_trip_item(id: $id) {
+        id
+      }
+  }`,
 
   // GraphQL mutation for creating a trip ride
   CREATE_TRIP_RIDE_MUTATION: `mutation ($tripRide: create_trip_ride_input!) {
