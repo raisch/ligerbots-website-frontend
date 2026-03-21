@@ -9,6 +9,7 @@
   import { onMount } from 'svelte';
   import CreateOrModifySignup from '$lib/components/CreateOrModifySignup.svelte';
   import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
+  import MoveRiderDialog from '$lib/components/MoveRiderDialog.svelte';
 
   /**
    * @typedef {import('$lib/server/event').RideRecord} RideRecord
@@ -35,7 +36,7 @@
 
   /** @type {{
       data?: {
-        event: Event,
+        event: import('$lib/server/event').EventRecord,
         userId?: string,
         existingRides?: {id: string}[],
         cars?: {
@@ -101,6 +102,26 @@
      */
   function setActiveCarEditor(id) {
     activeCarEditor = id
+  }
+
+  /** @type {string | null} */
+  let movingUserId = $state(null);
+  /** @type {string | null} */
+  let movingUserCurrentRideId = $state(null);
+  /** @type {'destination_trip' | 'return_trip' | null} */
+  let movingUserCurrentTripType = $state(null);
+
+  /**
+   * @param {string | null} userId
+   * @param {string | null} currentRideId
+   * @param {'destination_trip' | 'return_trip' | null} currentTripType
+   * @returns {void}
+   */
+  function setMovingUser(userId, currentRideId, currentTripType) {
+    movingUserId = userId;
+    movingUserCurrentRideId = currentRideId;
+    movingUserCurrentTripType = currentTripType;
+    
   }
 
   function undoChanges() {
@@ -248,6 +269,12 @@
       {/if}
     {/if}
   </div>
+  <div class="move-rider-box">
+    {#if movingUserId && movingUserCurrentTripType && event}
+      {event.attendees?.find(a => a.users_id.id === movingUserId)}/{movingUserId}
+      <MoveRiderDialog SetMovingUser={setMovingUser} user={event.attendees?.find(a => a.users_id.id === movingUserId)?.users_id ?? null} event={event} type={movingUserCurrentTripType} otherRides={{ destination_trip: destinationRideId ? String(destinationRideId) : null, return_trip: returnRideId ? String(returnRideId) : null }} />
+    {/if}
+  </div>
   <h1>Carpool Event Detail Page</h1>
 
   <div class="row" style="background-color: #eee; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
@@ -305,7 +332,7 @@
                 {/if}
 
                 {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                  <CarpoolTrip {trip} {cars} {userId} RideId={destinationRideId} SetId={setDestinationRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} />
+                  <CarpoolTrip {trip} {cars} {userId} RideId={destinationRideId} SetId={setDestinationRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} SetMovingUser={setMovingUser} />
                 {/each}
               </div>
               <div class="trip-box">
@@ -322,7 +349,7 @@
                 {/if}
 
                 {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                  <CarpoolTrip {trip} {cars} {userId} RideId={returnRideId} SetId={setReturnRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} />
+                  <CarpoolTrip {trip} {cars} {userId} RideId={returnRideId} SetId={setReturnRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} SetMovingUser={setMovingUser} />
                 {/each}
               </div>
             </div>

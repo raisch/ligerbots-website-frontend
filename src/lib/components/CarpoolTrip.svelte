@@ -17,11 +17,12 @@
      *   activeCarEditor: string | null,
      *   SetModifying: (subject: Record<string, any> | null, mode: string) => void,
      *   SetActiveCarEditor: (carId: string | null) => void,
+     *   SetMovingUser: (userId: string | null, currentRideId: string | null, currentTripType: 'destination_trip' | 'return_trip' | null) => void,
      *   cars: { allCars: import('$lib/server/event').RideRecord[], userOwnedCars: import('$lib/server/event').RideRecord[], userCanHaveCar: boolean },
      *   userId: number | null
      * }} 
      */
-    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, activeCarEditor, SetModifying, SetActiveCarEditor, cars, userId } = $props();
+    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, activeCarEditor, SetModifying, SetActiveCarEditor, SetMovingUser, cars, userId } = $props();
 
     let filter = $state('');
 
@@ -176,7 +177,7 @@
                         <ul>
                             {#each riders as rider}
                                 {@const { firstname, lastname, email_address, phone_number } = rider.item || {}}
-                                <li>{firstname} {lastname}</li>
+                                <li>{firstname} {lastname}{#if isAdmin} [<a onclick={() => SetMovingUser(rider.item?.id ?? null, ride.item.id, trip.collection)}>Move</a>]{/if}</li>
                             {/each}
                             {#if riders.length === 0}
                                 <li>No riders yet</li>

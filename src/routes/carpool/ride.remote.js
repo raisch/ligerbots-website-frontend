@@ -54,9 +54,10 @@ export const updateRideSelections = command('unchecked', async (/** @type {RideR
     r.push(await Event.removeAttendeeFromEvent(event, user).catch(console.error));
     r.push(await Rider.removeRiderFromTrip(event, user).catch(console.error)); // prevent duplicates
   }
+  console.log('Adding user to event and rides', { event, user, rides })
   r.push(await Event.addAttendeeToEvent(event, user).catch(console.error));
   Object.entries(rides).forEach(async ([, selection]) => {
-    if (selection) {
+    if (selection && Number(selection) > -1) {
       r.push(await Rider.addRiderToRide(selection, user).catch(console.error));
     }
   })
