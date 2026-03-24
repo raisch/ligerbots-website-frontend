@@ -141,8 +141,8 @@ export function stringify(obj, replacer = null, space = 2) {
 
 /**
  * @param {string} query
- * @param {string[]} values
+ * @param {(string | null)[]} values
  */
 export function search(query, ...values) {
-  return !query || values.some(value => value.toLowerCase().includes(query.toLowerCase()));
+  return !query || values.some(value => value !== null && value.toLowerCase().includes(query.toLowerCase()));
 }

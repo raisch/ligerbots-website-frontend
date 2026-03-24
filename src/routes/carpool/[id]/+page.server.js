@@ -28,7 +28,11 @@ export async function load({ params, cookies }) {
   const userOwnedCars = allCars.filter(ride => ride.driver?.some(driver => driver.id === userId))
   const userCanHaveCar = user?.carpool_driver_eligible ?? false;
 
+  const allUsers = await User.listForDirectory()
+
+  console.log(allUsers)
+
   // console.log('event:', event)
 
-  return { event, userId, existingRides, cars: { allCars, userOwnedCars, userCanHaveCar } }
+  return { event, userId, existingRides, cars: { allCars, userOwnedCars, userCanHaveCar }, users: { allUsers } }
 }

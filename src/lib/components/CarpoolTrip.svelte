@@ -177,13 +177,16 @@
                         <ul>
                             {#each riders as rider}
                                 {@const { firstname, lastname, email_address, phone_number } = rider.item || {}}
-                                <li>{firstname} {lastname}{#if isAdmin} [<a onclick={() => SetMovingUser(rider.item?.id ?? null, ride.item.id, trip.collection)}>Move</a>]{/if}</li>
+                                <li>{firstname} {lastname}{#if isAdmin}&nbsp;[<a onclick={() => SetMovingUser(rider.item?.id ?? null, ride.item.id, trip.collection)}>Move</a>]{/if}</li>
                             {/each}
                             {#if riders.length === 0}
-                                <li>No riders yet</li>
+                                <li><i>No riders yet</i></li>
                             {/if}
                             {#if RideId === id}
                                 <li><i>+ (You)</i></li>
+                            {/if}
+                            {#if isAdmin}
+                                <li>[<a onclick={() => SetMovingUser(null, ride.item.id, trip.collection)}>Add</a>]</li>
                             {/if}
                         </ul>
                 </div>
@@ -219,11 +222,12 @@
                     <input class="add-ride-search" placeholder="Filter rides..." bind:value={filter}/>
                     {#each cars.allCars as car}
                         <!-- {@const {id, item} = car} -->
-                        {@const driver = car.driver?.map(driver => driver.item ? `${driver.item.firstname} ${driver.item.lastname}` : `unknown[id:${driver.id}]`).join(', ')}
-                        <button hidden={!search(filter, car.name, car.vehicle_type, driver)} class="add-ride-option" onclick={() => addCarIfNotPresent(rides, car.id)} data-selected={rides?.some(ride => ride.item?.ride.id === car.id)}>
+                        {@const driver = car.driver?.flatMap(driver => driver.item ? [`${driver.item.firstname} ${driver.item.lastname}`, driver.item.email_address ?? null, driver.item.phone_number ?? null] : `unknown[id:${driver.id}]`)}
+                        {@const driverName = car.driver?.map(driver => driver.item ? `${driver.item.firstname} ${driver.item.lastname}` : `unknown[id:${driver.id}]`)}
+                        <button hidden={!search(filter, car.name, car.vehicle_type, ...driver)} class="add-ride-option" onclick={() => addCarIfNotPresent(rides, car.id)} data-selected={rides?.some(ride => ride.item?.ride.id === car.id)}>
                             <span>{car.name} ({car.vehicle_type} - {car.seats} seats)</span>
                             {#if driver}
-                                <span>Driven by {driver}</span>
+                                <span>Driven by {driverName.join(', ')}</span>
                             {/if}
                         </button>
                     {/each}
@@ -354,6 +358,9 @@
     }
     .add-ride-option > * {
         /* max-width: 50%; */
+    }
+    a {
+        cursor: pointer;
     }
 
     div.info-button {

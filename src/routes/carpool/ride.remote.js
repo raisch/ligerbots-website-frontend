@@ -11,7 +11,7 @@ const debug = createDebugMessages('APP:lib/server/event')
  * @typedef RideRegistrationFormSchema
  * @prop {string} user
  * @prop {string} event
- * @prop {Record<'destination_trip' | 'return_trip', string | null>} rides
+ * @prop {Partial<Record<'destination_trip' | 'return_trip', string | null>>} rides
  */
 const RideRegistrationFormSchema = Joi.object({
   user: Joi.string().pattern(/^[0-9]+$/).required(),
@@ -43,6 +43,27 @@ const RideRemoveFormSchema = Joi.object({
  */
 
 
+export const setRideSelection = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides}) => {
+  debug(`setRideSelection(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
+  /**
+   * @type {any[]}
+   */
+  let r = []
+  let eventData = await Event.getEventById(event).catch(console.error);
+  if (eventData?.attendees?.some(attendee => attendee.users_id.id === user)) {
+    r.push(await Event.removeAttendeeFromEvent(event, user).catch(console.error));
+  }
+  r.push(await Event.addAttendeeToEvent(event, user).catch(console.error));
+  Object.entries(rides).forEach(async ([key, selection]) => {
+    let id = eventData?.trips?.filter(trip => trip.collection === key).flatMap(trip => trip.item.rides).flatMap(ride => ride.item.riders).find(rider => rider.item?.id === user)?.id;
+    if (id) Rider.removeRiderFromRideById(id).catch(console.error);
+    if (selection) {
+      r.push(await Rider.addRiderToRide(selection, user).catch(console.error));
+    }
+  })
+  return r
+})  
+
 export const updateRideSelections = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides}) => {
   debug(`updateRideSelections(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
   /**
@@ -54,7 +75,6 @@ export const updateRideSelections = command('unchecked', async (/** @type {RideR
     r.push(await Event.removeAttendeeFromEvent(event, user).catch(console.error));
     r.push(await Rider.removeRiderFromTrip(event, user).catch(console.error)); // prevent duplicates
   }
-  console.log('Adding user to event and rides', { event, user, rides })
   r.push(await Event.addAttendeeToEvent(event, user).catch(console.error));
   Object.entries(rides).forEach(async ([, selection]) => {
     if (selection && Number(selection) > -1) {

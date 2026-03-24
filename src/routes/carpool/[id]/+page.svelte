@@ -1,7 +1,7 @@
 <script>
   // List Carpool Event Details
   // path: /carpool/[id]
-  import { goto } from '$app/navigation';
+  import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/state';
   import CarpoolTrip from '$lib/components/CarpoolTrip.svelte';
   import { refresh } from '@directus/sdk';
@@ -10,6 +10,7 @@
   import CreateOrModifySignup from '$lib/components/CreateOrModifySignup.svelte';
   import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
   import MoveRiderDialog from '$lib/components/MoveRiderDialog.svelte';
+  import AddRiderDialog from '$lib/components/AddRiderDialog.svelte';
 
   /**
    * @typedef {import('$lib/server/event').RideRecord} RideRecord
@@ -43,6 +44,9 @@
           allCars: import('$lib/server/event').RideRecord[],
           userOwnedCars: import('$lib/server/event').RideRecord[],
           userCanHaveCar: boolean
+        },
+        users?: {
+          allUsers: import('$lib/server/event').EventUserRecord[]
         }
       }
     }} */
@@ -60,6 +64,8 @@
   let existingRides = $derived(data?.existingRides?.map(ride => ride.id) || [])
 
   let cars = $derived(data?.cars ?? { allCars: [], userOwnedCars: [], userCanHaveCar: false });
+  let allUsers = $derived(data?.users?.allUsers ?? []);
+
 
   //console.log('existingRides', existingRides)
   for (let trip of trips) {
@@ -121,7 +127,7 @@
     movingUserId = userId;
     movingUserCurrentRideId = currentRideId;
     movingUserCurrentTripType = currentTripType;
-    
+    setTimeout(() => {invalidateAll()}, 200); // i don't know why this delay is needed, but without it this doesn't work
   }
 
   function undoChanges() {
@@ -270,9 +276,12 @@
     {/if}
   </div>
   <div class="move-rider-box">
-    {#if movingUserId && movingUserCurrentTripType && event}
-      {event.attendees?.find(a => a.users_id.id === movingUserId)}/{movingUserId}
-      <MoveRiderDialog SetMovingUser={setMovingUser} user={event.attendees?.find(a => a.users_id.id === movingUserId)?.users_id ?? null} event={event} type={movingUserCurrentTripType} otherRides={{ destination_trip: destinationRideId ? String(destinationRideId) : null, return_trip: returnRideId ? String(returnRideId) : null }} />
+    {#if movingUserCurrentTripType && event}
+      {#if movingUserId && Number(movingUserId) > 0}
+        <MoveRiderDialog SetMovingUser={setMovingUser} user={event.attendees?.find(a => a.users_id.id === movingUserId)?.users_id ?? null} event={event} type={movingUserCurrentTripType} />
+      {:else}
+        <AddRiderDialog SetMovingUser={setMovingUser} users={allUsers} event={event} ride={movingUserCurrentRideId} type={movingUserCurrentTripType} />
+      {/if}
     {/if}
   </div>
   <h1>Carpool Event Detail Page</h1>
