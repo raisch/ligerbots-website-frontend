@@ -753,7 +753,7 @@ export default class Event {
     // console.log('ride', rideId, '/', await Ride.getRideById(rideId))
     const variables = {
       tripRide: {
-        destination_trip_id: tripId,
+        destination_trip_id: { id: tripId },
         collection: 'trip_ride',
         item: tripRideId
       }
@@ -775,7 +775,7 @@ export default class Event {
     }
 
     debug(`createTripRide(tripId=${tripId}) result: ${JSON.stringify(result)}`)
-    return //result
+    return result
   }
   /**
    * Create a new trip ride for a trip.
@@ -802,7 +802,7 @@ export default class Event {
 
     const variables = {
       tripRide: {
-        return_trip_id: tripId,
+        return_trip_id: { id: tripId },
         collection: 'trip_ride',
         ride: tripRideId
       }
