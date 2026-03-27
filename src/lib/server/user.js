@@ -17,11 +17,23 @@ import { error, redirect } from '@sveltejs/kit'
 
 const debug = createDebugMessages('APP:$lib/server/user')
 
+
+/**
+ * @typedef EventUserType
+ * @property {string} id
+ * @property {import('./event.js').EventUserRecord} item
+ */
+/**
+ * @typedef AttendeeUserType
+ * @property {string} id
+ * @property {import('./event.js').EventUserRecord} users_id
+ */
+
 export default class User {
   /**
    * Get a list of all users.
    *
-   * @returns {Promise.<Array.<UserRecord>>} - The list of all users.
+   * @returns {Promise.<Array.<FullUserRecord>>} - The list of all users.
    */
   static async listAll() {
     const client = await getBackendClient()
@@ -171,7 +183,7 @@ export default class User {
    *
    * @param {String} email - The email address of the user to find.
    *
-   * @returns {Promise.<UserRecord | null>} - The user record if found, null otherwise.
+   * @returns {Promise.<FullUserRecord | null>} - The user record if found, null otherwise.
    *
    * @throws {Error} If the Directus client is not valid.
    * @throws {Error} If the query fails.
@@ -219,7 +231,7 @@ export default class User {
    * @param {String} email - The email address of the user to login.
    * @param {String} password - The password of the user to login.
    *
-   * @returns {Promise.<UserRecord | null>} - True if the password is correct, false otherwise.
+   * @returns {Promise.<FullUserRecord | null>} - True if the password is correct, false otherwise.
    *
    * @throws {Error} If the Directus client is not valid.
    * @throws {Error} If the query fails.
@@ -228,7 +240,7 @@ export default class User {
   static async login(email, password) {
     const client = await getBackendClient()
 
-    /** @type {UserRecord | null} */
+    /** @type {FullUserRecord | null} */
     const user = await User.findByEmail(email)
     if (!user) {
       console.error(`Failed to find user with email address: ${email}`)
@@ -289,7 +301,7 @@ export default class User {
 }
 
 /**
- * @typedef {Object} UserRecord
+ * @typedef {Object} FullUserRecord
  * @property {String} id
  * @property {String} status
  * @property {String} firstname

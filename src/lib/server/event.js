@@ -3,14 +3,7 @@ import createDebugMessages from 'debug'
 
 import { getBackendClient } from '$lib/server/client'
 
-import {
-  EVENT_QUERY,
-  EVENT_BY_ID_QUERY,
-  EVENT_COMPLETE_BY_ID_QUERY,
-  CREATE_EVENT_MUTATION,
-  UPDATE_EVENT_MUTATION,
-  DELETE_EVENT_MUTATION
-} from '$lib/server/graphql/event'
+import Queries from '$lib/server/graphql/event'
 
 import {
   CREATE_DESTINATION_TRIP_MUTATION,
@@ -27,7 +20,7 @@ import {
   GET_TRIP_RIDE_BY_ID_QUERY
 } from '$lib/server/graphql/trip_ride'
 
-import {
+import rider, {
   ADD_RIDER_MUTATION,
   REMOVE_RIDER_MUTATION
 } from '$lib/server/graphql/rider.js'
@@ -36,9 +29,17 @@ import Trip from '$lib/server/trip.js'
 
 // import { EventSchema } from '$lib/schemata/event'
 import { EventModelSchema } from '$lib/server/models/event.model.js'
+import queries from '$lib/server/graphql/event'
 
 
 const debug = createDebugMessages('APP:lib/server/event')
+
+/**
+ * @typedef {import('./user').EventUserType} UserType
+ * @typedef {import('./user').AttendeeUserType} AttendeeUserType
+ * @typedef {EventRecord} EventType
+ * @typedef {{ to: AttendeeUserType[], from: AttendeeUserType[] }} EventCarpoolOptOut
+ */
 
 // Internal, minimal query for fetching a base event by ID in contexts where
 // the exported EVENT_BY_ID_QUERY may not be suitable (e.g. CLI usage).
@@ -77,7 +78,7 @@ export default class Event {
    *
    * @throws {Error} if failed to retrieve events.
    */
-  static async getEvents(status = 'published', query = EVENT_QUERY) {
+  static async getEvents(status = 'published', query = Queries.EVENT_QUERY) {
     const client = await getBackendClient()
 
     if (!client) {
@@ -107,7 +108,7 @@ export default class Event {
    * @param {string} [query=EVENT_BY_ID_QUERY] - The GraphQL query to use. It should contain a placeholder for the ID.
    * @returns {Promise<EventRecord|undefined>} - The event record if found, otherwise undefined.
    */
-  static async getEventById(id, query = EVENT_BY_ID_QUERY) {
+  static async getEventById(id, query = Queries.EVENT_BY_ID_QUERY) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -139,7 +140,7 @@ export default class Event {
    * @returns {Promise<EventRecord|undefined>} - The complete event record if found, otherwise undefined,
    *   with its `trips` array hydrated to include destination and return trips, rides, and riders.
    */
-  static async getCompleteEventById(id, query = EVENT_COMPLETE_BY_ID_QUERY) {
+  static async getCompleteEventById(id, query = Queries.EVENT_COMPLETE_BY_ID_QUERY) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -162,7 +163,7 @@ export default class Event {
     let destinationTrips = []
     let returnTrips = []
     try {
-      ;[destinationTrips, returnTrips] = await Promise.all([
+      [destinationTrips, returnTrips] = await Promise.all([
         Trip.getTrips(id, 'destination_trip'),
         Trip.getTrips(id, 'return_trip')
       ])
@@ -204,7 +205,7 @@ export default class Event {
    *
    * @throws {Error} if failed to create the event.
    */
-  static async createEvent(eventData, mutation = CREATE_EVENT_MUTATION) {
+  static async createEvent(eventData, mutation = Queries.CREATE_EVENT_MUTATION) {
     if (!eventData.name) {
       throw new Error('Event name is required')
     }
@@ -262,7 +263,7 @@ export default class Event {
    *
    * @throws {Error} if failed to update the event.
    */
-  static async updateEvent(id, eventData, mutation = UPDATE_EVENT_MUTATION) {
+  static async updateEvent(id, eventData, mutation = Queries.UPDATE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -339,7 +340,7 @@ export default class Event {
    *
    * @throws {Error} if failed to archive the event.
    */
-  static async archiveEvent(id, mutation = UPDATE_EVENT_MUTATION) {
+  static async archiveEvent(id, mutation = Queries.UPDATE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -357,7 +358,7 @@ export default class Event {
    *
    * @throws {Error} if failed to delete the event.
    */
-  static async deleteEvent(id, mutation = DELETE_EVENT_MUTATION) {
+  static async deleteEvent(id, mutation = Queries.DELETE_EVENT_MUTATION) {
     if (!id) {
       throw new Error('Event ID is required')
     }
@@ -931,6 +932,144 @@ export default class Event {
     return result
   }
 
+
+  /**
+   * Add an attendee to an event.
+   *
+   * @param {string} eventId - The ID of the event.
+   * @param {string} userId - The ID of the attendee to add.
+   * @param {string} [mutation=queries.ADD_ATTENDEE_MUTATION] - The GraphQL mutation to use.
+   *
+   * @returns {Promise<Object>} - The updated event with attendee count (?).
+   *
+   * @throws {Error} if failed to add the attendee.
+   */
+  static async addAttendeeToEvent(eventId, userId, mutation = queries.ADD_ATTENDEE_MUTATION) {
+
+    if (!eventId) {
+      throw new Error('Event ID is required')
+    }
+
+    if (!userId) {
+      throw new Error('User ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    const variables = {
+      eventId,
+      userId
+    }
+
+    debug(`addRiderToEvent(eventId=${eventId}, userId=${userId}) mutation: ${mutation}`)
+    debug(`addRiderToEvent(eventId=${eventId}, userId=${userId}) variables: ${JSON.stringify(variables)}`)
+
+    let result
+    try {
+      result = await client.query(mutation, variables)
+      debug(`addRiderToEvent(eventId=${eventId}, userId=${userId}) resp: ${JSON.stringify(result)}`)
+      result = result?.update_event_item || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to add rider to event: ${JSON.stringify(err)}`)
+    }
+
+    debug(`addRiderToEvent(eventId=${eventId}, userId=${userId}) result: ${JSON.stringify(result)}`)
+    return result
+  }
+
+
+  /**
+   * Remove an attendee from an event.
+   *
+   * @param {string} eventId - The ID of the event.
+   * @param {string} userId - The ID of the attendee to remove.
+   * @param {string} [mutation=queries.REMOVE_ATTENDEE_MUTATION] - The GraphQL mutation to use.
+   *
+   * @returns {Promise<Object>} - The updated event with attendee count.
+   *
+   * @throws {Error} if failed to remove the attendee.
+   */
+  static async removeAttendeeFromEvent(eventId, userId, mutation = queries.REMOVE_ATTENDEE_MUTATION) {
+    if (!eventId) {
+      throw new Error('Event ID is required')
+    }
+    if (!userId) {
+      throw new Error('User ID is required')
+    }
+    let eventData = await this.getEventById(eventId);
+    if (!eventData) {
+      throw new Error('Event not found')
+    }
+    let relationshipId = /** @type {EventRecord} */(eventData).attendees?.find(attendee => attendee.users_id.id === userId)?.id;
+    console.log("Found relationship ID for attendee:", relationshipId);
+    
+    if (!relationshipId) {
+      return {}
+    }
+    return this.removeAttendeeFromEventById(relationshipId, mutation);
+  }
+  /**
+   * Remove an attendee from an event.
+   *
+   * @param {string} relationshipId - The ID of the relationship to remove.
+   * @param {string} [mutation=queries.REMOVE_ATTENDEE_MUTATION] - The GraphQL mutation to use.
+   *
+   * @returns {Promise<Object>} - The updated event with attendee count.
+   *
+   * @throws {Error} if failed to remove the attendee.
+   */
+  static async removeAttendeeFromEventById(relationshipId, mutation = queries.REMOVE_ATTENDEE_MUTATION) {
+    console.log("Removing attendee with relationship ID:", relationshipId);
+    
+    if (!relationshipId) {
+      throw new Error('Relationship ID is required')
+    }
+
+    const client = await getBackendClient()
+
+    if (!client) {
+      throw new Error('Backend client is not available')
+    }
+
+    const variables = {
+      relationshipId
+    }
+
+    debug(`removeRiderFromEvent(relationshipId=${relationshipId}) mutation: ${mutation}`)
+    debug(
+      `removeRiderFromEvent(relationshipId=${relationshipId}) variables: ${JSON.stringify(
+        variables
+      )}`
+    )
+
+    let result
+    try {
+      result = await client.query(mutation, variables)
+      debug(
+        `removeRiderFromEvent(relationshipId=${relationshipId}) resp: ${JSON.stringify(
+          result
+        )}`
+      )
+      console.log("Raw result from mutation:", result);
+
+      result = result?.delete_event_attendees_item || {}
+    } catch (/** @type {any} */ err) {
+      throw new Error(`Failed to remove rider from event: ${JSON.stringify(err)}`)
+    }
+
+    debug(
+      `removeRiderFromEvent(relationshipId=${relationshipId}) result: ${JSON.stringify(
+        result
+      )}`
+    )
+    return result
+  }
+
+
   /**
    * Get a trip ride by ID.
    *
@@ -971,6 +1110,29 @@ export default class Event {
     debug(`getTripRideById(tripRideId=${tripRideId}) result: ${JSON.stringify(result)}`)
     return result
   }
+
+  /**
+   * @param {EventRecord} event
+   */
+  static getOptOutEventAttendees(event) {
+    if (!event) {
+      throw new Error('Event is required')
+    }
+
+    let optoutTo = event.attendees?.filter(attendee => 
+      !event.trips?.filter((/** @type {import('$lib/server/trip.js').TripType} */ trip) => trip.collection === 'destination_trip')
+        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item.id === attendee.users_id.id)))
+    ) ?? [];
+    let optoutFrom = event.attendees?.filter(attendee => 
+      !event.trips?.filter((/** @type {import('$lib/server/trip.js').TripType} */ trip) => trip.collection === 'return_trip')
+        .some(trip => trip.item.rides.some(ride => ride.item.riders.some(rider => rider.item.id === attendee.users_id.id)))
+    ) ?? [];
+    console.log(event)
+    return {
+      to: optoutTo,
+      from: optoutFrom
+    };
+  }
 }
 
 /**
@@ -983,7 +1145,8 @@ export default class Event {
  * @property {string} start_date
  * @property {string} end_date
  * @property {string} status
- * @property {Array<any>} [trips]
+ * @property {Array<import('$lib/server/trip.js').TripType>} [trips]
+ * @property {Array<AttendeeUserType>} [attendees]
  */
 
 /**
@@ -1001,7 +1164,7 @@ export default class Event {
  * @property {string} departs_at
  * @property {string} status
  * @property {string} collection - Either 'destination_trip' or 'return_trip'
- * @property {Array.<TripRideRecord>} [rides]
+ * @property {Array.<import('./ride').RideType>} [rides]
  */
 
 /**
@@ -1010,7 +1173,7 @@ export default class Event {
  * @property {string} id
  * @property {RideRecord} ride
  * @property {Object} trip
- * @property {Array.<UserRecord>} [riders]
+ * @property {Array.<UserType>} [riders]
  */
 
 /**
@@ -1024,7 +1187,7 @@ export default class Event {
  */
 
 /**
- * @typedef {Object} UserRecord
+ * @typedef {Object} EventUserRecord
  *
  * @property {string} id
  * @property {string} firstname

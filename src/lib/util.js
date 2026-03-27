@@ -21,6 +21,40 @@ export function prettyDate(date) {
 }
 
 /**
+ * Format time string to human-readable format: '9:00 AM'.
+ *
+ * @param {string|Date} date
+ * @returns {string}
+ */
+export function prettyTime(date) {
+  date = date instanceof Date ? date : new Date(date)
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
+}
+
+/**
+ * Format datetime string to human-readable format: 'January 1, 2024 9:00 AM'.
+ *
+ * @param {string|Date} date
+ * @returns {string}
+ */
+export function prettyDateTime(date) {
+  date = date instanceof Date ? date : new Date(date)
+  return date.toLocaleString('en-US', {
+    // weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
+}
+
+/**
  * Given a date string or Date object, return a formatted date string as YYYY-MM-DD.
  *
  * @param {string|Date} date

@@ -1,22 +1,90 @@
-<script>
+<script lang="ts">
   // List Active Carpool Events
   // path: /carpool
 
   import { goto } from '$app/navigation'
+  import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
+  import { onMount } from 'svelte';
 
   /**
    * Navigate to the event details page when an event is clicked
    * @param {string} eventId - The unique identifier for the event
    */
-  function goToDetails(eventId) {
+  function goToDetails(eventId: any) {
     goto(`/carpool/${eventId}`)
   }
 
-  let { data, events = data?.events || [] } = $props();
+
+  let isAdmin = $state(true);
+
+  console.log('page is loading')
+  onMount(() => {
+    console.log('onmount called')
+
+    const user = sessionStorage.getItem('user');
+
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      isAdmin = parsedUser.is_admin;
+      console.log(parsedUser)
+    } else {
+      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+      const raw = m?.[1]
+      let parsedUser = null
+      if (raw) {
+        try {
+          parsedUser = JSON.parse(decodeURIComponent(raw))
+        } catch (e) {
+          console.warn('Failed to parse user cookie', e)
+        }
+      }
+
+      isAdmin = parsedUser?.is_admin ?? isAdmin;
+    }
+  });
+
+  let { data } = $props();
+  let { events = [] } = $derived(data)
+
+  let modifying: Record<string, any> | null = $state(null)
+
+  function setModifying(subject: Record<string, any> | null, mode: string) {
+    if (subject) {
+      subject.mode = mode
+    }
+    
+    modifying = subject
+  }
+  function deleteEvent(eventId: any) {
+    alert("havent implemented yet cuz im lazy - ray")
+  }
+
+  //console.log('events?:', events)
 </script>
 
 <div class="container mt-4">
-  <h1>Carpool Events</h1>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Carpool Events</h1>
+    {#if isAdmin}
+      {#if modifying}
+        <CreateOrModifyEventSignup Subject={modifying} SetModifying={setModifying} />
+      {/if}
+      <div class="admin-actions">
+        <button class="btn btn-success me-2" onclick={()=>{}}>
+          Manage Cars
+        </button>
+        <button class="btn btn-primary" onclick={() => setModifying({ mode: 'createEvent', item: {} }, 'createEvent')}>
+          Create Event
+        </button>
+      </div>
+    {/if}
+  </div>
+
+  {#if isAdmin}
+    <div class="alert alert-info">
+      <strong>Admin Access:</strong> You have admin access to manage carpool events and cars.
+    </div>
+  {/if}
 
   {#if events.length > 0}
     <div class="row events-list">
@@ -30,6 +98,13 @@
               <p class="card-text"><strong>End Date:</strong> {event.end_date}</p>
               <p class="card-text"><strong>Location:</strong> {event.location}</p>
               <button class="btn btn-primary" onclick={() => goToDetails(event.id)}>View Trips</button>
+
+              {#if isAdmin}
+                <div class="bg-light p-2 rounded">
+                  <button class="btn btn-secondary" onclick={() => setModifying({ mode: 'editEvent', item: event }, 'editEvent')}>Edit Event</button>
+                  <button class="btn btn-danger" onclick={() => deleteEvent(event.id)}>Delete Event</button>
+                </div>
+              {/if}
             </div>
           </div>
         </div>
@@ -67,5 +142,52 @@
   }
   .btn {
     margin-top: 10px;
+  }
+  
+  .d-flex {
+    display: flex;
+  }
+  
+  .justify-content-between {
+    justify-content: space-between;
+  }
+  
+  .align-items-center {
+    align-items: center;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .admin-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .me-2 {
+    margin-right: 0.5rem;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
   }
 </style>

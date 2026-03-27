@@ -8,15 +8,17 @@
   import { browser } from '$app/environment'
 
   let user = $derived(writable())
-  setContext('user', user)
+  //setContext('user', user)
 
   /** @type {String}*/
-  let email = $state()
+  let email = $state("")
 
   /** @type {String}*/
-  let password = $state()
+  let password = $state("")
 
   async function handleSubmit(/** @type {Event} */ evt) {
+    evt.preventDefault()
+
     let loginFields = { email, password }
 
     // TODO: implement login
@@ -87,7 +89,7 @@
   <div class="row bottom-margin row-margins">
     <div class="col-xs-12">
       <center>
-        <form onsubmit={preventDefault(handleSubmit)}>
+        <form onsubmit={handleSubmit}>
           <input class="form-field" bind:value={email} type="email" placeholder="Email" />
           <input class="form-field" bind:value={password} type="password" placeholder="Password" />
           <button class="form-field">Login</button>
