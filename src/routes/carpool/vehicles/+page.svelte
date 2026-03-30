@@ -11,6 +11,7 @@
   import CreateOrModifyEventSignup from '$lib/components/CreateOrModifyEventSignup.svelte';
   import CreateOrModifyVehicle from '$lib/components/CreateOrModifyVehicle.svelte';
   import UserShortDisplay from '$lib/components/UserShortDisplay.svelte';
+  import { checkIfAdmin } from '$lib/util.js';
   import { onMount } from 'svelte';
 
   /**
@@ -22,9 +23,7 @@
   }
 
   let { data } = $props();
-  let { cars, userId, isAdmin, eligibleDrivers, userCanHaveCar } = data;
-
-  
+  let { cars, userId, isAdmin, eligibleDrivers, userCanHaveCar } = $derived(data);
 
   let modifying: Record<string, any> | null = $state(null)
 
@@ -39,11 +38,35 @@
     alert("havent implemented yet cuz im lazy - ~ray~ mitchell")
   }
 
+  onMount(() => {
+    const user = sessionStorage.getItem('user');
+  if (user) {
+      const parsedUser = JSON.parse(user);
+      isAdmin = parsedUser.is_admin;
+      userId = parseInt(parsedUser.id);
+      console.log(parsedUser)
+    } else {
+      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+      const raw = m?.[1]
+      let parsedUser = null
+      if (raw) {
+        try {
+          parsedUser = JSON.parse(decodeURIComponent(raw))
+        } catch (e) {
+          console.warn('Failed to parse user cookie', e)
+        }
+      }
+
+      isAdmin = parsedUser?.is_admin ?? isAdmin;
+      userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;
+    }
+  })
+
   //console.log('events?:', events)
 </script>
 
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
     <h1>Carpool Events</h1>
     {#if isAdmin || userCanHaveCar}
       {#if modifying}
@@ -58,7 +81,7 @@
       <div>
         You cannot create a vehicle because you do not meet the requirements to be a carpool driver.
         To be a carpool driver, you must have a valid driver's license and complete a CORI and SORI form.
-
+        <br>
         <i>If you believe this is an error, please contact an administrator to fix your issue.</i>
       </div>
     {/if}
@@ -95,7 +118,7 @@
         </div>
       {/each}
     </div>
-  {:else}
+  {:else if isAdmin || userCanHaveCar}
     <p>No vehicles available.</p>
   {/if}
 </div>

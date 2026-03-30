@@ -100,6 +100,7 @@ const queries = {
                       departs_at
                       arrives_at
                       rides {
+                      id
                           item {
                               ... on trip_ride {
                                   id

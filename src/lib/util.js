@@ -146,3 +146,11 @@ export function stringify(obj, replacer = null, space = 2) {
 export function search(query, ...values) {
   return !query || values.some(value => value !== null && value.toLowerCase().includes(query.toLowerCase()));
 }
+
+/**
+ * @param {{ is_admin: any; }} user
+ * @return {user is { is_admin: true }}
+ */
+export function checkIfAdmin(user) {
+  return user && user.is_admin;
+}

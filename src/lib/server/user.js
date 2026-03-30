@@ -144,7 +144,7 @@ export default class User {
     const client = await getBackendClient()
     const query = `
       query Users {
-        users(limit: -1, filter: { carpool_driver_eligible: { _eq: "true" } }) {
+        users(limit: -1, filter: { carpool_driver_eligible: { _eq: true } }) {
           id
           status
           firstname
@@ -164,7 +164,7 @@ export default class User {
     try {
       result = await client.query(query)
     } catch (err) {
-      throw new Error(`Failed to list users: ${err}`)
+      throw new Error(`Failed to list users: ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
     }
 
     if (!(result && result.users && Array.isArray(result.users))) {

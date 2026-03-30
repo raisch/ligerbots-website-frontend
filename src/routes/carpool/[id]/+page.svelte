@@ -70,6 +70,7 @@
   //console.log('existingRides', existingRides)
   for (let trip of trips) {
     if (!trip.item) continue;
+    console.log(trip.collection + '   ' + trip.item.id + '   ' + trip.item.rides.map(r => `[${r.id ?? '.'}->${r.item?.id ?? '.'}]`))
     //console.log(trip)
     if (trip.collection === 'destination_trip') {
       let ride = trip.item.rides.find((/** @type {{ item: {id: string} }} */ ride) => existingRides.includes(ride.item?.id))
@@ -188,7 +189,7 @@
             const result = await res.json();
             const err = result?.error ?? result;
             const message = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err);
-            alert(message || 'Failed to delete event');
+            // alert(message || 'Failed to delete event');
         }
     }).catch(console.error);
   }

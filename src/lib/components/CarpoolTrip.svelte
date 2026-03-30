@@ -95,8 +95,9 @@
      * @param {any} ride
      */
     async function removeCar(id, collection = trip.collection, ride) {
-        alert("removeCar called with id: " + id + '\n' + Object.keys(ride) + '\n' + JSON.stringify(ride, null, 2))
-        const relationshipId = trip.item.rides.find(r => r.item?.id === id)?.id ?? '';
+        alert("removeCar called with id: " + id + ' [' + collection + ']\n' + Object.keys(ride) + '\n' + JSON.stringify(ride, null, 2))
+        alert(trip.item.rides.map(r => JSON.stringify(r)).join('\n'));
+        const relationshipId = trip.item.rides.find(r => r?.item?.id === id)?.id ?? '';
         await removeCarFromTrip({ tripRideId: id, collection, relationshipId })
     }
 

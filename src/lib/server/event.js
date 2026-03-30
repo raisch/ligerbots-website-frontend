@@ -804,7 +804,7 @@ export default class Event {
       tripRide: {
         return_trip_id: { id: tripId },
         collection: 'trip_ride',
-        ride: tripRideId
+        item: tripRideId
       }
     }
 
@@ -813,9 +813,11 @@ export default class Event {
 
     let result
     try {
+      console.log('v', JSON.stringify(variables))
       result = await client.query(mutation, variables)
       debug(`createTripRide(tripId=${tripId}) resp: ${JSON.stringify(result)}`)
-      result = result?.create_destination_trip_rides_item || {}
+      console.log('r', JSON.stringify(result, null, 2))
+      result = result?.create_return_trip_rides_item || {}
     } catch (/** @type {any} */ err) {
       throw new Error(`Failed to create trip ride: ${JSON.stringify(err)}`)
     }
