@@ -82,10 +82,10 @@
         <CreateOrModifyEventSignup Subject={modifying} SetModifying={setModifying} />
       {/if}
       <div class="admin-actions">
-        <button class="btn btn-success me-2" onclick={() => goto('/carpool/vehicles')}>
+        <button class="btn btn-primary me-2" onclick={() => goto('/carpool/vehicles')}>
           Manage Vehicles
         </button>
-        <button class="btn btn-primary" onclick={() => setModifying({ mode: 'createEvent', item: {} }, 'createEvent')}>
+        <button class="btn btn-success" onclick={() => setModifying({ mode: 'createEvent', item: {} }, 'createEvent')}>
           Create Event
         </button>
       </div>

@@ -77,14 +77,14 @@
 </script>
 
 <div class="container mt-4">
-  <div>
-    <h1>Carpool Events</h1>
+  <div class="header-container">
+    <h1>Carpool Vehicles</h1>
     {#if isAdmin || userCanHaveCar}
       {#if modifying}
         <CreateOrModifyVehicle {userId} {isAdmin} {eligibleDrivers} Subject={modifying} SetModifying={setModifying} />
       {/if}
       <div class="admin-actions">
-        <button class="btn btn-primary" onclick={() => setModifying({ mode: 'create', item: {} }, 'create')}>
+        <button class="btn btn-success" onclick={() => setModifying({ mode: 'create', item: {} }, 'create')}>
           Create Vehicle
         </button>
       </div>
@@ -146,6 +146,12 @@
 </div>
 
 <style>
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+  }
   .events-list {
     display: flex;
     flex-wrap: wrap;
