@@ -10,10 +10,10 @@ export async function POST({ request }) {
   const { mode, item } = body || {}
 
   const client = await getBackendClient()
-
+  console.log(body)
   try {
     if (mode === 'create') {
-      /** @type {Record<string, any> & { name: string, vehicle_type: string, seats: number, driver: import('$lib/server/user.js').UserRecord }} */
+      /** @type {Record<string, any> & { name: string, vehicle_type: string, seats: number, driver: import('$lib/server/user.js').DirectoryUserRecord }} */
       // @ts-ignore
       const vehicleData = {
         status: 'published'
@@ -23,7 +23,10 @@ export async function POST({ request }) {
       if (item.type && item.type.trim()) vehicleData.vehicle_type = item.type.trim()
       if (item.seats) vehicleData.seats = item.seats
       // @ts-ignore
-      if (item.driver) vehicleData.driver = await User.findById(item.driver)
+      if (item.driver) vehicleData.driver = [{
+        collection: 'users',
+        item: item.driver
+      }]
       if (!vehicleData.driver) {
         return json({ error: 'Invalid driver specified' }, { status: 400 })
       }
@@ -33,7 +36,7 @@ export async function POST({ request }) {
       return json(resp)
       
     } else if (mode === 'edit') {
-      /** @type {Record<string, any> & { name?: string, vehicle_type?: string, seats?: number, driver?: import('$lib/server/user.js').UserRecord }} */
+      /** @type {Record<string, any> & { name?: string, vehicle_type?: string, seats?: number, driver?: import('$lib/server/user.js').DirectoryUserRecord }} */
       // @ts-ignore
       const vehicleData = {
         status: 'published'
@@ -44,8 +47,10 @@ export async function POST({ request }) {
       if (item.type && item.type.trim()) vehicleData.vehicle_type = item.type.trim()
       if (item.seats) vehicleData.seats = item.seats
       // @ts-ignore
-      if (item.driver) vehicleData.driver = await User.findById(item.driver)
-      
+      if (item.driver) vehicleData.driver = [{
+        collection: 'users',
+        item: item.driver
+      }]
       if (!vehicleData.driver) {
         return json({ error: 'Invalid driver specified' }, { status: 400 })
       }

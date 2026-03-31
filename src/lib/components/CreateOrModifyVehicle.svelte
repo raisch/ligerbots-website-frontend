@@ -109,7 +109,7 @@
             <select bind:value={fields.driver} disabled={!isAdmin}> <!-- non-admins can only select themself -->
                 <option value="" disabled>Select driver...</option>
                 {#each eligibleDrivers as driver}
-                    <option value={driver.id}>{driver.name}</option>
+                    <option value={driver.id}>{driver.firstname} {driver.lastname}</option>
                 {/each}
             </select>
         </label>
@@ -150,5 +150,20 @@
     }
     span {
         flex: 0 0 50%;
+    }
+
+    label {
+        height: 2em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    input, select, textarea {
+        width: 75%;
+        height: 2em;
+        padding: 2px;
+        margin-top: 2px;
+        float: right;
+        /* box-sizing: border-box; */
     }
 </style>

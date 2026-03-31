@@ -172,6 +172,7 @@ export default class Vehicle {
     try {
       result = await client.query(mutation, variables)
       debug(`createVehicle() resp: ${JSON.stringify(result)}`)
+      console.log('createVehicle() result:', result)
       result = result?.create_ride_item || {}
     } catch (/** @type {any} */ err) {
       throw new Error(`Failed to create vehicle: ${JSON.stringify(err)}`)

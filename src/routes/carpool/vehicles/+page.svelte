@@ -26,6 +26,7 @@
   let { cars, userId, isAdmin, eligibleDrivers, userCanHaveCar } = $derived(data);
 
   let modifying: Record<string, any> | null = $state(null)
+  let confirmDelete = $state(new Array(cars.length).fill(false));
 
   function setModifying(subject: Record<string, any> | null, mode: string) {
     if (subject) {
@@ -34,8 +35,18 @@
     
     modifying = subject
   }
-  function deleteVehicle(vehicleId: any) {
-    alert("havent implemented yet cuz im lazy - ~ray~ mitchell")
+  async function deleteVehicle(vehicleId: any) {
+    await fetch(`/api/carpool/vehicle/${vehicleId}`, { method: 'DELETE' }).then(async (res) => {
+        if (res.ok) {
+            // Successfully deleted, refresh the page or navigate away
+            location.reload();
+        } else {
+            const result = await res.json();
+            const err = result?.error ?? result;
+            const message = typeof err === 'object' ? JSON.stringify(err, null, 2) : String(err);
+            alert(message || 'Failed to delete vehicle');
+        }
+    }).catch(console.error);
   }
 
   onMount(() => {
@@ -95,26 +106,37 @@
 
   {#if cars.length > 0}
     <div class="row events-list">
-      {#each cars as car}
+      {#each cars as car, index}
         {@const { id, name, vehicle_type, seats, driver } = car}
-        <div class="col-md-6">
-          <div class="card mb-6">
-            <div class="card-body">
-              <h2 class="card-title"><a href="/carpool/{id}">{name}</a></h2>
-              <!-- <p class="card-text">{car.description}</p> -->
-              <p class="card-text"><strong>Type:</strong> {vehicle_type}</p>
-              <p class="card-text"><strong>Seats:</strong> {seats}</p>
-              <p class="card-text"><strong>Driver:</strong></p>
-              <ul>{#each driver as user}<UserShortDisplay user={user.item! ?? {}} />{/each}</ul>
-
-              {#if isAdmin}
-                <div class="bg-light p-2 rounded">
-                  <button class="btn btn-secondary" onclick={() => setModifying({ mode: 'edit', item: car }, 'edit')}>Edit Vehicle</button>
-                  <button class="btn btn-danger" onclick={() => deleteVehicle(car.id)}>Delete Vehicle</button>
-                </div>
-              {/if}
-            </div>
+        <div class="card-body">
+          <div>
+            <h2 class="card-title">{name}</h2>
+            <!-- <p class="card-text">{car.description}</p> -->
+            <p class="card-text"><strong>Type:</strong> {vehicle_type}</p>
+            <p class="card-text"><strong>Seats:</strong> {seats}</p>
+            <p class="card-text"><strong>Driver:</strong></p>
+            <ul>{#each driver as user}<UserShortDisplay user={user.item! ?? {}} />{/each}</ul>
           </div>
+          {#if isAdmin}
+            <div class="bg-light p-2 rounded vehicle-actions">
+              <button class="btn btn-secondary" onclick={() => setModifying({ mode: 'edit', item: car }, 'edit')}>Edit Vehicle</button>
+              <button class="btn btn-danger" onclick={() => {
+                  if (confirmDelete[index]) {
+                    // TODO create better dialog
+                    let deletionConfirmed = confirm('Are you sure you want to delete this event?\nThis action cannot be undone.');
+                    if (deletionConfirmed) {
+                      deleteVehicle(car.id);
+                    }
+                    confirmDelete[index] = false;
+                  } else {
+                      confirmDelete[index] = true;
+                      setTimeout(() => {
+                          confirmDelete[index] = false;
+                      }, 2000);
+                  }
+              }}>{confirmDelete[index] ? "Confirm Vehicle Deletion?" : "Delete Vehicle"}</button>
+            </div>
+          {/if}
         </div>
       {/each}
     </div>
@@ -135,21 +157,43 @@
     margin-bottom: 20px;
     border: 1px solid #ccc;
   }
-  .card {
-    padding: 1rem;
-    margin-bottom: 20px;
+  .events-list::before, .events-list::after {
+    display: none;
+  }
+  .card-body {
+    padding: 10px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #fff;
+    min-width: 300px;
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .card-title {
-    font-size: 3rem;
+    font-size: 1.5em;
+    margin: 10px 0;
   }
   .card-text {
-    font-size: 1.75rem;
+    font-size: 1em;
+    margin: 0;
   }
-  .btn {
-    margin-top: 10px;
+  .vehicle-actions {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    align-self: center;
+  }
+  .vehicle-actions .btn {
+    width: calc(50% - 2px);
+    padding: 6px 0;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
   }
   
   .d-flex {

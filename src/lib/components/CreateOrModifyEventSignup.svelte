@@ -169,4 +169,18 @@
         max-height: 12em;
         line-height: 1.25em;
     }
+    label {
+        height: 2em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    input, select, textarea {
+        width: 75%;
+        height: 2em;
+        padding: 2px;
+        margin-top: 2px;
+        float: right;
+        /* box-sizing: border-box; */
+    }
 </style>
