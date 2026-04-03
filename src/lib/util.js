@@ -147,6 +147,12 @@ export function search(query, ...values) {
   return !query || values.some(value => value !== null && value.toLowerCase().includes(query.toLowerCase()));
 }
 
+// /**
+//  * @param {import("./server/user").FullUserRecord} user
+//  */
+// export function checkIfExists(user) {
+//   return user.id;
+// }
 /**
  * @param {{ is_admin: any; }} user
  * @return {user is { is_admin: true }}

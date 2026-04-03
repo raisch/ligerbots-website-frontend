@@ -5,6 +5,8 @@ import createDebugMessages from 'debug';
 import Ride from '$lib/server/ride';
 import Event from '$lib/server/event';
 import Trip from '$lib/server/trip';
+import User from '$lib/server/user';
+import Vehicle from '$lib/server/vehicle';
 const debug = createDebugMessages('APP:lib/server/event')
 
 /**
@@ -12,6 +14,8 @@ const debug = createDebugMessages('APP:lib/server/event')
  * @prop {string} user
  * @prop {string} event
  * @prop {Partial<Record<'destination_trip' | 'return_trip', string | null>>} rides
+ * 
+ * @prop {string} jwt
  */
 const RideRegistrationFormSchema = Joi.object({
   user: Joi.string().pattern(/^[0-9]+$/).required(),
@@ -23,6 +27,8 @@ const RideRegistrationFormSchema = Joi.object({
  * @typedef RideRemoveFormSchema
  * @prop {string} user
  * @prop {string?} event
+ * 
+ * @prop {string} jwt
  */
 const RideRemoveFormSchema = Joi.object({
   user: Joi.string().pattern(/^[0-9]+$/).required(),
@@ -31,19 +37,29 @@ const RideRemoveFormSchema = Joi.object({
 
 /**
  * @typedef AddCarToTripSchema
+ * @prop {string} user
  * @prop {string} tripId
  * @prop {string} collection
  * @prop {string} rideId
+ * 
+ * @prop {string} jwt
  */
 /**
  * @typedef RemoveCarFromTripSchema
+ * @prop {string} user
  * @prop {string} tripRideId
  * @prop {string} relationshipId
  * @prop {'destination_trip' | 'return_trip'} collection
+ * 
+ * @prop {string} jwt
  */
 
 
-export const setRideSelection = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides}) => {
+export const setRideSelection = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides, jwt}) => {
+  const validatedUser = User.validate(jwt);
+  if (!validatedUser) throw new Error('Unauthorized');
+  if (validatedUser.id !== user && !validatedUser.is_admin) throw new Error('Cannot modify another user\'s ride selections');
+
   debug(`setRideSelection(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
   /**
    * @type {any[]}
@@ -64,7 +80,11 @@ export const setRideSelection = command('unchecked', async (/** @type {RideRegis
   return r
 })  
 
-export const updateRideSelections = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides}) => {
+export const updateRideSelections = command('unchecked', async (/** @type {RideRegistrationFormSchema} */ {event, user, rides, jwt}) => {
+  const validatedUser = User.validate(jwt);
+  if (!validatedUser) throw new Error('Unauthorized');
+  if (validatedUser.id !== user && !validatedUser.is_admin) throw new Error('Cannot modify another user\'s ride selections');
+  
   debug(`updateRideSelections(event=${event}, user=${user}, rides=${JSON.stringify(rides)})`)
   /**
    * @type {any[]}
@@ -84,7 +104,11 @@ export const updateRideSelections = command('unchecked', async (/** @type {RideR
   return r
 })
 
-export const removeFromRide = command('unchecked', async (/** @type {RideRemoveFormSchema} */ {user, event}) => {
+export const removeFromRide = command('unchecked', async (/** @type {RideRemoveFormSchema} */ {event, user, jwt}) => {
+  const validatedUser = User.validate(jwt);
+  if (!validatedUser) throw new Error('Unauthorized');
+  if (validatedUser.id !== user && !validatedUser.is_admin) throw new Error('Cannot modify another user\'s ride selections');
+  
   debug(`removeFromRide(event=${event}, user=${user})`)
   console.log(`removeFromRide(event=${event}, user=${user})`)
   /**
@@ -101,7 +125,12 @@ export const removeFromRide = command('unchecked', async (/** @type {RideRemoveF
 
 
 
-export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripSchema} */ { tripId, collection, rideId }) => {
+export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripSchema} */ { tripId, collection, rideId, jwt }) => {
+  const validatedUser = User.validate(jwt);
+  if (!validatedUser) throw new Error('Unauthorized');
+  if (!validatedUser.carpool_driver_eligible && !validatedUser.is_admin) throw new Error('User is not eligible to be a carpool driver');
+  if ((await Ride.getRideById(rideId)).driver.some(driver => driver.item?.id === validatedUser.id) && !validatedUser.is_admin) throw new Error('Cannot add or remove cars for another user');
+  
   try {
     debug(`addCarToTrip(tripId=${tripId}, collection=${collection}, rideId=${rideId})`)
     console.log(`addCarToTrip(tripId=${tripId}, collection=${collection}, rideId=${rideId})`)
@@ -128,7 +157,12 @@ export const addCarToTrip = command('unchecked', async (/** @type {AddCarToTripS
   }
 })
 
-export const removeCarFromTrip = command('unchecked', async (/** @type {RemoveCarFromTripSchema} */ { tripRideId, collection, relationshipId }) => {
+export const removeCarFromTrip = command('unchecked', async (/** @type {RemoveCarFromTripSchema} */ { tripRideId, collection, relationshipId, jwt }) => {
+  const validatedUser = User.validate(jwt);
+  if (!validatedUser) throw new Error('Unauthorized');
+  if (!validatedUser.carpool_driver_eligible && !validatedUser.is_admin) throw new Error('User is not eligible to be a carpool driver');
+  if ((await Event.getTripRideById(tripRideId)).ride.driver.some(driver => driver.item?.id === validatedUser.id) && !validatedUser.is_admin) throw new Error('Cannot add or remove cars for another user');
+  
   try {
     console.log(`removeCarFromTrip(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId})`)
     debug(`removeCarFromTrip(tripRideId=${tripRideId}, collection=${collection}, relationshipId=${relationshipId})`)

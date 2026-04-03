@@ -681,7 +681,7 @@ export default class Event {
    * @param {RideRecord} rideData.ride - The ride information.
    * @param {string} [mutation=CREATE_TRIP_RIDE_MUTATION] - The GraphQL mutation to use.
    *
-   * @returns {Promise<Object>} - The created trip ride.
+   * @returns {Promise<{id: string}>} - The created trip ride.
    *
    * @throws {Error} if failed to create the trip ride.
    */
@@ -1202,7 +1202,7 @@ export default class Event {
    * @param {string} tripRideId - The ID of the trip ride to retrieve.
    * @param {string} [query=GET_TRIP_RIDE_BY_ID_QUERY] - The GraphQL query to use.
    *
-   * @returns {Promise<Object>} - The trip ride record.
+   * @returns {Promise<TripRideRecord>} - The trip ride record.
    *
    * @throws {Error} if failed to retrieve the trip ride.
    */

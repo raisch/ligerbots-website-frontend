@@ -14,6 +14,7 @@ import createDebugMessages from 'debug'
 
 import { getBackendClient } from './client.js'
 import { error, redirect } from '@sveltejs/kit'
+import jsonwebtoken from 'jsonwebtoken'
 
 const debug = createDebugMessages('APP:$lib/server/user')
 
@@ -322,6 +323,44 @@ export default class User {
     return users[0]
   }
 
+
+
+  /**
+   * 
+   * @param {UserRegistration} registration 
+   */
+  static async register(registration) {
+    const client = await getBackendClient()
+    const query = `
+      mutation Users($input: create_users_input!) {
+        create_users_item(input: $input) {
+          id
+          firstname
+          lastname
+          email_address
+          groups
+          phone_number
+          password
+          is_admin
+          carpool_driver_eligible
+        }
+      }`
+
+
+    let result
+    try {
+      result = await client.query(query, { input: registration })
+    } catch (err) {
+      throw new Error(`Failed to register user with email address "${registration.email_address}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
+    }
+    const users = result?.create_users_item || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`register: no user found for registration: ${JSON.stringify(registration)}`)
+      return null
+    }
+    return users[0]
+  }
+
   /**
    * Log in a user.
    *
@@ -365,10 +404,6 @@ export default class User {
 
     return !!result?.utils_hash_verify ? user : null
   }
-
-  static async requestAccount(/** @type {UserAccountRequest} */ request) {
-    
-  }
   
   /**
    * 
@@ -393,6 +428,30 @@ export default class User {
     const user = page.cookies.get('user')
     if (!user) {
       throw redirect(302, `/login?redirect=${encodeURIComponent(page.url.pathname + page.url.search)}#msg=not-logged-in`)
+    }
+  }
+
+
+
+
+  /**
+   * 
+   * @param {string} jwt 
+   * @returns {UserJWT | null}
+   * Validate a JWT and return the decoded user information, or null if the JWT is invalid.
+   *
+   */
+  static validate(jwt) {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('Server configuration error: JWT secret is not set');
+    }
+    try {
+      const decoded = jsonwebtoken.verify(jwt, secret);
+      return decoded;
+    } catch (err) {
+      console.error(`Failed to validate JWT: ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`);
+      return null;
     }
   }
 }
@@ -474,6 +533,29 @@ export default class User {
  * 
  * @property {string[]?} roles
  * @property {string[]?} childrenNames
+ */
+
+/**
+ * @typedef UserRegistration
+ * // From website
+ * @property {String} id // Website database primary key
+ * @property {String} firstname
+ * @property {String} lastname
+ * @property {String} email_address
+ * @property {Array.<String>} groups
+ * @property {String} phone_number
+ * @property {String} password
+ * // TODO Figure this out later
+ * @property {Boolean} is_admin
+ * @property {Boolean} carpool_driver_eligible
+ */
+
+/**
+ * @typedef UserJWT
+ * @property {String} id
+ * @property {String} email_address
+ * @property {Boolean} is_admin
+ * @property {Boolean} carpool_driver_eligible
  */
 
 /**
