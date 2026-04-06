@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit'
 import Event from '$lib/server/event.js'
+import User from '$lib/server/user'
 
 /**
  * Error message helper.
@@ -11,7 +12,10 @@ const errResp = (err, status = 500) =>
   json({ message: err instanceof Error || typeof err === 'object' ? err.message : 'Unknown error' }, { status })
 
 // Get a single event by ID
-export async function GET({ params }) {
+export async function GET({ params, cookies }) {
+  const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })  
+  
   const { id } = params
   try {
     const eventData = await Event.getEventById(id)

@@ -1,6 +1,10 @@
+import User from '$lib/server/user'
 import TripRide from '$lib/server/vehicle.js'
 
-export async function DELETE({ params }) {
+export async function DELETE({ params, cookies }) {
+    const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
+
     try {
         const result = await TripRide.deleteTripRide(params.id)
         

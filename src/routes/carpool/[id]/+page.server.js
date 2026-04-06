@@ -10,17 +10,22 @@ import { redirect } from '@sveltejs/kit'
 export async function load({ params, cookies }) {
   const id = params.id
   let event
+
+  const jwt = cookies.get('jwt')
+  const user = User.validate(jwt || '');
+
+  // const userCookie = cookies.get('user')
+  // const user = userCookie ? await User.findByEmail(JSON.parse(decodeURIComponent(userCookie ?? '')).email_address) : null
+  if (!user) redirect(303, `/login?redirect=/carpool/${id}`)
+  const userId = user.id
+  if (!userId) redirect(303, `/login?redirect=/carpool/${id}`)
+
   try {
     event = await Event.getEventById(id)
   } catch (error) {
     console.error(error)
   }
 
-  const userCookie = cookies.get('user')
-  const user = userCookie ? await User.findByEmail(JSON.parse(decodeURIComponent(userCookie ?? '')).email_address) : null
-  if (!user) redirect(303, `/login?redirect=/carpool/${id}`)
-  const userId = user.id
-  if (!userId) redirect(303, `/login?redirect=/carpool/${id}`)
   
   const existingRides = await Rider.getRidesForRider(event?.id ?? '-1', userId)
 

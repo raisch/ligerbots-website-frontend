@@ -1,6 +1,10 @@
 import Ride from '$lib/server/ride.js'
+import User from '$lib/server/user'
 
-export async function GET({ params }) {
+export async function GET({ params, cookies }) {
+  const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
+
     try {
         const ride = await Ride.getRideById(params.id)
         
@@ -21,7 +25,11 @@ export async function GET({ params }) {
     }
 }
 
-export async function PUT({ params, request }) {
+export async function PUT({ params, request, cookies }) {
+  const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
+
+
     try {
         const data = await request.json()
         const rideData = {
@@ -48,7 +56,11 @@ export async function PUT({ params, request }) {
     }
 }
 
-export async function DELETE({ params }) {
+export async function DELETE({ params, cookies }) {
+  const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
+
+
     try {
         const result = await Ride.deleteRide(params.id)
         

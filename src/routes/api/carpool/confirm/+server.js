@@ -1,9 +1,14 @@
 import { json } from '@sveltejs/kit'
 import { getBackendClient } from '$lib/server/client'
 import Queries from '$lib/server/graphql/event'
+import User from '$lib/server/user'
 
 /** post to add/remove user from trip rides based on selections */
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
+  const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
+
+
   const body = await request.json()
   const {
     destinationRideId,

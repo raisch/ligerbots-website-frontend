@@ -5,7 +5,10 @@ import { CREATE_RIDE_MUTATION } from '$lib/server/graphql/ride.js'
 import User from '$lib/server/user.js'
 import Vehicle from '$lib/server/vehicle.js'
 
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
+  const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
+
   const body = await request.json()
   const { mode, item } = body || {}
 

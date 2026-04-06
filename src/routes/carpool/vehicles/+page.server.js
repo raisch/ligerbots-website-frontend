@@ -8,12 +8,15 @@ import { redirect } from '@sveltejs/kit'
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, cookies }) {
+  const jwt = cookies.get('jwt')
+  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
+  const user = User.validate(jwt);
 
-  const user = cookies.get('user')
+  // const user = cookies.get('user')
   if (!user) redirect(303, `/login?redirect=/carpool/vehicles`)
-  const userId = JSON.parse(decodeURIComponent(user ?? '')).id || null
+  const userId = user.id || null
   if (!userId) redirect(303, `/login?redirect=/carpool/vehicles`)
-  const userEmail = JSON.parse(decodeURIComponent(user ?? '')).email_address || null
+  const userEmail = user.email_address || null
   if (!userEmail) redirect(303, `/login?redirect=/carpool/vehicles`)
 
   let cars = await Ride.getAllRides()
