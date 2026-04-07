@@ -4,13 +4,13 @@ import Event from '$lib/server/event.js'
 import Ride from '$lib/server/ride'
 import Rider from '$lib/server/rider'
 import User from '$lib/server/user'
+import { error } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, cookies }) {
   const jwt = cookies.get('jwt')
-  if (!jwt || !User.validate(jwt)) return new Response('Unauthorized', { status: 401 })
-  const user = User.validate(jwt);
+  const user = User.validate(jwt || '');
 
   // const user = cookies.get('user')
   if (!user) redirect(303, `/login?redirect=/carpool/vehicles`)

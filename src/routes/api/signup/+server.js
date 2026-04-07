@@ -13,12 +13,9 @@ const debug = createDebugMessages('APP:src/routes/api/login/+server')
 
 /**
  *
- * @param {Object} options
- * @param {Request} options.request
- *
  * @returns {Promise<Response>}
  */
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
   /** @type {import('$lib/server/user').UserRegistration} */
   const body = await request.json();
 
@@ -33,13 +30,16 @@ export async function POST({ request }) {
   const jwt = User.signJWT(body);
   if (!jwt) return json({ error: 'Failed to create user' }, { status: 500 });
 
+  cookies.set('jwt', jwt, {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    httpOnly: true,
+    secure: true,
+    path: '/',
+    sameSite: 'strict',
+  });
   return json({
     id: body.id,
     user,
     jwt,
-  }, {
-    headers: {
-      'Set-Cookie': `jwt=${jwt}, Max-Age=604800, HttpOnly, Secure, Path=/, SameSite=Strict`
-    }
   });
 }

@@ -20,14 +20,11 @@ const debug = createDebugMessages('APP:src/routes/api/login/+server')
 
 /**
  *
- * @param {Object} options
- * @param {Request} options.request
- *
  * @returns {Promise<Response>}
  */
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
   const { email, password } = await request.json()
-console.log('login', email)
+  console.log('login', email)
   const user = await User.login(email, password)
   if (!user) {
     return json({ error: 'Invalid email or password' })
@@ -35,14 +32,17 @@ console.log('login', email)
 
   const jwt = User.signJWT(user);
 
+  cookies.set('jwt', jwt, {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    httpOnly: true,
+    secure: true,
+    path: '/',
+    sameSite: 'strict',
+  });
   debug('POST /api/auth/+server user', user)
   return json({
     id: user.id,
     user,
     jwt,
-  }, {
-    headers: {
-      'Set-Cookie': `jwt=${jwt}, Max-Age=604800, HttpOnly, Secure, Path=/, SameSite=Strict`
-    }
   });
 }
