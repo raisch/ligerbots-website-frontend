@@ -28,21 +28,18 @@ export async function POST({ request }) {
   // if (password1 !== password2) return json({ error: 'Passwords do not match' }, { status: 400 })
   // if (password1.length < 1) return json({ error: 'Password is required' }, { status: 400 })
   
-  User.register(body);
+  const user = User.register(body);
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    return json({ error: 'Server configuration error: JWT secret is not set' }, { status: 500 });
-  }
-  const jwt = jsonwebtoken.sign({
-    id: body.id,
-    email_address: body.email_address,
-    is_admin: body.is_admin,
-    carpool_driver_eligible: body.carpool_driver_eligible,
-  }, secret, { expiresIn: '7d' });
+  const jwt = User.signJWT(body);
+  if (!jwt) return json({ error: 'Failed to create user' }, { status: 500 });
 
-  return json({ 
+  return json({
     id: body.id,
+    user,
     jwt,
+  }, {
+    headers: {
+      'Set-Cookie': `jwt=${jwt}, Max-Age=604800, HttpOnly, Secure, Path=/, SameSite=Strict`
+    }
   });
 }

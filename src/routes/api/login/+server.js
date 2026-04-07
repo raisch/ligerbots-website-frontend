@@ -27,12 +27,22 @@ const debug = createDebugMessages('APP:src/routes/api/login/+server')
  */
 export async function POST({ request }) {
   const { email, password } = await request.json()
-
+console.log('login', email)
   const user = await User.login(email, password)
   if (!user) {
     return json({ error: 'Invalid email or password' })
   }
 
+  const jwt = User.signJWT(user);
+
   debug('POST /api/auth/+server user', user)
-  return json({ user })
+  return json({
+    id: user.id,
+    user,
+    jwt,
+  }, {
+    headers: {
+      'Set-Cookie': `jwt=${jwt}, Max-Age=604800, HttpOnly, Secure, Path=/, SameSite=Strict`
+    }
+  });
 }

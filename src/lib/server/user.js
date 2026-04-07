@@ -15,6 +15,7 @@ import createDebugMessages from 'debug'
 import { getBackendClient } from './client.js'
 import { error, redirect } from '@sveltejs/kit'
 import jsonwebtoken from 'jsonwebtoken'
+import { createSecretKey } from 'node:crypto'
 
 const debug = createDebugMessages('APP:$lib/server/user')
 
@@ -433,7 +434,27 @@ export default class User {
 
 
 
+  static #getJWTSecret() {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('Server configuration error: JWT secret is not set');
+    }
+    return Buffer.from(secret, 'base64')
+  }
 
+  /**
+   * @param {UserRegistration} user 
+   */
+  static signJWT(user) {
+    const secret = this.#getJWTSecret();
+    const jwt = jsonwebtoken.sign({
+      id: user.id,
+      email_address: user.email_address,
+      is_admin: user.is_admin,
+      carpool_driver_eligible: user.carpool_driver_eligible,
+    }, secret, { expiresIn: '7d' });
+    return jwt;
+  }
   /**
    * 
    * @param {string} jwt 
@@ -442,12 +463,10 @@ export default class User {
    *
    */
   static validate(jwt) {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error('Server configuration error: JWT secret is not set');
-    }
+    const secret = this.#getJWTSecret();
     try {
       const decoded = jsonwebtoken.verify(jwt, secret);
+      //@ts-ignore
       return decoded;
     } catch (err) {
       console.error(`Failed to validate JWT: ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`);
