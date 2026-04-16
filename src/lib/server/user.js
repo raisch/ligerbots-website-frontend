@@ -476,6 +476,71 @@ export default class User {
       return null;
     }
   }
+
+
+  /**
+   * @param {string} email
+   * @param {string} jwt
+   * @param {string} oldPassword
+   * @param {string} newPassword
+   */
+  static async changePassword(email, jwt, oldPassword, newPassword) {
+    const validatedUser = this.validate(jwt)
+    if (!validatedUser || validatedUser.id !== email) {
+      throw new Error('Unauthorized: Invalid JWT or user ID does not match JWT')
+    }
+
+    try {
+      const loginResult = await this.login(email, oldPassword)
+      if (!loginResult) {
+        throw new Error('Unauthorized: Old password is incorrect')
+      }
+      const resetResult = await this.resetPassword(loginResult.id, newPassword)
+      if (!resetResult) {
+        throw new Error('Failed to reset password')
+      }
+      return resetResult
+    } catch (error) {
+      throw new Error('Unauthorized: Invalid email or password')
+    }
+  }
+
+  /**
+   * 
+   * @param {string} user 
+   * @param {string} newPassword 
+   */
+  static async resetPassword(user, newPassword) {
+    const client = await getBackendClient()
+    const query = `
+      mutation Users($id: ID!, $input: update_users_input!) {
+        update_users_item(id: $id, data: $input) {
+          id
+          firstname
+          lastname
+          email_address
+          groups
+          phone_number
+          password
+          is_admin
+          carpool_driver_eligible
+        }
+      }`
+
+
+    let result
+    try {
+      result = await client.query(query, { id: user, input: { password: newPassword } })
+    } catch (err) {
+      throw new Error(`Failed to reset password for user with ID "${user}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
+    }
+    const users = result?.update_users_item || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`resetPassword: no user found for ID: ${user}`)
+      return null
+    }
+    return users[0]
+  }
 }
 
 /**
@@ -567,6 +632,7 @@ export default class User {
  * @property {Array.<String>} groups
  * @property {String} phone_number
  * @property {String} password
+ * @property {String} new_user_secret
  * // TODO Figure this out later
  * @property {Boolean} is_admin
  * @property {Boolean} carpool_driver_eligible

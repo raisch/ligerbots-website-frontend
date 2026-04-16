@@ -16,18 +16,29 @@ const debug = createDebugMessages('APP:src/routes/api/login/+server')
  * @returns {Promise<Response>}
  */
 export async function POST({ request, cookies }) {
-  /** @type {import('$lib/server/user').UserRegistration} */
-  const body = await request.json();
+  /** @type {{registration: import('$lib/server/user').UserRegistration; key: string;}} */
+  const {registration, key} = await request.json();
+  if (key != import.meta.env.REGISTRATION_KEY) return json({ error: 'Invalid registration key' }, { status: 403 });
+  
+  const jwt = User.signJWT(registration);
 
-  const existingUser = await User.findByEmail(body.email_address);
-  if (existingUser) return json({ error: 'Email already in use' }, { status: 400 });
+  const existingUser = await User.findByEmail(registration.email_address);
+  // In case the user forgot the password
+  if (existingUser) {
+    await User.resetPassword(existingUser.id, registration.password);
+    
+    return json({
+      id: existingUser.id,
+      user: existingUser,
+      jwt
+    });
+  }
   
   // if (password1 !== password2) return json({ error: 'Passwords do not match' }, { status: 400 })
   // if (password1.length < 1) return json({ error: 'Password is required' }, { status: 400 })
   
-  const user = User.register(body);
+  const user = User.register(registration);
 
-  const jwt = User.signJWT(body);
   if (!jwt) return json({ error: 'Failed to create user' }, { status: 500 });
 
   cookies.set('jwt', jwt, {
@@ -38,8 +49,8 @@ export async function POST({ request, cookies }) {
     sameSite: 'strict',
   });
   return json({
-    id: body.id,
+    id: registration.id,
     user,
-    jwt,
+    jwt
   });
 }
