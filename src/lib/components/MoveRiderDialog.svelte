@@ -3,11 +3,12 @@
   import type { EventRecord, EventUserRecord } from "$lib/server/event";
   import { removeFromRide, setRideSelection, updateRideSelections } from "../../routes/carpool/ride.remote";
 
-  let { SetMovingUser, user, event, type }: {
+  let { SetMovingUser, user, event, type, jwt }: {
     SetMovingUser: (userId: string | null, currentRideId: string | null, currentTripType: 'destination_trip' | 'return_trip' | null) => void,
     user: EventUserRecord | null,
     event: EventRecord,
     type: 'destination_trip' | 'return_trip',
+    jwt: string,
     // otherRides: Record<"destination_trip" | "return_trip", string | null>
   } = $props();
 
@@ -18,7 +19,7 @@
       console.error('No user to move');
       return;
     }
-    setRideSelection({ event: event.id, user: user.id, rides: { [type]: id } });
+    setRideSelection({ event: event.id, user: user.id, rides: { [type]: id }, jwt });
     exit();
   }
   async function optoutUser() {
@@ -26,7 +27,7 @@
       console.error('No user to opt out');
       return;
     }
-    setRideSelection({ event: event.id, user: user.id, rides: { [type]: null } });
+    setRideSelection({ event: event.id, user: user.id, rides: { [type]: null }, jwt });
     exit();
   }
   async function removeUser() {
@@ -34,7 +35,7 @@
       console.error('No user to remove');
       return;
     }
-    removeFromRide({ event: event.id, user: user.id });
+    removeFromRide({ event: event.id, user: user.id, jwt });
     exit();
   }
   function exit() {

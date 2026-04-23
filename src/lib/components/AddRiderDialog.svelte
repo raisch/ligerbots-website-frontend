@@ -4,19 +4,20 @@
   import { removeFromRide, setRideSelection, updateRideSelections } from "../../routes/carpool/ride.remote";
   import UserShortDisplay from "./UserShortDisplay.svelte";
 
-  let { SetMovingUser, users, event, ride, type }: {
+  let { SetMovingUser, users, event, ride, type, jwt }: {
     SetMovingUser: (userId: string | null, currentRideId: string | null, currentTripType: 'destination_trip' | 'return_trip' | null) => void,
     users: EventUserRecord[] | null,
     event: EventRecord,
     ride: string | null,
     type: 'destination_trip' | 'return_trip',
+    jwt: string,
     // otherRides: Record<"destination_trip" | "return_trip", string | null>
   } = $props();
 
   let filter = $state('');
 
   async function addUser(id: string) {
-    setRideSelection({ event: event.id, user: id, rides: { [type]: ride } });
+    setRideSelection({ event: event.id, user: id, rides: { [type]: ride }, jwt });
     exit();
   }
   function exit() {

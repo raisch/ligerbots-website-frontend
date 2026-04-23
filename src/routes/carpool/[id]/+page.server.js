@@ -36,5 +36,5 @@ export async function load({ params, cookies }) {
   const allUsers = await User.listForDirectory()
 
 
-  return { event, userId, existingRides, cars: { allCars: user.is_admin ? allCars : userOwnedCars, userOwnedCars, userCanHaveCar }, users: { allUsers } }
+  return { event, userId, jwt, existingRides, cars: { allCars: user.is_admin ? allCars : userOwnedCars, userOwnedCars, userCanHaveCar }, users: { allUsers } }
 }

@@ -19,10 +19,11 @@
      *   SetActiveCarEditor: (carId: string | null) => void,
      *   SetMovingUser: (userId: string | null, currentRideId: string | null, currentTripType: 'destination_trip' | 'return_trip' | null) => void,
      *   cars: { allCars: import('$lib/server/event').RideRecord[], userOwnedCars: import('$lib/server/event').RideRecord[], userCanHaveCar: boolean },
-     *   userId: number | null
+     *   userId: number | null,
+     *   jwt: string
      * }} 
      */
-    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, activeCarEditor, SetModifying, SetActiveCarEditor, SetMovingUser, cars, userId } = $props();
+    let { trip, RideId, SetId, previousDestinationRideId, previousReturnRideId, isAdmin, modifying, activeCarEditor, SetModifying, SetActiveCarEditor, SetMovingUser, cars, userId, jwt } = $props();
 
     let filter = $state('');
 
@@ -87,7 +88,7 @@
      */
     async function addCar(id) {
         console.log('addCar(', id, ')')
-        await addCarToTrip({ collection: trip.collection, tripId: trip.item.id, rideId: id })
+        await addCarToTrip({ collection: trip.collection, tripId: trip.item.id, rideId: id, user: String(userId), jwt })
     }
     /**
      * @param {string} id
@@ -98,7 +99,7 @@
         alert("removeCar called with id: " + id + ' [' + collection + ']\n' + Object.keys(ride) + '\n' + JSON.stringify(ride, null, 2))
         alert(trip.item.rides.map(r => JSON.stringify(r)).join('\n'));
         const relationshipId = trip.item.rides.find(r => r?.item?.id === id)?.id ?? '';
-        await removeCarFromTrip({ tripRideId: id, collection, relationshipId })
+        await removeCarFromTrip({ tripRideId: id, collection, relationshipId, user: String(userId), jwt })
     }
 
     /** 

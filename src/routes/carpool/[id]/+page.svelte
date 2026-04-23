@@ -39,6 +39,7 @@
       data?: {
         event: import('$lib/server/event').EventRecord,
         userId?: string,
+        jwt: string,
         existingRides?: {id: string}[],
         cars?: {
           allCars: import('$lib/server/event').RideRecord[],
@@ -65,6 +66,7 @@
 
   let cars = $derived(data?.cars ?? { allCars: [], userOwnedCars: [], userCanHaveCar: false });
   let allUsers = $derived(data?.users?.allUsers ?? []);
+  let jwt = $derived(data?.jwt ?? '');
 
 
   //console.log('existingRides', existingRides)
@@ -152,7 +154,7 @@
       await updateRideSelections({user: data?.userId ?? '-1', event: event?.id ?? '-1', rides: {
         destination_trip: destinationRideId?.toString() ?? null,
         return_trip: returnRideId?.toString() ?? null
-      }})
+      }, jwt})
       goto('#success-add', {invalidateAll: true})
     } catch (e) {
       goto('#error-add', {invalidateAll: true})
@@ -162,7 +164,7 @@
   async function removeSelections() {
     console.log('removing selections', {destinationRideId, returnRideId, event})
     try {
-      await removeFromRide({user: data?.userId ?? '-1', event: event?.id ?? '-1'})
+      await removeFromRide({user: data?.userId ?? '-1', event: event?.id ?? '-1', jwt})
       goto('#success-remove', {invalidateAll: true})
     } catch (e) {
       goto('#error-remove', {invalidateAll: true})
@@ -172,7 +174,7 @@
   async function removeAllSelections() {
     console.log('removing selections', {destinationRideId, returnRideId, event})
     try {
-      await removeFromRide({user: data?.userId ?? '-1', event: null})
+      await removeFromRide({user: data?.userId ?? '-1', event: null, jwt: data?.jwt ?? ''})
       goto('#success-remove', {invalidateAll: true})
     } catch (e) {
       goto('#error-remove', {invalidateAll: true})
@@ -279,9 +281,9 @@
   <div class="move-rider-box">
     {#if movingUserCurrentTripType && event}
       {#if movingUserId && Number(movingUserId) > 0}
-        <MoveRiderDialog SetMovingUser={setMovingUser} user={event.attendees?.find(a => a.users_id.id === movingUserId)?.users_id ?? null} event={event} type={movingUserCurrentTripType} />
+        <MoveRiderDialog SetMovingUser={setMovingUser} user={event.attendees?.find(a => a.users_id.id === movingUserId)?.users_id ?? null} event={event} type={movingUserCurrentTripType} {jwt} />
       {:else}
-        <AddRiderDialog SetMovingUser={setMovingUser} users={allUsers} event={event} ride={movingUserCurrentRideId} type={movingUserCurrentTripType} />
+        <AddRiderDialog SetMovingUser={setMovingUser} users={allUsers} event={event} ride={movingUserCurrentRideId} type={movingUserCurrentTripType} {jwt} />
       {/if}
     {/if}
   </div>
@@ -342,7 +344,7 @@
                 {/if}
 
                 {#each trips.filter(trip => trip.collection === 'destination_trip') as trip}
-                  <CarpoolTrip {trip} {cars} {userId} RideId={destinationRideId} SetId={setDestinationRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} SetMovingUser={setMovingUser} />
+                  <CarpoolTrip {trip} {cars} {userId} RideId={destinationRideId} SetId={setDestinationRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} SetMovingUser={setMovingUser} {jwt} />
                 {/each}
               </div>
               <div class="trip-box">
@@ -359,7 +361,7 @@
                 {/if}
 
                 {#each trips.filter(trip => trip.collection === 'return_trip') as trip}
-                  <CarpoolTrip {trip} {cars} {userId} RideId={returnRideId} SetId={setReturnRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} SetMovingUser={setMovingUser} />
+                  <CarpoolTrip {trip} {cars} {userId} RideId={returnRideId} SetId={setReturnRideId} {previousDestinationRideId} {previousReturnRideId} {isAdmin} {modifying} {activeCarEditor} SetModifying={setModifying} SetActiveCarEditor={setActiveCarEditor} SetMovingUser={setMovingUser} {jwt} />
                 {/each}
               </div>
             </div>
