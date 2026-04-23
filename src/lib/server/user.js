@@ -335,7 +335,7 @@ export default class User {
     const client = await getBackendClient()
     const query = `
       mutation Users($input: create_users_input!) {
-        create_users_item(input: $input) {
+        create_users_item(data: $input) {
           id
           firstname
           lastname
@@ -351,10 +351,11 @@ export default class User {
 
     let result
     try {
-      result = await client.query(query, { input: registration })
+      result = await client.query(query, { input: { ...registration, status: "published" } })
     } catch (err) {
       throw new Error(`Failed to register user with email address "${registration.email_address}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
     }
+    console.log(result)
     const users = result?.create_users_item || []
     if (!(Array.isArray(users) && users.length === 1)) {
       debug(`register: no user found for registration: ${JSON.stringify(registration)}`)
@@ -486,8 +487,8 @@ export default class User {
    */
   static async changePassword(email, jwt, oldPassword, newPassword) {
     const validatedUser = this.validate(jwt)
-    if (!validatedUser || validatedUser.id !== email) {
-      throw new Error('Unauthorized: Invalid JWT or user ID does not match JWT')
+    if (!validatedUser || validatedUser.email_address !== email) {
+      throw new Error(`Unauthorized: Invalid JWT or user ID does not match JWT`)
     }
 
     try {
@@ -632,7 +633,6 @@ export default class User {
  * @property {Array.<String>} groups
  * @property {String} phone_number
  * @property {String} password
- * @property {String} new_user_secret
  * // TODO Figure this out later
  * @property {Boolean} is_admin
  * @property {Boolean} carpool_driver_eligible

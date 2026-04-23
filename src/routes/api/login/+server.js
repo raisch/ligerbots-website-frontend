@@ -23,12 +23,21 @@ const debug = createDebugMessages('APP:src/routes/api/login/+server')
  * @returns {Promise<Response>}
  */
 export async function POST({ request, cookies }) {
-  const { email, password } = await request.json()
-  console.log('login', email)
-  const user = await User.login(email, password)
-  if (!user) {
-    return json({ error: 'Invalid email or password' })
+  let formData = await request.formData();
+  let email = formData.get('email')?.toString() || '';
+  let password = formData.get('password')?.toString() || '';
+  console.log('login', email);
+
+  const auth = request.headers.get('Authorization');
+  const basicAuthMatch = auth ? auth.match(/^Basic (.+)$/) : null;
+  if (basicAuthMatch) {
+    let credentials = Buffer.from(basicAuthMatch[1], 'base64').toString('utf-8').split(':');
+    email = decodeURIComponent(credentials[0]);
+    password = decodeURIComponent(credentials[1]);
+    console.log('login (basic auth)', email);
   }
+  const user = await User.login(email, password);
+  if (!user) return json({ error: 'Invalid email or password' });
 
   const jwt = User.signJWT(user);
 

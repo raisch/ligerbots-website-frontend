@@ -7,7 +7,7 @@ import createDebugMessages from 'debug'
 import { json } from '@sveltejs/kit'
 
 import User from '$lib/server/user'
-import jsonwebtoken from 'jsonwebtoken'
+import { REGISTRATION_KEY } from '$env/static/private'
 
 const debug = createDebugMessages('APP:src/routes/api/login/+server')
 
@@ -16,13 +16,19 @@ const debug = createDebugMessages('APP:src/routes/api/login/+server')
  * @returns {Promise<Response>}
  */
 export async function POST({ request, cookies }) {
+  console.log('signup request received')
+
   /** @type {{registration: import('$lib/server/user').UserRegistration; key: string;}} */
   const {registration, key} = await request.json();
-  if (key != import.meta.env.REGISTRATION_KEY) return json({ error: 'Invalid registration key' }, { status: 403 });
+  
+  if (key != REGISTRATION_KEY) return json({ error: 'Invalid registration key' }, { status: 403 });
   
   const jwt = User.signJWT(registration);
 
   const existingUser = await User.findByEmail(registration.email_address);
+
+  console.log(registration, key, existingUser)
+
   // In case the user forgot the password
   if (existingUser) {
     await User.resetPassword(existingUser.id, registration.password);
