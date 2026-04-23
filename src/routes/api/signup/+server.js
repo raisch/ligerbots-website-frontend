@@ -49,7 +49,7 @@ export async function POST({ request, cookies }) {
 
   cookies.set('jwt', jwt, {
     maxAge: 60 * 60 * 24 * 7, // 7 days
-    httpOnly: true,
+    httpOnly: false,
     secure: true,
     path: '/',
     sameSite: 'strict',

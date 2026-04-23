@@ -50,27 +50,27 @@
   }
 
   onMount(() => {
-    const user = sessionStorage.getItem('user');
-  if (user) {
-      const parsedUser = JSON.parse(user);
-      isAdmin = parsedUser.is_admin;
-      userId = parseInt(parsedUser.id);
-      console.log(parsedUser)
-    } else {
-      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
-      const raw = m?.[1]
-      let parsedUser = null
-      if (raw) {
-        try {
-          parsedUser = JSON.parse(decodeURIComponent(raw))
-        } catch (e) {
-          console.warn('Failed to parse user cookie', e)
-        }
-      }
+  //   const user = sessionStorage.getItem('user');
+  // if (user) {
+  //     const parsedUser = JSON.parse(user);
+  //     isAdmin = parsedUser.is_admin;
+  //     userId = parseInt(parsedUser.id);
+  //     console.log(parsedUser)
+  //   } else {
+  //     const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+  //     const raw = m?.[1]
+  //     let parsedUser = null
+  //     if (raw) {
+  //       try {
+  //         parsedUser = JSON.parse(decodeURIComponent(raw))
+  //       } catch (e) {
+  //         console.warn('Failed to parse user cookie', e)
+  //       }
+  //     }
 
-      isAdmin = parsedUser?.is_admin ?? isAdmin;
-      userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;
-    }
+  //     isAdmin = parsedUser?.is_admin ?? isAdmin;
+  //     userId = parsedUser?.id ? parseInt(parsedUser.id) : userId;
+  //   }
   })
 
   //console.log('events?:', events)

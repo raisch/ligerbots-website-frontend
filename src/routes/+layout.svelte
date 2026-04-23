@@ -16,7 +16,7 @@
   let user = $derived({})
 
   onMount(async () => {
-    user = document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 1)[1] || sessionStorage.getItem('user')
+    user = document.cookie.split('; ').find(row => row.startsWith('jwt='))?.split('=', 1)[1] || null;
     // console.log(`layout user:`, user)
   })
 </script>

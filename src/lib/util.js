@@ -160,3 +160,13 @@ export function search(query, ...values) {
 export function checkIfAdmin(user) {
   return user && user.is_admin;
 }
+
+/**
+ * 
+ * @param {string} jwt 
+ * @returns 
+ */
+export function payloadFromJWT(jwt) {
+  var payload = jwt.split('.')[1];
+  return decodeURI(atob(payload));
+}

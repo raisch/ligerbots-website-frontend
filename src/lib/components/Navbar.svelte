@@ -5,6 +5,8 @@
 
   import { onMount } from 'svelte'
 
+  import { payloadFromJWT } from '$lib/util';
+
   /**
    * @typedef {Object} NavbarConfig
    *
@@ -35,8 +37,8 @@
     data.config = resp?.result?.navbar_config || []
 
     try {
-      const user = document.cookie.split('; ').find(row => row.startsWith('user='))?.split('=', 2)[1] || sessionStorage.getItem('user')
-      data.user = user ? JSON.parse(decodeURIComponent(user)) : null
+      const user = document.cookie.split('; ').find(row => row.startsWith('jwt='))?.split('=', 2)[1] || null;
+      data.user = user ? payloadFromJWT(user) : null
     } catch (err) {
       data.user = null
     }

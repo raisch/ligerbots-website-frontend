@@ -1,7 +1,7 @@
 import User from "$lib/server/user";
 import { redirect } from "@sveltejs/kit";
 
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
   const formData = await request.formData();
   const email = formData.get('email')?.toString() || '';
   const password = formData.get('password')?.toString() || '';
@@ -12,6 +12,13 @@ export async function POST({ request }) {
 
   const jwt = User.signJWT(user);
 
+  cookies.set('jwt', jwt, {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    httpOnly: false,
+    secure: true,
+    path: '/',
+    sameSite: 'strict',
+  });
   return new Response(`
     <html>
       <head>
@@ -24,8 +31,7 @@ export async function POST({ request }) {
     </html>
   `, {
     headers: {
-      'Content-Type': 'text/html',
-      'Set-Cookie': `jwt=${jwt}; Max-Age=604800; HttpOnly; Secure; Path=/; SameSite=Strict`
+      'Content-Type': 'text/html'
     }
   });
 

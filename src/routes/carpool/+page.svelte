@@ -15,36 +15,36 @@
   }
 
 
-  let isAdmin = $state(true);
+  // let isAdmin = $state(true);
 
   console.log('page is loading')
   onMount(() => {
-    console.log('onmount called')
+    // console.log('onmount called')
 
-    const user = sessionStorage.getItem('user');
+    // const user = sessionStorage.getItem('user');
 
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      isAdmin = parsedUser.is_admin;
-      console.log(parsedUser)
-    } else {
-      const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
-      const raw = m?.[1]
-      let parsedUser = null
-      if (raw) {
-        try {
-          parsedUser = JSON.parse(decodeURIComponent(raw))
-        } catch (e) {
-          console.warn('Failed to parse user cookie', e)
-        }
-      }
+    // if (user) {
+    //   const parsedUser = JSON.parse(user);
+    //   isAdmin = parsedUser.is_admin;
+    //   console.log(parsedUser)
+    // } else {
+    //   const m = document.cookie.match(/(?:^|; )user=([^;]+)/)
+    //   const raw = m?.[1]
+    //   let parsedUser = null
+    //   if (raw) {
+    //     try {
+    //       parsedUser = JSON.parse(decodeURIComponent(raw))
+    //     } catch (e) {
+    //       console.warn('Failed to parse user cookie', e)
+    //     }
+    //   }
 
-      isAdmin = parsedUser?.is_admin ?? isAdmin;
-    }
+    //   isAdmin = parsedUser?.is_admin ?? isAdmin;
+    // }
   });
 
   let { data } = $props();
-  let { events = [] } = $derived(data)
+  let { events = [], userId, isAdmin } = $derived(data)
 
   let modifying: Record<string, any> | null = $state(null)
   let confirmDelete = $state(new Array(events.length).fill(false));

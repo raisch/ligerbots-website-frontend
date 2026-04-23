@@ -7,8 +7,16 @@ import { redirect } from '@sveltejs/kit'
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ cookies }) {
   const jwt = cookies.get('jwt')
-  console.log(cookies.getAll())
-  if (!jwt || !User.validate(jwt)) redirect(303, '/login?redirect=/carpool')
+  const user = User.validate(jwt || '');
+
+  // const user = cookies.get('user')
+  if (!user) redirect(303, `/login?redirect=/carpool/vehicles`)
+  const userId = user.id || null
+  if (!userId) redirect(303, `/login?redirect=/carpool/vehicles`)
+  const userEmail = user.email_address || null
+  if (!userEmail) redirect(303, `/login?redirect=/carpool/vehicles`)
+  const isAdmin = (await User.findByEmail(userEmail))?.is_admin ?? false;
+
 
   let events
   try {
@@ -19,5 +27,5 @@ export async function load({ cookies }) {
 
   // console.log('events:', events)
 
-  return { events }
+  return { events, userId, isAdmin }
 }

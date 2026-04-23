@@ -23,9 +23,16 @@ const debug = createDebugMessages('APP:src/routes/api/login/+server')
  * @returns {Promise<Response>}
  */
 export async function POST({ request, cookies }) {
-  let formData = await request.formData();
-  let email = formData.get('email')?.toString() || '';
-  let password = formData.get('password')?.toString() || '';
+  let email, password;
+  if (request.headers.get('Content-Type')?.includes('application/x-www-form-urlencoded') || request.headers.get('Content-Type')?.includes('multipart/form-data')) {
+    let formData = await request.formData();
+    email = formData.get('email')?.toString() || '';
+    password = formData.get('password')?.toString() || '';
+  } else {
+    const data = await request.json();
+    email = data.email || '';
+    password = data.password || '';
+  }
   console.log('login', email);
 
   const auth = request.headers.get('Authorization');
@@ -43,7 +50,7 @@ export async function POST({ request, cookies }) {
 
   cookies.set('jwt', jwt, {
     maxAge: 60 * 60 * 24 * 7, // 7 days
-    httpOnly: true,
+    httpOnly: false,
     secure: true,
     path: '/',
     sameSite: 'strict',
