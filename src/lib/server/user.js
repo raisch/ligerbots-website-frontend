@@ -333,35 +333,84 @@ export default class User {
    */
   static async register(registration) {
     const client = await getBackendClient()
-    const query = `
-      mutation Users($input: create_users_input!) {
-        create_users_item(data: $input) {
+    let result;
+    try {
+      const existingUser = await User.findByEmail(registration.email_address)
+      
+      if (existingUser) {
+        // Update user data
+        let mutation = `
+          mutation Users($id: ID!, $input: create_users_input!) {
+            update_users_item(id: $id, data: $input) {
+              id
+              firstname
+              lastname
+              email_address
+              groups
+              phone_number
+              is_admin
+              carpool_driver_eligible
+            }
+          }`;
+        result = await client.query(mutation, { id: existingUser.id, input: registration })
+      } else {
+        // Create new user
+        let mutation = `
+          mutation Users($input: create_users_input!) {
+            create_users_item(data: $input) {
+              id
+              firstname
+              lastname
+              email_address
+              groups
+              phone_number
+              is_admin
+              carpool_driver_eligible
+            }
+          }`;
+        result = await client.query(mutation, { input: { ...registration, status: "published" } })
+      }
+    } catch (err) {
+      throw new Error(`Failed to register user with email address "${registration.email_address}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
+    }
+    console.log(result)
+    const users = result?.create_users_item || result?.update_users_item || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`register: no user found for registration: ${JSON.stringify(registration)}`)
+      return null
+    }
+    return users[0]
+  }
+
+  /**
+   * 
+   * @param {string} userId 
+   * @param {string} token 
+   * @returns {Promise<FullUserRecord | null>}
+   */
+  static async setToken(userId, token) {
+    const client = await getBackendClient()
+    const mutation = `
+      mutation Users($id: ID!, $input: update_users_input!) {
+        update_users_item(id: $id, data: $input) {
           id
           firstname
           lastname
           email_address
           groups
           phone_number
-          password
           is_admin
           carpool_driver_eligible
+          token
         }
-      }`
-
-
-    let result
-    try {
-      result = await client.query(query, { input: { ...registration, status: "published" } })
-    } catch (err) {
-      throw new Error(`Failed to register user with email address "${registration.email_address}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
-    }
-    console.log(result)
-    const users = result?.create_users_item || []
+      }`;
+    let result = await client.query(mutation, { id: userId, input: { token } });
+    const users = result?.update_users_item || []
     if (!(Array.isArray(users) && users.length === 1)) {
-      debug(`register: no user found for registration: ${JSON.stringify(registration)}`)
-      return null
+      debug(`setToken: no user found for ID: ${userId}`)
+      return null;
     }
-    return users[0]
+    return users[0];
   }
 
   /**
