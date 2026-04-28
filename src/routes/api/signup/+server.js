@@ -28,7 +28,11 @@ export async function POST({ request }) {
   const user = await User.register(registration);
 
   // Hash of user id
-  const token = crypto.hash('sha256', user.id + ID_HASH_PEPPER, 'base64');
+  const token = crypto.hash('sha256', user.id + ID_HASH_PEPPER, 'base64url');
   
   await User.setToken(user.id, token);
+
+  console.log('signup successful for user', user.id)
+
+  return json({ token });
 }

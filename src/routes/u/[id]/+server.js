@@ -3,7 +3,7 @@ import { redirect } from "@sveltejs/kit";
 
 export async function GET({ params, cookies }) {
   const { id } = params;
-  const user = await User.findById(id); // change how this works
+  const user = await User.findByToken(id); // change how this works
   if (!user) {
     return new Response("User not found", { status: 404 });
   }

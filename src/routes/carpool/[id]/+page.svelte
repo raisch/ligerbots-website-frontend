@@ -39,6 +39,7 @@
       data?: {
         event: import('$lib/server/event').EventRecord,
         userId?: string,
+        isAdmin?: boolean,
         jwt: string,
         existingRides?: {id: string}[],
         cars?: {
@@ -201,7 +202,7 @@
   /** @type {number | null} */
   let previousReturnRideId = $state(null);
 
-  let isAdmin = $state(true);
+  let isAdmin = $derived(data?.isAdmin);
   /** @type {number} */
   let userId = 0;
 

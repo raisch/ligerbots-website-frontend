@@ -276,6 +276,53 @@ export default class User {
     }
     return users[0]
   }
+  /**
+   * Find a user by token.
+   *
+   * @param {String} token - The token of the user to find.
+   *
+   * @returns {Promise.<FullUserRecord | null>} - The user record if found, null otherwise.
+   *
+   * @throws {Error} If the Directus client is not valid.
+   * @throws {Error} If the query fails.
+   */
+  static async findByToken(token) {
+    const client = await getBackendClient()
+    const query = `
+      query Users {
+        users(filter: { token: { _eq: "${token}" } } ) {
+          id
+          status
+          firstname
+          lastname
+          email_address
+          groups
+          school
+          graduation_year
+          password
+          fullname
+          slug
+          last_login
+          is_admin
+          carpool_driver_eligible
+        }
+      }`
+
+    debug(`findByToken(${token}): query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      throw new Error(`Failed to find user with token "${token}": ${JSON.stringify(err)}`)
+    }
+    const users = result?.users || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`findByToken: no user found for token: ${token}`)
+      return null
+    }
+    return users[0]
+  }
 
   /**
    * Find a user by ID.
@@ -340,7 +387,7 @@ export default class User {
       if (existingUser) {
         // Update user data
         let mutation = `
-          mutation Users($id: ID!, $input: create_users_input!) {
+          mutation Users($id: ID!, $input: update_users_input!) {
             update_users_item(id: $id, data: $input) {
               id
               firstname
@@ -373,13 +420,8 @@ export default class User {
     } catch (err) {
       throw new Error(`Failed to register user with email address "${registration.email_address}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
     }
-    console.log(result)
     const users = result?.create_users_item || result?.update_users_item || []
-    if (!(Array.isArray(users) && users.length === 1)) {
-      debug(`register: no user found for registration: ${JSON.stringify(registration)}`)
-      return null
-    }
-    return users[0]
+    return users
   }
 
   /**
