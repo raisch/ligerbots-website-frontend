@@ -16,5 +16,5 @@ export async function GET({ params, cookies }) {
     path: '/',
     sameSite: 'strict',
   });
-  redirect(303, '/carpool');
+  redirect(301, '/carpool');
 }
