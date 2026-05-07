@@ -79,6 +79,26 @@ export const GET_TRIP_BY_ID_QUERY = `query ($id: ID!) {
     }
   }`
 
+export const GET_DESTINATION_TRIP_BY_ID_QUERY = `query ($id: ID!) {
+    destination_trip_by_id(id: $id) {
+      id
+      destination
+      departs_from
+      departs_on
+      departs_at
+      status
+    }
+  }`
+export const GET_RETURN_TRIP_BY_ID_QUERY = `query ($id: ID!) {
+    return_trip_by_id(id: $id) {
+      id
+      destination
+      departs_from
+      departs_on
+      departs_at
+      status
+    }
+  }`
 
 /** GraphQL query for fetching return trips for an event. */
 export const GET_RETURN_TRIPS_QUERY = `query ($event_id: ID!) {
@@ -154,6 +174,17 @@ export const UPDATE_DESTINATION_TRIP_MUTATION = `mutation ($id: ID!, $trip: upda
       departs_on
       departs_at
       status
+      rides {
+        id
+        item {
+          ... on trip_ride {
+            id
+            ride {
+              name
+            }
+          }          
+        }
+      }
     }
 }`
 
@@ -190,6 +221,26 @@ export const DELETE_TRIP_MUTATION = `mutation ($collection: String!, $id: ID!) {
       id
     }
 }`
+
+
+export const ADD_RIDE_TO_TRIP_MUTATION = `mutation ($tripRide: create_trip_ride_input!) {
+    create_trip_ride_item(data: $tripRide) {
+      id
+      ride {
+        id
+        vehicle_type
+        name
+        seats
+      }
+    }
+}`
+
+export const REMOVE_RIDE_FROM_TRIP_MUTATION = `mutation ($id: ID!) {
+    delete_trip_ride_item(id: $id) {
+      id
+    }
+}`
+
 
 export default {
   GET_DESTINATION_TRIPS_QUERY,

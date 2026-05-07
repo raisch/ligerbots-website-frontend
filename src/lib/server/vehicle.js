@@ -13,6 +13,18 @@ import RideModelSchema from '$lib/server/models/ride.model.js'
 
 const debug = createDebugMessages('APP:lib/server/vehicle')
 
+
+/**
+ * @typedef VehicleType
+ * @property {string} id
+ * @property {Object} item
+ * @property {string} item.name
+ * @property {number} item.seats
+ * @property {import('./user').EventUserType[]} item.driver
+ * @property {string} item.vehicle_type
+ * @property {string} item.id
+ */
+
 /**
  * Vehicle service for managing reusable vehicles (`ride` collection).
  *
@@ -160,6 +172,7 @@ export default class Vehicle {
     try {
       result = await client.query(mutation, variables)
       debug(`createVehicle() resp: ${JSON.stringify(result)}`)
+      console.log('createVehicle() result:', result)
       result = result?.create_ride_item || {}
     } catch (/** @type {any} */ err) {
       throw new Error(`Failed to create vehicle: ${JSON.stringify(err)}`)

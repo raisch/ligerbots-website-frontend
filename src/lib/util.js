@@ -21,6 +21,40 @@ export function prettyDate(date) {
 }
 
 /**
+ * Format time string to human-readable format: '9:00 AM'.
+ *
+ * @param {string|Date} date
+ * @returns {string}
+ */
+export function prettyTime(date) {
+  date = date instanceof Date ? date : new Date(date)
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
+}
+
+/**
+ * Format datetime string to human-readable format: 'January 1, 2024 9:00 AM'.
+ *
+ * @param {string|Date} date
+ * @returns {string}
+ */
+export function prettyDateTime(date) {
+  date = date instanceof Date ? date : new Date(date)
+  return date.toLocaleString('en-US', {
+    // weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  })
+}
+
+/**
  * Given a date string or Date object, return a formatted date string as YYYY-MM-DD.
  *
  * @param {string|Date} date
@@ -103,4 +137,36 @@ export function stringify(obj, replacer = null, space = 2) {
   )
   cache = [] // Allow garbage collection
   return str
+}
+
+/**
+ * @param {string} query
+ * @param {(string | null)[]} values
+ */
+export function search(query, ...values) {
+  return !query || values.some(value => value !== null && value.toLowerCase().includes(query.toLowerCase()));
+}
+
+// /**
+//  * @param {import("./server/user").FullUserRecord} user
+//  */
+// export function checkIfExists(user) {
+//   return user.id;
+// }
+/**
+ * @param {{ is_admin: any; }} user
+ * @return {user is { is_admin: true }}
+ */
+export function checkIfAdmin(user) {
+  return user && user.is_admin;
+}
+
+/**
+ * 
+ * @param {string} jwt 
+ * @returns 
+ */
+export function payloadFromJWT(jwt) {
+  var payload = jwt.split('.')[1];
+  return decodeURI(atob(payload));
 }

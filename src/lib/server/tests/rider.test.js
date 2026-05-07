@@ -150,7 +150,7 @@ describe('Rider.getRidersFromRide', () => {
 describe('Rider.removeRiderFromRide', () => {
   it('throws when relationshipId is missing', async () => {
     // @ts-expect-error testing missing relationshipId
-    await expect(Rider.removeRiderFromRide()).rejects.toThrow('Relationship ID is required')
+    await expect(Rider.removeRiderFromRideById()).rejects.toThrow('Relationship ID is required')
   })
 
   it('removes rider relationship using mutation', async () => {
@@ -158,7 +158,7 @@ describe('Rider.removeRiderFromRide', () => {
       delete_trip_ride_riders_item: { id: 'rel1' }
     })
 
-    const result = await Rider.removeRiderFromRide('rel1')
+    const result = await Rider.removeRiderFromRideById('rel1')
 
     expect(mockClient.query).toHaveBeenCalledWith(REMOVE_RIDER_MUTATION, {
       relationshipId: 'rel1'

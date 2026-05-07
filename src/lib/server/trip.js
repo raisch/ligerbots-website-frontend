@@ -4,8 +4,14 @@ import { getBackendClient } from '$lib/server/client'
 import joi from 'joi'
 
 import {
+  ADD_RIDE_TO_TRIP_MUTATION,
+  DELETE_TRIP_MUTATION,
+  GET_DESTINATION_TRIP_BY_ID_QUERY,
   GET_DESTINATION_TRIPS_QUERY,
+  GET_RETURN_TRIP_BY_ID_QUERY,
   GET_RETURN_TRIPS_QUERY,
+  GET_TRIP_BY_ID_QUERY,
+  REMOVE_RIDE_FROM_TRIP_MUTATION,
   UPDATE_DESTINATION_TRIP_MUTATION,
   UPDATE_RETURN_TRIP_MUTATION
 } from '$lib/server/graphql/trip'
@@ -27,6 +33,21 @@ function getTripSchema(type) {
   return null
 }
 
+/** 
+ * @typedef TripType
+ * @property {string} id
+ * @property {"destination_trip"|"return_trip"} collection
+ * @property {Object} item
+ * @property {string} item.id
+ * @property {string} item.event_id
+ * @property {string} item.departs_at
+ * @property {string} item.departs_on
+ * @property {string} item.arrives_at
+ * @property {string} item.destination
+ * @property {string} item.departs_from
+ * @property {Array<import('./ride').RideType>} item.rides
+ */
+
 /** @class */
 export default class Trip {
   /**
@@ -34,7 +55,7 @@ export default class Trip {
    *
    * @param {string} eventId
    * @param {"destination_trip"|"return_trip"} [tripType="destination_trip"]
-   * @returns {Promise<Trip[]>}
+   * @returns {Promise<TripType[]>}
    */
   static async getTrips(eventId, tripType = 'destination_trip') {
     if (!eventId) {
@@ -149,5 +170,41 @@ export default class Trip {
 
     debug(`updateTrip(tripId=${tripData.id}) result: ${JSON.stringify(result)}`)
     return result
+  }
+
+  /**
+   * @param {string} tripId
+   * @return {Promise<import('./event').TripRecord>}
+   */
+  static async getDestinationTripById(tripId, query = GET_DESTINATION_TRIP_BY_ID_QUERY) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+    const client = await getBackendClient()
+    let result = await client.query(query, { id: tripId })
+    return result?.destination_trip_by_id
+  }
+  /**
+   * @param {string} tripId
+   * @return {Promise<import('./event').TripRecord>}
+   */
+  static async getReturnTripById(tripId, query = GET_RETURN_TRIP_BY_ID_QUERY) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+    const client = await getBackendClient()
+    let result = await client.query(query, { id: tripId })
+    return result?.return_trip_by_id
+  }
+  /**
+   * @param {string} tripId
+   */
+  static async deleteTrip(tripId, mutation = DELETE_TRIP_MUTATION) {
+    if (!tripId) {
+      throw new Error('Trip ID is required')
+    }
+    const client = await getBackendClient()
+    let result = await client.query(mutation, { id: tripId })
+    return result?.trip_by_id
   }
 }

@@ -13,6 +13,17 @@ import RideModelSchema from '$lib/server/models/ride.model.js'
 
 const debug = createDebugMessages('APP:lib/server/ride')
 
+/**
+ * @typedef RideType
+ * @property {string} id
+ * @property {Object} item
+ * @property {string} item.id
+ * @property {import('./user').EventUserType[]} item.riders
+ * @property {Object} item.riders_func
+ * @property {number} item.riders_func.count
+ * @property {import('./event').RideRecord} item.ride
+ */
+
 /** @class */
 export default class Ride {
   /**
@@ -20,7 +31,7 @@ export default class Ride {
    *
    * @param {string} [query] - Custom GraphQL query to use.
    *
-   * @returns {Promise<any[]>} - Array of ride records.
+   * @returns {Promise<import('./event').RideRecord[]>} - Array of ride records.
    *
    * @throws {Error} if failed to retrieve rides.
    */
@@ -62,7 +73,7 @@ export default class Ride {
    * @param {string} rideId - The ID of the ride to retrieve.
    * @param {string} [query] - Custom GraphQL query to use.
    *
-   * @returns {Promise<Object>} - The ride record.
+   * @returns {Promise<import('./event').RideRecord>} - The ride record.
    *
    * @throws {Error} if failed to retrieve the ride.
    */

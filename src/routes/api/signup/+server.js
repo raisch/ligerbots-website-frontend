@@ -7,26 +7,32 @@ import createDebugMessages from 'debug'
 import { json } from '@sveltejs/kit'
 
 import User from '$lib/server/user'
+import { REGISTRATION_KEY, ID_HASH_PEPPER } from '$env/static/private'
+
+import crypto from 'node:crypto'
 
 const debug = createDebugMessages('APP:src/routes/api/login/+server')
 
 /**
  *
- * @param {Object} options
- * @param {Request} options.request
- *
  * @returns {Promise<Response>}
  */
 export async function POST({ request }) {
-  const json = await request.json()
+  console.log('signup request received')
 
-  const existingUser = await User.findByEmail(json.email)
-  if (existingUser) return json({ error: 'Email already in use' }, { status: 400 })
+  /** @type {{registration: import('$lib/server/user').UserRegistration; key: string;}} */
+  const {registration, key} = await request.json();
   
-  // if (password1 !== password2) return json({ error: 'Passwords do not match' }, { status: 400 })
-  // if (password1.length < 1) return json({ error: 'Password is required' }, { status: 400 })
+  if (key != REGISTRATION_KEY) return json({ error: 'Invalid registration key' }, { status: 403 });
   
-  let accountRequest = await User.requestAccount(json)
+  const user = await User.register(registration);
 
-  return json({  })
+  // Hash of user id
+  const token = crypto.hash('sha256', user.id + ID_HASH_PEPPER, 'base64url');
+  
+  await User.setToken(user.id, token);
+
+  console.log('signup successful for user', user.id)
+
+  return json({ token });
 }

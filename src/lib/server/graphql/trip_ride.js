@@ -27,6 +27,17 @@ export const CREATE_TRIP_RIDE_MUTATION = `mutation ($tripRide: create_trip_ride_
   }
 }`
 
+export const CREATE_DESTINATION_TRIP_RIDE_MUTATION = `mutation ($tripRide: create_destination_trip_rides_input!) {
+  create_destination_trip_rides_item(data: $tripRide) {
+    id
+  }
+}`
+export const CREATE_RETURN_TRIP_RIDE_MUTATION = `mutation ($tripRide: create_return_trip_rides_input!) {
+  create_return_trip_rides_item(data: $tripRide) {
+    id
+  }
+}`
+
 export const UPDATE_TRIP_RIDE_MUTATION = `mutation ($id: ID!, $tripRide: update_trip_ride_input!) {
   update_trip_ride_item(id: $id, data: $tripRide) {
     id
@@ -41,6 +52,17 @@ export const UPDATE_TRIP_RIDE_MUTATION = `mutation ($id: ID!, $tripRide: update_
 
 export const DELETE_TRIP_RIDE_MUTATION = `mutation ($id: ID!) {
   delete_trip_ride_item(id: $id) {
+    id
+  }
+}`
+
+export const DELETE_DESTINATION_TRIP_RIDE_MUTATION = `mutation ($id: ID!) {
+  delete_destination_trip_rides_item(id: $id) {
+    id
+  }
+}`
+export const DELETE_RETURN_TRIP_RIDE_MUTATION = `mutation ($id: ID!) {
+  delete_return_trip_rides_item(id: $id) {
     id
   }
 }`

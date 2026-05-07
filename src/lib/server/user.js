@@ -14,14 +14,29 @@ import createDebugMessages from 'debug'
 
 import { getBackendClient } from './client.js'
 import { error, redirect } from '@sveltejs/kit'
+import jsonwebtoken from 'jsonwebtoken'
+import { createSecretKey } from 'node:crypto'
+import { JWT_SECRET } from '$env/static/private'
 
 const debug = createDebugMessages('APP:$lib/server/user')
+
+
+/**
+ * @typedef EventUserType
+ * @property {string} id
+ * @property {import('./event.js').EventUserRecord} [item]
+ */
+/**
+ * @typedef AttendeeUserType
+ * @property {string} id
+ * @property {import('./event.js').EventUserRecord} users_id
+ */
 
 export default class User {
   /**
    * Get a list of all users.
    *
-   * @returns {Promise.<Array.<UserRecord>>} - The list of all users.
+   * @returns {Promise.<Array.<FullUserRecord>>} - The list of all users.
    */
   static async listAll() {
     const client = await getBackendClient()
@@ -123,6 +138,54 @@ export default class User {
   }
 
   /**
+   * List all people who are allowed to drive a car for carpools.
+   *
+   * @param {Filters=} filter 
+   * @returns {Promise.<Array.<DirectoryUserRecord>>} - The list of users.
+   */
+  static async listEligibleCarpoolDrivers(filter) {
+    const client = await getBackendClient()
+    const query = `
+      query Users {
+        users(limit: -1, filter: { carpool_driver_eligible: { _eq: true } }) {
+          id
+          status
+          firstname
+          lastname
+          phone_number
+          email_address
+          address
+          school
+          groups
+          carpool_driver_eligible
+        }
+      }`
+
+    debug(`listEligibleCarpoolDrivers: query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      throw new Error(`Failed to list users: ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
+    }
+
+    if (!(result && result.users && Array.isArray(result.users))) {
+      return []
+    }
+
+    /** @type {DirectoryUserRecord[]} */
+    let users = result.users
+
+    if (filter) {
+      if (filter.type === 'coaches') {
+        users = users.filter(user => user.groups.includes('Coach') || user.groups.includes('Mentor'))
+      }
+    }
+    return users
+  }
+
+  /**
    * List all published users with photos for the /facebook route.
    *
    * @returns {Promise.<Array.<FacebookUserRecord>>} - The list of users.
@@ -171,7 +234,7 @@ export default class User {
    *
    * @param {String} email - The email address of the user to find.
    *
-   * @returns {Promise.<UserRecord | null>} - The user record if found, null otherwise.
+   * @returns {Promise.<FullUserRecord | null>} - The user record if found, null otherwise.
    *
    * @throws {Error} If the Directus client is not valid.
    * @throws {Error} If the query fails.
@@ -194,6 +257,7 @@ export default class User {
           slug
           last_login
           is_admin
+          carpool_driver_eligible
         }
       }`
 
@@ -203,7 +267,7 @@ export default class User {
     try {
       result = await client.query(query)
     } catch (err) {
-      throw new Error(`Failed to find user with email address "${email}": ${err}`)
+      throw new Error(`Failed to find user with email address "${email}": ${JSON.stringify(err)}`)
     }
     const users = result?.users || []
     if (!(Array.isArray(users) && users.length === 1)) {
@@ -212,6 +276,184 @@ export default class User {
     }
     return users[0]
   }
+  /**
+   * Find a user by token.
+   *
+   * @param {String} token - The token of the user to find.
+   *
+   * @returns {Promise.<FullUserRecord | null>} - The user record if found, null otherwise.
+   *
+   * @throws {Error} If the Directus client is not valid.
+   * @throws {Error} If the query fails.
+   */
+  static async findByToken(token) {
+    const client = await getBackendClient()
+    const query = `
+      query Users {
+        users(filter: { token: { _eq: "${token}" } } ) {
+          id
+          status
+          firstname
+          lastname
+          email_address
+          groups
+          school
+          graduation_year
+          password
+          fullname
+          slug
+          last_login
+          is_admin
+          carpool_driver_eligible
+        }
+      }`
+
+    debug(`findByToken(${token}): query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query)
+    } catch (err) {
+      throw new Error(`Failed to find user with token "${token}": ${JSON.stringify(err)}`)
+    }
+    const users = result?.users || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`findByToken: no user found for token: ${token}`)
+      return null
+    }
+    return users[0]
+  }
+
+  /**
+   * Find a user by ID.
+   *
+   * @param {String} id - The ID of the user to find.
+   *
+   * @returns {Promise.<FullUserRecord | null>} - The user record if found, null otherwise.
+   *
+   * @throws {Error} If the Directus client is not valid.
+   * @throws {Error} If the query fails.
+   */
+  static async findById(id) {
+    const client = await getBackendClient()
+    const query = `
+      query Users($id: ID!) {
+        users_by_id(id: $id) {
+          id
+          status
+          firstname
+          lastname
+          email_address
+          groups
+          school
+          graduation_year
+          password
+          fullname
+          slug
+          last_login
+          is_admin
+          carpool_driver_eligible
+        }
+      }`
+
+    debug(`findById(${id}): query: ${query}`)
+
+    let result
+    try {
+      result = await client.query(query, { id })
+    } catch (err) {
+      throw new Error(`Failed to find user with ID "${id}": ${err}`)
+    }
+    const users = result?.users_by_id || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`findById: no user found for ID: ${id}`)
+      return null
+    }
+    return users[0]
+  }
+
+
+
+  /**
+   * 
+   * @param {UserRegistration} registration 
+   */
+  static async register(registration) {
+    const client = await getBackendClient()
+    let result;
+    try {
+      const existingUser = await User.findByEmail(registration.email_address)
+      
+      if (existingUser) {
+        // Update user data
+        let mutation = `
+          mutation Users($id: ID!, $input: update_users_input!) {
+            update_users_item(id: $id, data: $input) {
+              id
+              firstname
+              lastname
+              email_address
+              groups
+              phone_number
+              is_admin
+              carpool_driver_eligible
+            }
+          }`;
+        result = await client.query(mutation, { id: existingUser.id, input: registration })
+      } else {
+        // Create new user
+        let mutation = `
+          mutation Users($input: create_users_input!) {
+            create_users_item(data: $input) {
+              id
+              firstname
+              lastname
+              email_address
+              groups
+              phone_number
+              is_admin
+              carpool_driver_eligible
+            }
+          }`;
+        result = await client.query(mutation, { input: { ...registration, status: "published" } })
+      }
+    } catch (err) {
+      throw new Error(`Failed to register user with email address "${registration.email_address}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
+    }
+    const users = result?.create_users_item || result?.update_users_item || []
+    return users
+  }
+
+  /**
+   * 
+   * @param {string} userId 
+   * @param {string} token 
+   * @returns {Promise<FullUserRecord | null>}
+   */
+  static async setToken(userId, token) {
+    const client = await getBackendClient()
+    const mutation = `
+      mutation Users($id: ID!, $input: update_users_input!) {
+        update_users_item(id: $id, data: $input) {
+          id
+          firstname
+          lastname
+          email_address
+          groups
+          phone_number
+          is_admin
+          carpool_driver_eligible
+          token
+        }
+      }`;
+    let result = await client.query(mutation, { id: userId, input: { token } });
+    const users = result?.update_users_item || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`setToken: no user found for ID: ${userId}`)
+      return null;
+    }
+    return users[0];
+  }
 
   /**
    * Log in a user.
@@ -219,7 +461,7 @@ export default class User {
    * @param {String} email - The email address of the user to login.
    * @param {String} password - The password of the user to login.
    *
-   * @returns {Promise.<UserRecord | null>} - True if the password is correct, false otherwise.
+   * @returns {Promise.<FullUserRecord | null>} - True if the password is correct, false otherwise.
    *
    * @throws {Error} If the Directus client is not valid.
    * @throws {Error} If the query fails.
@@ -228,7 +470,7 @@ export default class User {
   static async login(email, password) {
     const client = await getBackendClient()
 
-    /** @type {UserRecord | null} */
+    /** @type {FullUserRecord | null} */
     const user = await User.findByEmail(email)
     if (!user) {
       console.error(`Failed to find user with email address: ${email}`)
@@ -256,10 +498,6 @@ export default class User {
 
     return !!result?.utils_hash_verify ? user : null
   }
-
-  static async requestAccount(/** @type {UserAccountRequest} */ request) {
-    
-  }
   
   /**
    * 
@@ -286,10 +524,119 @@ export default class User {
       throw redirect(302, `/login?redirect=${encodeURIComponent(page.url.pathname + page.url.search)}#msg=not-logged-in`)
     }
   }
+
+
+
+  static #getJWTSecret() {
+    const secret = import.meta.env.JWT_SECRET || JWT_SECRET;
+    if (!secret) {
+      throw new Error('Server configuration error: JWT secret is not set');
+    }
+    return Buffer.from(secret, 'base64')
+  }
+
+  /**
+   * @param {UserRegistration} user 
+   */
+  static signJWT(user) {
+    const secret = this.#getJWTSecret();
+    const jwt = jsonwebtoken.sign({
+      id: user.id,
+      email_address: user.email_address,
+      is_admin: user.is_admin,
+      carpool_driver_eligible: user.carpool_driver_eligible,
+    }, secret, { expiresIn: '7d' });
+    console.log('jwt', jwt);
+    return jwt;
+  }
+  /**
+   * 
+   * @param {string} jwt 
+   * @returns {UserJWT | null}
+   * Validate a JWT and return the decoded user information, or null if the JWT is invalid.
+   *
+   */
+  static validate(jwt) {
+    console.log('validate jwt', jwt, jsonwebtoken.decode(jwt));
+    const secret = this.#getJWTSecret();
+    try {
+      const decoded = jsonwebtoken.verify(jwt, secret);
+      //@ts-ignore
+      return decoded;
+    } catch (err) {
+      console.error(`Failed to validate JWT: ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`);
+      return null;
+    }
+  }
+
+
+  /**
+   * @param {string} email
+   * @param {string} jwt
+   * @param {string} oldPassword
+   * @param {string} newPassword
+   */
+  static async changePassword(email, jwt, oldPassword, newPassword) {
+    const validatedUser = this.validate(jwt)
+    if (!validatedUser || validatedUser.email_address !== email) {
+      throw new Error(`Unauthorized: Invalid JWT or user ID does not match JWT`)
+    }
+
+    try {
+      const loginResult = await this.login(email, oldPassword)
+      if (!loginResult) {
+        throw new Error('Unauthorized: Old password is incorrect')
+      }
+      const resetResult = await this.resetPassword(loginResult.id, newPassword)
+      if (!resetResult) {
+        throw new Error('Failed to reset password')
+      }
+      return resetResult
+    } catch (error) {
+      throw new Error('Unauthorized: Invalid email or password')
+    }
+  }
+
+  /**
+   * 
+   * @param {string} user 
+   * @param {string} newPassword 
+   */
+  static async resetPassword(user, newPassword) {
+    const client = await getBackendClient()
+    const query = `
+      mutation Users($id: ID!, $input: update_users_input!) {
+        update_users_item(id: $id, data: $input) {
+          id
+          firstname
+          lastname
+          email_address
+          groups
+          phone_number
+          password
+          is_admin
+          carpool_driver_eligible
+        }
+      }`
+
+
+    let result
+    try {
+      result = await client.query(query, { id: user, input: { password: newPassword } })
+    } catch (err) {
+      throw new Error(`Failed to reset password for user with ID "${user}": ${err instanceof Error || typeof err !== 'object' ? err : JSON.stringify(err)}`)
+    }
+    const users = result?.update_users_item || []
+    if (!(Array.isArray(users) && users.length === 1)) {
+      debug(`resetPassword: no user found for ID: ${user}`)
+      return null
+    }
+    return users[0]
+  }
 }
 
 /**
- * @typedef {Object} UserRecord
+ * @typedef {Object} FullUserRecord
  * @property {String} id
  * @property {String} status
  * @property {String} firstname
@@ -304,6 +651,8 @@ export default class User {
  * @property {String} fullname
  * @property {String} slug
  * @property {String} last_login
+ * @property {Boolean} is_admin
+ * @property {Boolean} carpool_driver_eligible
  */
 
 /**
@@ -363,6 +712,29 @@ export default class User {
  * 
  * @property {string[]?} roles
  * @property {string[]?} childrenNames
+ */
+
+/**
+ * @typedef UserRegistration
+ * // From website
+ * @property {String} id // Website database primary key
+ * @property {String} firstname
+ * @property {String} lastname
+ * @property {String} email_address
+ * @property {Array.<String>} groups
+ * @property {String} phone_number
+ * @property {String} password
+ * // TODO Figure this out later
+ * @property {Boolean} is_admin
+ * @property {Boolean} carpool_driver_eligible
+ */
+
+/**
+ * @typedef UserJWT
+ * @property {String} id
+ * @property {String} email_address
+ * @property {Boolean} is_admin
+ * @property {Boolean} carpool_driver_eligible
  */
 
 /**
